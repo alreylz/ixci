@@ -28,6 +28,8 @@ function tryConnectWS() {
 
     socket = new WebSocket(`ws://${connectToTxtBox}/`);
 
+    RPCCallsHookup(socket);
+    
     socket.onopen = function(e) {
         alert("[open] Connection established");
         //alert("Sending to server");
