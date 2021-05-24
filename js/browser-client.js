@@ -50,21 +50,80 @@ function tryConnectWS() {
         catch (e){
             console.log("a non communication message was encountered")
         }
-        if(msgObject !== undefined && "MessageType" in msgObject && "OperationName" in msgObject && "Data" in msgObject && "Options" in msgObject){
+        if(msgObject !== undefined /*&& "MessageType" in msgObject && "OpCode" in msgObject*/){
 
             
             
             // @todo here  process message in a way depending on the type of data.
 
-            console.log(Object.keys(msgObject))
-            console.log(msgObject.MessageType);
-           console.log(msgObject.OperationName);
-          //console.log(msgObject.Data.position)//forEach(d => console.log(d));
-            console.log(msgObject.Data);
             
-          console.log(msgObject.Options)//forEach(d => console.log(d));
-           
+          //   console.log(msgObject.MessageType);
+          //  console.log(msgObject.OperationName);
+          // //console.log(msgObject.Data.position)//forEach(d => console.log(d));
+             //console.log(msgObject.Data);
             
+          //console.log(msgObject.Options)//forEach(d => console.log(d));
+
+            //console.log("RECEIVED MESSAGE " + Object.keys(msgObject))
+            
+            
+            //Si mensaje de monitoring de posición.    
+            if(msgObject["MessageType"] == 1 && msgObject["OpCode"] == "UserTransform"){
+                
+                //console.log("RECEIVED MESSAGE WITH USER TRANSFORM.")
+                
+                let svgContainer =  document.getElementById("world2D");
+                
+                //real dimensions in meters.
+                let rwWidth = 0.6 * 8.0; 
+                let rwHeight = 0.6 * 5.0;
+                
+                let aspectRatio =  rwHeight / rwWidth;
+
+                
+                
+                
+                console.log(`aspect ratio ${aspectRatio}`);
+                
+                
+                //MAKE SVG GROW AND SHRINK WITH WINDOW.
+                //Obtengo la anchura.
+                let mapWidth = svgContainer.getBoundingClientRect().width;
+                //Calculo la altura correspondiente.
+                let mapHeight = mapWidth * aspectRatio;
+                svgContainer.setAttribute("height",mapHeight);
+
+                console.log(`svg (W,H) = ${mapWidth} , ${mapHeight}`);
+
+
+
+                let userhead = svgContainer.querySelector(".user-head-svg");
+                // userhead.setAttribute("cx",(mapWidth/2.0).toString() );
+                // userhead.setAttribute("cy",(mapHeight/ 2.0).toString() ); 
+                
+                
+                
+                //@todo poner color cuando se están poniendo datos.
+                
+                //1) Sumar nuevo origen.
+                let correctedX = msgObject.Data.position[0] + rwWidth/2.0 ;    
+                let correctedY = msgObject.Data.position[2] + rwHeight/2.0 ;
+
+                //2) Convert meters to window units
+                correctedX = correctedX *  mapWidth /rwWidth;
+                correctedY = correctedY * mapHeight /rwHeight;
+                
+                userhead.setAttribute("cx", correctedX.toString());
+                userhead.setAttribute("cy", correctedY.toString());
+                
+                
+                
+                
+                
+                
+                
+            }
+        
             if(msgObject["MessageType"] == 2){
 
                 let imgElemForRemote = document.getElementById("remoteView");
@@ -84,7 +143,7 @@ function tryConnectWS() {
                 // imgElemForRemote.src = imageUrl;
                 
                 
-                let imgB64 = msgObject.Data.imgData;
+                let imgB64 = msgObject.Data;
                 imgElemForRemote.src = 'data:image/png;base64,'+ imgB64;
                 
 
