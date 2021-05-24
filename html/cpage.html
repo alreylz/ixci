@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; utf-8">
+    <meta charset="UTF-8">
+
+    <title> @alreylz WOZ client </title>
+
+    <link rel="stylesheet" href="browser-client.css">
+
+</head>
+
+<body>
+<h1> WOZ Client</h1>
+
+
+<div id="connection-prompt">
+    <label for="hostname"> Enter here the hostname of the server to connect to </label> <input id="hostname" type="text"
+                                                                                               name="ip-port"/>
+    <button id="connect" onclick="tryConnectWS();"> Connect</button>
+</div>
+
+
+<div id="pageContent">
+
+    <img id="remoteView" src="" />
+    
+    
+
+    <h2>Monitoring</h2>
+    <p>
+        
+        
+        Status of the connection:
+        Scene:
+        User looking at:
+        Antilatency list of connected devices:
+        Head displacement data: e.g. position.
+        
+        Ordering status: of the nodes.
+        
+    </p>
+    
+    <h2> RPCs</h2>
+    <p>
+        ChangeScene(nameOfTheScene);
+        SendChatMessage
+        HideAllNodes
+        HideNode
+        HideAllEdges
+        LoadGraph(nameOfGraph,bool loadRenderingInfo)
+        
+        
+    </p>
+    
+    
+    
+    
+    <!-- f- for field names -->
+    <!-- b- for button id's -->
+    
+    <input id="f-SceneName" type="text" placeholder="Write name of the scene to load in the remote side."/> 
+    <button data-id="b-LoadScene" > Load Scene</button>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <button class=" woz-clck"
+            data-id="button1" data-operation="openInv" data-param1="" data-param2="" data-param3="">Sample command
+    </button>
+    <button class="woz-clck"
+            data-id="button2" data-operation="openInv" data-param1="" data-param2="" data-param3="">Sample command 2
+    </button>
+
+
+    <div id="client-log">
+
+
+    </div>
+
+
+</div>
+
+
+<script src="browser-client.js"></script>
+
+</body>
+
+
+</html>

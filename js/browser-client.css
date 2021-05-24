@@ -1,0 +1,33 @@
+﻿
+
+
+/* Terminal styling */
+#client-log{
+    background-color: black;
+    margin: 0 auto;
+    min-height: 200px;
+    max-height:  400px;
+    width:90%;
+    overflow-y: scroll;
+    color:white;
+    border: 0.5em solid dimgray;
+}
+
+#client-log>div::before{
+    padding-left: 2px;
+    content: " > "
+}
+
+
+#terminalActions{
+    width: 90%;
+    margin: 0.5px auto;
+    text-align: right;
+}
+#terminalActions>button{
+    margin: 0.5em 0.5em;
+    padding: 2em;
+    color:white;
+    font-weight: bold;
+    background-color: #114985;
+}
