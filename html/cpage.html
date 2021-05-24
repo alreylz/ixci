@@ -7,7 +7,7 @@
     <title> @alreylz WOZ client </title>
 
     <link rel="stylesheet" href="browser-client.css">
-
+    
 </head>
 
 <body>
@@ -22,16 +22,22 @@
 
 
 <div>
-    <div style="background-color: teal; width:100%;"> asdfasdfs</div>
-    <div style="float: left; background-color: saddlebrown" width="10%"> asdfasdf</div>
+<!--    <div style="background-color: teal; width:100%;"> asdfasdfs</div>-->
+<!--    <div style="float: left; background-color: saddlebrown" width="10%"> asdfasdf</div>-->
     
 <svg id="world2D" width="80%" height="500" style="background-color:gray; float: left;">
     
-    <circle class="user-head-svg" cx="0" cy="0" r="4" stroke="black" fill="yellow"> user </circle>
-    <polygon points="0,0,  10,20 ,10,-20 " style="fill:lime;stroke:purple;stroke-width:1" transform="(100,100)" />
-</svg>
     
-    <div style="float: left; background-color: saddlebrown" width="10%">fasdfasdg</div>
+    <g id="user-rep">
+        <circle class="user-head-svg" cx="0" cy="0" r="15 stroke="black" fill="red"> </circle>
+<!--        <image class="user-head-icon" href="img1.JPG" x="0" y="0" width="1" height="1"/>-->
+        <path id="user-head-dir"></path> 
+    </g>
+    
+<!--    <polygon points="0,0,  10,20 ,10,-20 " style="fill:lime;stroke:purple;stroke-width:1" transform="(100,100)" />-->
+</svg>
+<!--    -->
+<!--    <div style="float: left; background-color: saddlebrown" width="10%">fasdfasdg</div>-->
 </div>
 
 <div id="pageContent">

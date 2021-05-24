@@ -166,6 +166,7 @@ server.listen(port, function(){
 
 /* [NOT REQUIRED YET] app.use junto con express.static define la estructura de la uri para acceder a elementos estáticos */
 app.use('/',express.static(__dirname + '/js'));
+app.use('/',express.static(__dirname + '/static'));
 
 // const express = require('express')
 //

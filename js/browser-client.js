@@ -98,6 +98,9 @@ function tryConnectWS() {
 
 
                 let userhead = svgContainer.querySelector(".user-head-svg");
+                let userheadIcon = svgContainer.querySelector(".user-head-icon");
+                let userGazeLine = document.querySelector("#user-head-dir")
+                let userRepresentation =  document.querySelector("#user-rep");
                 // userhead.setAttribute("cx",(mapWidth/2.0).toString() );
                 // userhead.setAttribute("cy",(mapHeight/ 2.0).toString() ); 
                 
@@ -110,14 +113,28 @@ function tryConnectWS() {
                 let correctedY = msgObject.Data.position[2] + rwHeight/2.0 ;
 
                 //2) Convert meters to window units
-                correctedX = correctedX *  mapWidth /rwWidth;
+                correctedX = mapWidth -(correctedX *  mapWidth /rwWidth);
                 correctedY = correctedY * mapHeight /rwHeight;
+                
+                let headDiameter =0.15;//cm   //https://en.wikipedia.org/wiki/Human_head
                 
                 userhead.setAttribute("cx", correctedX.toString());
                 userhead.setAttribute("cy", correctedY.toString());
-                
-                
-                
+                userhead.setAttribute("r", (headDiameter *  mapWidth /rwWidth).toString())
+                userhead.setAttribute("fill", "yellow")
+
+
+                userGazeLine.setAttribute("d", `M ${correctedX} ${correctedY} L ${correctedX} ${correctedY+60} Z`)
+                userGazeLine.setAttribute("style","stroke:teal;stroke-width:2");
+
+                userGazeLine.setAttribute( "transform" , `rotate (${msgObject.Data.rotation[1]} ${correctedX.toString()} ${correctedY.toString()} ) `);
+                //
+                // userheadIcon.setAttribute("x", correctedX.toString());
+                // userheadIcon.setAttribute("y", correctedY.toString());
+                // userheadIcon.setAttribute("width",headDiameter *  mapWidth /rwWidth);
+                // userheadIcon.setAttribute("height",headDiameter *  mapWidth /rwWidth);
+                //
+                //
                 
                 
                 
