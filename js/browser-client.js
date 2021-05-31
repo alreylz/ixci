@@ -24,9 +24,14 @@ function tryConnectWS() {
     // Obtain hostname to use for websocket connection
     let connectToTxtBox = document.getElementById("hostname").value;
 
-    console.log("Will attempt ws connection to :" +connectToTxtBox);
+    if(connectToTxtBox.startsWith("ws")){
+        socket = new WebSocket(`${connectToTxtBox}`)
+    }
+    else{
+        socket = new WebSocket(`ws://${connectToTxtBox}/`);
+    }
 
-    socket = new WebSocket(`ws://${connectToTxtBox}/`);
+    console.log("Will attempt ws connection to :" +connectToTxtBox);
 
     RPCCallsHookup(socket);
     
@@ -85,7 +90,7 @@ function tryConnectWS() {
                 
                 
                 
-                console.log(`aspect ratio ${aspectRatio}`);
+                //console.log(`aspect ratio ${aspectRatio}`);
                 
                 
                 //MAKE SVG GROW AND SHRINK WITH WINDOW.
@@ -95,7 +100,7 @@ function tryConnectWS() {
                 let mapHeight = mapWidth * aspectRatio;
                 svgContainer.setAttribute("height",mapHeight);
 
-                console.log(`svg (W,H) = ${mapWidth} , ${mapHeight}`);
+                //console.log(`svg (W,H) = ${mapWidth} , ${mapHeight}`);
 
 
 

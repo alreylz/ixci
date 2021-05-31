@@ -1,5 +1,99 @@
 ﻿
+.flex {
+    display: flex;
+}
 
+.flex-row{
+    /*display: flex;*/
+    flex-flow: row wrap;
+}
+
+/*.inline-flex{*/
+/*    display: inline-flex;*/
+/*}*/
+
+.inner-flex-col {
+    display: flex;
+    flex-flow: column;
+    /*align-items: stretch;*/
+}
+
+.widecol{
+    flex: 0 0 50%; /* flex-grow, flex-shrink, flex-basis */
+    background-color: rosybrown;
+    box-shadow: inset 0 0 1px #0f0;
+}
+
+/*.f-fill-col{*/
+/*    align-items: center;*/
+/*}*/
+
+
+/*#GamePosRotMonitoringPanel > div :first-child{*/
+/*    background-color: red;*/
+/*    */
+/*}*/
+
+.card-set{
+    display: flex;
+    flex-flow: wrap row;
+}
+
+
+
+
+.card{
+    
+    display: flex;
+    flex-flow: wrap column;
+    flex-grow: 1;
+    background-color: whitesmoke;
+    
+    margin: 0.5vh;
+    padding: 0.3vh;
+    
+    border: 0.2rem solid gray;
+    border-radius: 25px;
+    
+}
+
+.card-big{
+    flex-grow: 2;
+    border: 0.2rem solid gray;
+    border-radius: 25px;
+    margin: 0.5vh;
+    padding: 0.3vh;
+
+}
+
+.card-header{
+    
+    text-decoration: underline darkcyan solid ;
+}
+
+
+
+.card > .row {
+    display: flex;
+    flex-flow: wrap row;
+    background-color: darkgray;
+    
+}
+.card > .row > label {
+    flex-grow: 2;
+}
+.card > .row > input {
+    flex-grow: 1;
+}
+
+
+
+
+
+
+#world2D{
+    background-color: darkslategrey;
+}
 
 /* Terminal styling */
 #client-log{

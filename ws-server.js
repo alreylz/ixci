@@ -91,7 +91,7 @@ wss.on('connection', function connection(_ws) {
     _ws.on('message', function incoming(_message) {
 
         
-        console.log(`>> received message: ${_message}`);
+        
         
         
         switch(_message){
@@ -111,7 +111,7 @@ wss.on('connection', function connection(_ws) {
                 break;
                 
             default: // If connection has already been confirmed.
-
+                
                 //a) message comes from game --> pass it to browser clients.
                 if( game_clients.length > 0 && game_clients.find( elem => elem.id === _ws.id ))
                 {
@@ -126,6 +126,9 @@ wss.on('connection', function connection(_ws) {
                     game_clients.forEach( _sock => _sock.send(_message));
                     console.log("[OUT] <<-- Message sent to all game clients ");
                 }
+                // UNCOMMENT TO DISPLAY ALL MESSAGES.
+                //console.log(`>> received message: ${_message}`);
+                
         }
 
        
@@ -147,18 +150,20 @@ wss.on('connection', function connection(_ws) {
     
 });
 
-//When a message is closed
-wss.on('close', function cleanup() {
-    console.log("Server disconnected "+ Date.now())
-    if(IntervalListSocketsHandle!=null)  clearInterval(IntervalListSocketsHandle);
-});
+//When the server has to be shut down, I created this method to perform cleanup.
+wss.close = function cleanup() {
+
+    console.log("Closing all web socket connections from server "+ Date.now())
+    game_clients.forEach((s => { s.send("server instructs to shut down the connection"); s.close(); s.terminate();}));
+    
+};
 
 
 //server.listen(process.env.PORT);
 console.log("Server started");
 
 server.listen(port, function(){
-    console.log(`listening on *:${port}`);
+    console.log(`Web Server (HTTP) listening on *:${port}`);
 });
 
 
@@ -167,6 +172,24 @@ server.listen(port, function(){
 /* [NOT REQUIRED YET] app.use junto con express.static define la estructura de la uri para acceder a elementos estáticos */
 app.use('/',express.static(__dirname + '/js'));
 app.use('/',express.static(__dirname + '/static'));
+
+
+
+
+process.on('SIGINT', function(){
+    wss.close();
+
+    process.exit();
+});
+
+
+
+
+
+
+
+
+
 
 // const express = require('express')
 //
@@ -243,3 +266,7 @@ app.use('/',express.static(__dirname + '/static'));
 //
 // wsServer.on('close', (sth) => console.log(`Closed server`));
 //    
+
+
+
+
