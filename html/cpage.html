@@ -52,9 +52,7 @@
         <img id="remoteView" src=""/>
     </div>
 
-    <diV>
-
-
+    <div>
         <div id="pageContent" class="card-set">
 
             <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
@@ -78,7 +76,7 @@
                     <label for="f-TMonitorPosRot"> Monitoring period </label> <input type="number"
                                                                                      id="f-TMonitorPosRot"/>
                 </div>
-                <button data-id="b-GameMonitoringConfiguration"> Send Changes </button>
+                <button data-id="b-GameMonitoringConfiguration"> Send Changes</button>
 
             </div>
 
@@ -90,7 +88,7 @@
                            placeholder="Write name of the scene to load in the remote side."/>
                     <button data-id="b-LoadScene"> Load Scene</button>
                 </div>
-            
+
                 <div class="row">
                     <label for="f-GraphName">Graph name</label> <input type="text"
                                                                        placeholder="Enter the name of the graph to load."
@@ -106,7 +104,33 @@
                     <button data-id="b-ShowEdges"> Show edge/s</button>
                 </div>
 
+            </div>
 
+            <div class="card">
+                <h3><span class="card-header"> Experiment Log Configuration </span></h3>
+                <div class="row">
+                    <label for="f-UserID"> Identifier of the user:</label>
+                    <input id="f-UserID" type="text" placeholder="Put here the id of the user, to identify it"/>
+                    <label for="f-ExpCondition"> Experimental Condition </label>
+                    <select id="f-ExpCondition" name="f-NumExpCondition">
+                        <option value="0"> Teleport</option>
+                        <option value="1"> Physical Movement</option>
+                    </select>
+
+                    <select id="s-NamedTimers">
+                        <option value="trainingDuration"> TrainingDuration</option>
+                        <option value="experimentDuration"> ExperimentDuration</option>
+                        <!-- add more dynamically here -->
+                    </select>
+
+
+                    <button data-id="b-StartNamedTimer">Start Named Timer</button>
+                    <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
+                    <button data-id="b-PauseNamedTimer">Stop Named Timer</button>
+
+
+                    <button data-id="b-EndExperiment"> End Experiment</button>
+                </div>
             </div>
 
 
