@@ -44,26 +44,31 @@
 
 .card{
     
+    
     display: flex;
     flex-flow: wrap column;
     flex-grow: 1;
     background-color: whitesmoke;
     
-    margin: 0.5vh;
-    padding: 0.3vh;
-    
+    margin: 0.2vh;
+    padding: 0.5vh;
+
+
     border: 0.2rem solid gray;
-    border-radius: 25px;
-    
+    border-radius: 2px;
 }
+
+
 
 .card-big{
     flex-grow: 2;
-    border: 0.2rem solid gray;
-    border-radius: 25px;
+    
     margin: 0.5vh;
     padding: 0.3vh;
 
+
+    border: 0.2rem solid gray;
+    border-radius: 2px;
 }
 
 .card-header{
@@ -124,4 +129,18 @@
     color:white;
     font-weight: bold;
     background-color: #114985;
+}
+
+
+
+.hidden{
+    display:none;
+}
+
+
+.connected-box{
+    background-color: lawngreen;
+}
+.disconnected-box{
+    background-color: red;
 }

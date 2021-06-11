@@ -12,23 +12,73 @@
 
 <body>
 <h1> WOZ Client</h1>
-
-
-<div id="connection-prompt">
-    <label for="hostname"> Enter here the hostname of the server to connect to </label> <input id="hostname" type="text"
-                                                                                               name="ip-port"/>
-    <button id="connect" onclick="tryConnectWS();"> Connect</button>
-</div>
-
-
-<div id="connection-status">
-    Connected <span class="conn-status-box"> </span>
-    Hostname <span id="conn-hostname"> </span>
-</div>
-
-
 <div class="card-set">
+    <!-- Box showing the status of the connection with the websocket server -->
+    <div id="ws-server-connection-status" class="card">
+        <h3> WebSocket Server Connection Status:</h3>
+        <ul>
+            <li>Connection:<span class="status-box"> </span></li>
+            <li>Hostname: <span id="conn-hostname"> </span></li>
+        </ul>
+    </div>
 
+
+    <!-- Prompt to connect to a remote websocket server -->
+    <div id="connection-prompt" class="card">
+        <label for="hostname"> Enter here the hostname of the server to connect to </label> <input id="hostname"
+                                                                                                   type="text"
+                                                                                                   name="ip-port"/>
+        <button id="connect" onclick="tryConnectWS();"> Connect</button>
+    </div>
+
+
+    <div id="GameClientGeneralStatus" class="card-big  card-set">
+        <div class="inner-flex-col card">
+            <ul>
+                <li>Current Unity Scene: <span data-id="m-SceneName"> N/A </span></li>
+                <li>ActiveGraph : <span data-id="m-ActiveGraphName"> N/A </span></li>
+            </ul>
+        </div>
+        <div class="inner-flex-col card">
+            Antilatency Devices: <span data-id="m-AntilatencyDeviceList"> N/A </span>
+        </div>
+        <div class="inner-flex-col card">
+            <ul>
+                <li>Travelled Distance <span data-id="m-TravelledDistance"> N/A </span></li>
+                <li>Interaction Counter <span data-id="m-InteractionCounter"> N/A </span></li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <h3><span class="card-header"> RPCs</span></h3>
+        <div class="row">
+            <input id="f-SceneName" type="text"
+                   placeholder="Write name of the scene to load in the remote side."/>
+            <button data-id="b-LoadScene"> Load Scene</button>
+        </div>
+
+        <div class="row">
+            <label for="f-GraphName">Graph name</label> <input type="text"
+                                                               placeholder="Enter the name of the graph to load."
+                                                               id="f-GraphName"/>
+            <label for="checkbox-LoadRenderInfo"> Load Render Info? </label>
+            <input id="checkbox-LoadRenderInfo" type="checkbox" checked="true"/>
+
+            <button data-id="b-LoadGraph"> Load Graph</button>
+        </div>
+        <div id="graph-control-panel">
+            <div> -Active graph name goes here-</div>
+            <button data-id="b-HideEdges"> Hide edge/s</button>
+            <button data-id="b-ShowEdges"> Show edge/s</button>
+        </div>
+
+    </div>
+
+
+    <!-- Position  and rotation map -->
     <div id="GraphicPosRotMonitor" class="card-big row">
 
         <h3 class="card-header row"> Rotation and Position Monitor</h3>
@@ -44,12 +94,6 @@
             </g>
 
         </svg>
-    </div>
-
-
-    <div class="card">
-        <h3> Remote User View </h3>
-        <img id="remoteView" src=""/>
     </div>
 
     <div>
@@ -82,35 +126,20 @@
 
 
             <div class="card">
-                <h3><span class="card-header"> RPCs</span></h3>
-                <div class="row">
-                    <input id="f-SceneName" type="text"
-                           placeholder="Write name of the scene to load in the remote side."/>
-                    <button data-id="b-LoadScene"> Load Scene</button>
-                </div>
-
-                <div class="row">
-                    <label for="f-GraphName">Graph name</label> <input type="text"
-                                                                       placeholder="Enter the name of the graph to load."
-                                                                       id="f-GraphName"/>
-                    <label for="checkbox-LoadRenderInfo"> Load Render Info? </label>
-                    <input id="checkbox-LoadRenderInfo" type="checkbox" checked="true"/>
-
-                    <button data-id="b-LoadGraph"> Load Graph</button>
-                </div>
-                <div id="graph-control-panel">
-                    <div> -Active graph name goes here-</div>
-                    <button data-id="b-HideEdges"> Hide edge/s</button>
-                    <button data-id="b-ShowEdges"> Show edge/s</button>
-                </div>
-
-            </div>
-
-            <div class="card">
                 <h3><span class="card-header"> Experiment Log Configuration </span></h3>
+
+                <div id="ExperimentLogCurrentConfiguration" class="row">
+                    Current Experiment Log Configuration
+                    <button id="b-EditCurrentLogConfig"> Edit Configuration</button>
+                </div>
+
                 <div class="row">
-                    <label for="f-UserID"> Identifier of the user:</label>
-                    <input id="f-UserID" type="text" placeholder="Put here the id of the user, to identify it"/>
+
+                    <div class="row">
+                        <label for="f-UserID"> Identifier of the user:</label>
+                        <input id="f-UserID" type="text" placeholder="Put here the id of the user, to identify it"/>
+                    </div>
+
                     <label for="f-ExpCondition"> Experimental Condition </label>
                     <select id="f-ExpCondition" name="f-NumExpCondition">
                         <option value="0"> Teleport</option>
@@ -135,6 +164,19 @@
 
 
         </div>
+
+
+        <div class="card">
+            <h3> Remote User View </h3>
+            <img id="remoteView" width="480px" height="320px" src=""/>
+        </div>
+
+
+        <div id="client-log">
+
+            <!-- here raw incoming messages will be put -->
+        </div>
+        <button onclick="ClearClientLog()"> Clear log</button>
 
 
         <h2>Monitoring</h2>
@@ -168,25 +210,12 @@
         <!-- b- for button id's -->
 
 
-        <button class=" woz-clck"
-                data-id="button1" data-operation="openInv" data-param1="" data-param2="" data-param3="">Sample command
-        </button>
-        <button class="woz-clck"
-                data-id="button2" data-operation="openInv" data-param1="" data-param2="" data-param3="">Sample command 2
-        </button>
-
-
-        <div id="client-log">
-
-
-        </div>
-
-
     </div>
+</div>
 
 
-    <script src="rpcs.js"></script>
-    <script src="browser-client.js"></script>
+<script src="rpcs.js"></script>
+<script src="browser-client.js"></script>
 
 </body>
 

@@ -1,7 +1,22 @@
 let socket = undefined;
 
 
-let clientLogDiv = document.querySelector("#client-log");
+const WsMessageTypes = {
+    RPC_COMMAND: 0,
+    MONITORING: 1,
+    SCREENCASTING: 2
+}
+
+
+//Set to true if you want attempt auto connection of a browser client to the local ip.
+const AUTO_CONNECT_LOCAL = true;
+const DEFAULT_PORT = 9030;
+const DEFAULT_IP = "localhost";
+
+let websocketURL = "";
+
+
+const clientLogDiv = document.querySelector("#client-log");
 
 
 // Hide main page div if no connection has been established.
@@ -11,203 +26,153 @@ setInterval(() => {
     } else {
         document.querySelector("#pageContent").style.display = "block";
     }
-}, 1000);
+}, 3000);
+
+
+function DisplayWebsocketServerConnectionStatus() {
+
+    let statusBox = document.querySelector("#ws-server-connection-status").querySelector(".status-box");
+    let hostname = document.querySelector("#conn-hostname");
+
+    if (socket === undefined) {
+        statusBox.classList.add("disconnected-box");
+        statusBox.classList.remove("connected-box");
+        statusBox.innerHTML = "DISCONNECTED"
+    } else {
+        statusBox.classList.add("connected-box");
+        statusBox.classList.remove("disconnected-box");
+        statusBox.innerHTML = "CONNECTED"
+    }
+    hostname.innerHTML = `${websocketURL}`;
+
+}
+
+
+// [Main program]
+
+//Extract where to connect.
+if (AUTO_CONNECT_LOCAL) {
+    socket = new WebSocket(websocketURL = `ws://${DEFAULT_IP}:${DEFAULT_PORT}`);
+    document.querySelector("#connection-prompt").className = "hidden";
+} else {
+    // Obtain hostname or <IpAddress:Port> to use for websocket connection from within the page.
+    let connectToTxtBox = document.getElementById("hostname").value;
+
+    if (connectToTxtBox.startsWith("ws")) {
+        socket = new WebSocket(websocketURL = `${connectToTxtBox}`)
+    } else {
+        socket = new WebSocket(websocketURL = `ws://${connectToTxtBox}/`);
+    }
+}
+
+//Attempt Connection
+tryConnectWS();
 
 
 function tryConnectWS() {
 
-    // Obtain hostname to use for websocket connection
-    let connectToTxtBox = document.getElementById("hostname").value;
 
-    if (connectToTxtBox.startsWith("ws")) {
-        socket = new WebSocket(`${connectToTxtBox}`)
-    } else {
-        socket = new WebSocket(`ws://${connectToTxtBox}/`);
-    }
+    console.log(`[Websocket] Attempting Connection To : '${websocketURL}'  [AUTO_CONNECT_LOCAL=${AUTO_CONNECT_LOCAL}]`);
 
-    console.log("Will attempt ws connection to :" + connectToTxtBox);
+    //Periodicaly Update Visible status.
+    setInterval(DisplayWebsocketServerConnectionStatus, 3000);
 
+    //Hook HTML buttons with websocket message sending.
     RPCCallsHookup(socket);
 
+
+    //[WS OPEN]
     socket.onopen = function (e) {
         alert("[open] Connection established");
-        //alert("Sending to server");
         socket.send("woz");
     };
 
+    // [WS MESSAGE RECEIVED]
     socket.onmessage = function (event) {
-        //alert(`[message] Data received from server: ${event.data}`);
-
-        //Adds received message to clientLogDiv.
 
         let wsMessage = event.data;
 
 
-        let msgObject = undefined;
-        //Process input data:
+        let wsMessageAsJavasriptObject = undefined;
+
+        //Try to convert the input message (a json), to a Javascript object to ease manipulation.
         try {
-            msgObject = JSON.parse(wsMessage);
+            wsMessageAsJavasriptObject = JSON.parse(wsMessage);
+            DisplayIncomingMessageInClientLog(wsMessage);
         } catch (e) {
-            console.log("a non communication message was encountered")
+            console.log("Received a message which was impossible to parse.")
         }
-        if (msgObject !== undefined /*&& "MessageType" in msgObject && "OpCode" in msgObject*/) {
+
+
+        //[When Parseable message]
+        if (wsMessageAsJavasriptObject !== undefined) {
 
 
             // @todo here  process message in a way depending on the type of data.
 
-
-            //   console.log(msgObject.MessageType);
-            //  console.log(msgObject.OperationName);
-            // //console.log(msgObject.Data.position)//forEach(d => console.log(d));
-            //console.log(msgObject.Data);
-
-            //console.log(msgObject.Options)//forEach(d => console.log(d));
-
             //console.log("RECEIVED MESSAGE " + Object.keys(msgObject))
 
+            switch (wsMessageAsJavasriptObject["MessageType"]) {
 
-            //Si mensaje de monitoring de posición.    
-            if (msgObject["MessageType"] == 1 && msgObject["OpCode"] == "UserTransform") {
+                case WsMessageTypes.MONITORING :
+                    switch (wsMessageAsJavasriptObject["OpCode"]) {
+                        case "UserTransform":
+                            console.log("[Monitoring] User coords and rotation received and updated.")
+                            ShowPositionAndRotationInSvgMap(wsMessageAsJavasriptObject);
+                            break;
+                        // more cases here
 
-                //console.log("RECEIVED MESSAGE WITH USER TRANSFORM.")
-
-                let svgContainer = document.getElementById("world2D");
-
-                //real dimensions in meters.
-                let rwWidth = 0.6 * 8.0;
-                let rwHeight = 0.6 * 5.0;
-
-                let aspectRatio = rwHeight / rwWidth;
-
-
-                //console.log(`aspect ratio ${aspectRatio}`);
+                        case "GeneralStatus":
+                            console.log("[Monitoring] General Remote game status received.")
+                            DisplayRemoteGeneralStatus(wsMessageAsJavasriptObject);
 
 
-                //MAKE SVG GROW AND SHRINK WITH WINDOW.
-                //Obtengo la anchura.
-                let mapWidth = svgContainer.getBoundingClientRect().width;
-                //Calculo la altura correspondiente.
-                let mapHeight = mapWidth * aspectRatio;
-                svgContainer.setAttribute("height", mapHeight);
+                            break;
 
-                //console.log(`svg (W,H) = ${mapWidth} , ${mapHeight}`);
+                    }
 
 
-                let userhead = svgContainer.querySelector(".user-head-svg");
-                let userheadIcon = svgContainer.querySelector(".user-head-icon");
-                let userGazeLine = document.querySelector("#user-head-dir")
-                let userRepresentation = document.querySelector("#user-rep");
-                // userhead.setAttribute("cx",(mapWidth/2.0).toString() );
-                // userhead.setAttribute("cy",(mapHeight/ 2.0).toString() ); 
+                case  WsMessageTypes.SCREENCASTING:
 
+                    //Display the received image data in Base 64
+                    let imgElemForRemote = document.querySelector("#remoteView");
+                    imgElemForRemote.src = 'data:image/png;base64,' + wsMessageAsJavasriptObject.Data;
 
-                //@todo poner color cuando se están poniendo datos.
-
-                //1) Sumar nuevo origen.
-                let correctedX = msgObject.Data.position[0] + rwWidth / 2.0;
-                let correctedY = msgObject.Data.position[2] + rwHeight / 2.0;
-
-                //2) Convert meters to window units
-                correctedX = mapWidth - (correctedX * mapWidth / rwWidth);
-                correctedY = correctedY * mapHeight / rwHeight;
-
-                let headDiameter = 0.15;//cm   //https://en.wikipedia.org/wiki/Human_head
-
-                userhead.setAttribute("cx", correctedX.toString());
-                userhead.setAttribute("cy", correctedY.toString());
-                userhead.setAttribute("r", (headDiameter * mapWidth / rwWidth).toString())
-                userhead.setAttribute("fill", "yellow")
-
-
-                userGazeLine.setAttribute("d", `M ${correctedX} ${correctedY} L ${correctedX} ${correctedY + 60} Z`)
-                userGazeLine.setAttribute("style", "stroke:teal;stroke-width:2");
-
-                userGazeLine.setAttribute("transform", `rotate (${msgObject.Data.rotation[1]} ${correctedX.toString()} ${correctedY.toString()} ) `);
-                //
-                // userheadIcon.setAttribute("x", correctedX.toString());
-                // userheadIcon.setAttribute("y", correctedY.toString());
-                // userheadIcon.setAttribute("width",headDiameter *  mapWidth /rwWidth);
-                // userheadIcon.setAttribute("height",headDiameter *  mapWidth /rwWidth);
-                //
-                //
+                    //@future There must be a better way
+                    // var imageDataBuffer = new Uint8Array(msgObject.Data.imgData) ;
+                    // console.log("BUFFER DATA" + imageDataBuffer);
+                    // var blob = new Blob( [ imageDataBuffer ], { type: "image/png" } );
+                    // var urlCreator = window.URL || window.webkitURL;
+                    // var imageUrl = urlCreator.createObjectURL( blob );
+                    // imgElemForRemote.src = imageUrl;
+                    break;
 
 
             }
 
-            if (msgObject["MessageType"] === 1) {
+
+            if (wsMessageAsJavasriptObject["MessageType"] === 1) {
 
 
                 // Recibi
-                if (msgObject["OpCode"] === "GeneralStatus") {
-                    function ShowGeneralGameStatus(msgObject) {
-
-
-                        if ("CurrentSceneName" in msgObject.Data) {
-                            //Update the html to tell the name of the current scene    
-                        }
-
-                        if ("ActiveGraph" in msgObject.Data) {
-                            //Extract the name of the graph.
-                        }
-
-                        if ("AntilatencyDevices" in msgObject.Data) {
-
-                        }
-
-                        if ("ActiveTimers" in msgObject.Data) {
-
-                        }
-
-                        if ("Measured" in msgObject.Data) {
-                            //A dictionary
-                            // Show the distance 
-                            //Show the counter of interactions
-
-                        }
-
-                    }
+                if (wsMessageAsJavasriptObject["OpCode"] === "GeneralStatus") {
                 }
+
                 //Información sobre la solución ideal del Minijuego.
-                if(msgObject["OpCode"] === "MinigameSolution"){
-                    
+                if (wsMessageAsJavasriptObject["OpCode"] === "MinigameSolution") {
+
                 }
                 //Información sobre el progreso del usuario en el minijuego
-                if(msgObject["OpCode"] === "MiniGameStatus"){
-                    
+                if (wsMessageAsJavasriptObject["OpCode"] === "MiniGameStatus") {
+
                 }
-
-
-            }
-            if (msgObject["MessageType"] == 2) {
-
-                let imgElemForRemote = document.getElementById("remoteView");
-
-
-                // var imageDataBuffer = new Uint8Array(msgObject.Data.imgData) ;
-                //
-                // console.log("BUFFER DATA" + imageDataBuffer);
-                //
-                // var blob = new Blob( [ imageDataBuffer ], { type: "image/png" } );
-                //
-                // var urlCreator = window.URL || window.webkitURL;
-                //
-                // var imageUrl = urlCreator.createObjectURL( blob );
-                //
-                // imgElemForRemote.src = imageUrl;
-
-
-                let imgB64 = msgObject.Data;
-                imgElemForRemote.src = 'data:image/png;base64,' + imgB64;
 
 
             }
 
 
         } else {
-            let debugMessageDiv = document.createElement("div");
-            debugMessageDiv.setAttribute("class", "debugMsg");
-            debugMessageDiv.textContent = wsMessage; //event.data;
-            clientLogDiv.appendChild(debugMessageDiv);
+            //HERE FUNCTION
         }
 
 
@@ -219,7 +184,7 @@ function tryConnectWS() {
         } else {
             // e.g. server process killed or network down
             // event.code is usually 1006 in this case
-            alert('[close] Connection died');
+            alert('[close] Connection died.');
         }
     };
 
@@ -253,9 +218,120 @@ commandButtons.forEach(
 );
 
 
+function DisplayIncomingMessageInClientLog(msg) {
+
+    let debugMessageDiv = document.createElement("div");
+    //Formatting
+    debugMessageDiv.setAttribute("class", "debugMsg");
+
+    debugMessageDiv.textContent = msg; //event.data;
+    clientLogDiv.appendChild(debugMessageDiv);
+
+}
+
+function ClearClientLog() {
+    while (clientLogDiv.lastElementChild) {
+        clientLogDiv.removeChild(clientLogDiv.lastElementChild);
+    }
+}
+
+
+//Given a width and a height of the Antilatency Map in the real world, displays the position and rotation of the head in a svg window in the browser page.
+function ShowPositionAndRotationInSvgMap(wsMessage, widthInAntilatencyMatSquares = 8.0, heightInAntilatencyMatSquares = 5.0) {
+
+    let svgContainer = document.getElementById("world2D");
+
+    // Obtain real dimensions in meters and aspect ratio from these (to keep svg map properly scaled).
+    let rwWidth = 0.6 * widthInAntilatencyMatSquares;
+    let rwHeight = 0.6 * heightInAntilatencyMatSquares;
+    let aspectRatio = rwHeight / rwWidth;
+
+    //console.log(`aspect ratio ${aspectRatio}`);
+
+    //[MAKE SVG GROW AND SHRINK WITH WINDOW]
+    let mapWidth = svgContainer.getBoundingClientRect().width;
+    //Calculo la altura correspondiente.
+    let mapHeight = mapWidth * aspectRatio;
+    svgContainer.setAttribute("height", mapHeight);
+
+    //console.log(`svg (W,H) = ${mapWidth} , ${mapHeight}`);
+
+    //Get svg elements representing the user.
+    let userHead = svgContainer.querySelector(".user-head-svg");
+    let userGazeLine = document.querySelector("#user-head-dir")
+    let userRepresentation = document.querySelector("#user-rep");
+
+
+    //Coordinate correction
+
+    //1) Sumar nuevo origen.
+    let correctedX = wsMessage.Data.position[0] + rwWidth / 2.0;
+    let correctedY = wsMessage.Data.position[2] + rwHeight / 2.0;
+
+    //2) Convert meters to window units
+    correctedX = mapWidth - (correctedX * mapWidth / rwWidth);
+    correctedY = correctedY * mapHeight / rwHeight;
+
+    let headDiameter = 0.15;//cm   //https://en.wikipedia.org/wiki/Human_head
+
+    userHead.setAttribute("cx", correctedX.toString());
+    userHead.setAttribute("cy", correctedY.toString());
+    userHead.setAttribute("r", (headDiameter * mapWidth / rwWidth).toString())
+    userHead.setAttribute("fill", "yellow")
+
+
+    userGazeLine.setAttribute("d", `M ${correctedX} ${correctedY} L ${correctedX} ${correctedY + 60} Z`)
+    userGazeLine.setAttribute("style", "stroke:teal;stroke-width:2");
+
+    userGazeLine.setAttribute("transform", `rotate (${wsMessage.Data.rotation[1]} ${correctedX.toString()} ${correctedY.toString()} ) `);
+
+}
+
+
 console.log(commandButtons)
 
+//Handles how the general status information about a remote game client is displayed in the webpage.
+function DisplayRemoteGeneralStatus(wsMessage) {
+    const whereToShowGameClientStatus = document.querySelector("#GameClientGeneralStatus");
 
+    let statusText = ""
+
+    if ("CurrentSceneName" in wsMessage.Data) {
+        let sceneNameContainer = document.querySelector("span[data-id='m-SceneName']");
+        sceneNameContainer.innerHTML = wsMessage.Data["CurrentSceneName"].toString();
+    }
+    if ("ActiveGraph" in wsMessage.Data) {
+        let graphNameContainer = document.querySelector("span[data-id='m-ActiveGraphName']");
+        graphNameContainer.innerHTML = wsMessage.Data["ActiveGraph"].toString();
+    }
+
+    if ("AntilatencyDevices" in wsMessage.Data) {
+        let devicesContainer = document.querySelector("span[data-id='m-AntilatencyDeviceList']");
+        devicesContainer.innerHTML = wsMessage.Data["AntilatencyDevices"];
+    }
+
+    if ("Measures" in wsMessage.Data) {
+        let distanceContainer = document.querySelector("span[data-id='m-TravelledDistance']");
+        let interactionsCountContainer = document.querySelector("span[data-id='m-InteractionCounter']");
+
+        // console.log(wsMessage.Data.Measures)
+        // console.log(typeof (JSON.parse(wsMessage.Data.Measures)))
+       
+        let measuresDict = JSON.parse(wsMessage.Data.Measures)
+        // console.log(Object.keys(measuresDict))
+        // console.log(measuresDict)
+        if ("Distance" in measuresDict)
+            distanceContainer.innerHTML = measuresDict.Distance.toString()
+        if ("InteractionsCounter" in measuresDict)
+            interactionsCountContainer.innerHTML = measuresDict.InteractionsCounter.toString()
+
+
+    }
+
+    let nuPar = document.createElement("p");
+    nuPar.innerText = statusText
+    whereToShowGameClientStatus.appendChild(nuPar);
+}
 
 
 
