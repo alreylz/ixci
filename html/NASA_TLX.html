@@ -1,0 +1,147 @@
+﻿<html>
+<head>
+    <title>
+        NASA TLX Questionnaire
+    </title>
+
+    <style>
+
+        td.bottom {
+            width: 0.6cm;
+            height: 0.4cm;
+            border-bottom: 1px solid black;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            margin: 0px;
+            padding: 0px 0px 0px 0px;
+
+        }
+
+        table.scale {
+            margin: 0px;
+            padding: 0px 0px 0px 0px;
+            border-collapse: collapse
+        }
+
+        td.top1 {
+            width: 0.6cm;
+            height: 0.4cm;
+            border-top: 1px solid black;
+            border-left: 1px solid black;
+            margin: 0px;
+            padding: 0px 0px 0px 0px;
+        }
+
+        td.top2 {
+            width: 0.6cm;
+            height: 0.4cm;
+            border-top: 1px solid black;
+            border-right: 1px solid black;
+            margin: 0px;
+            padding: 0px 0px 0px 0px;
+        }
+
+        td.heading {
+            font: Bold 14px Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        td.left {
+            font: 14px Arial, Helvetica, sans-serif;
+        }
+
+        td.right {
+            font: 14px Arial, Helvetica, sans-serif;
+            text-align: right;
+        }
+
+        td.def {
+            width: 12cm;
+            padding: 0px 0px 0px 20px;
+            font: 12px Arial, Helvetica, sans-serif;
+        }
+
+        input.pair {
+            width: 5cm;
+            height: 1cm;
+            font: Bold 14px Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <script src="NASA_TLX.js"></script>
+
+</head>
+<body onload="onLoad();">
+
+<!-- Part 1: Actual questionnaire -->
+<div id="div_part1">
+
+    <label for="f-UserID" > User ID</label>
+    <input data-id="f-UserID" id="f-UserID" placeholder="User Identifier here." type="text"/>
+    <br/>
+    Nasa TLX Questionnaire - Part 1 <br>
+    <br>
+    Click on each scale at the point that best indicates your experience of the task <br>
+    <br>
+    <div id="scale0">
+        <!-- Here the Scale will be drawn -->
+    </div>
+    <div id="scale1">
+        <!-- Here the Scale will be drawn -->
+    </div>
+    <div id="scale2">
+        <!-- Here the Scale will be drawn -->
+    </div>
+    <div id="scale3">
+        <!-- Here the Scale will be drawn -->
+
+    </div>
+    <div id="scale4">
+        <!-- Here the Scale will be drawn -->
+    </div>
+    <div id="scale5">
+        <!-- Here the Scale will be drawn -->
+    </div>
+    <br>
+    <input class="next" id="next" type="button" value="Continue >>" onclick="buttonPart1();">
+</div>
+<!-- Part 2: Weighting -->
+<div id="div_part2" style="display:none">
+    Task Questionnaire - Part 2 <br>
+    <br>
+    One each of the following 15 screens, click on the scale title that represents the
+    more important contributor to workload for the task <br>
+    <br>
+    <input class="next" id="next" type="button" value="Continue >>" onclick="buttonPart2();">
+</div>
+<div id="div_part3" style="display:none">
+    Task Questionnaire - Part 2 <br>
+    <br>
+    Click on the factor that represents the more important contributor to workload for the task<br>
+    <br>
+    <table>
+        <tbody>
+        <tr>
+            <td><input class="pair" id="pair1" type="button" value="" onclick="buttonPair1();"></td>
+            <td class="def">
+                <div id="pair1_def"></div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center"> or</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><input class="pair" id="pair2" type="button" value="" onclick="buttonPair2();"></td>
+            <td class="def">
+                <div id="pair2_def"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div id="div_part4" style="display:none">
+</div>
+
+
+</body>
+</html>

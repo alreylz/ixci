@@ -25,9 +25,23 @@ let game_clients = [];
 
 /* SUPPORTED URL PATTERNS */
 
+
+app.get('/home',function(req, res) {
+    res.sendFile(__dirname + '/html/home.html');
+});
+
+
 app.get('/msii-monitor',function(req, res) {
     console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
     res.sendFile(__dirname + '/html/cpage.html');
+});
+
+app.get('/nasa.tlx',function(req, res) {
+    res.sendFile(__dirname + '/html/NASA_TLX.html');
+});
+
+app.get('/flow.sc',function(req, res) {
+    res.sendFile(__dirname + '/html/FlowShortScale.html');
 });
 
 
