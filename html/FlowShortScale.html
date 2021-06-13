@@ -5,6 +5,10 @@
     <title>Flow Short Scale Questionnaire</title>
     <script>
 
+        let flowLevelResult;
+        let anxietyLevelResult;
+        let challengeLevelResult;
+        
         function calculateResults() {
             var items = 0;
             var score1 = 0;
@@ -35,14 +39,64 @@
                 alert("Please answer all items...");
             } else {
                 document.FKS.FW.value = score1 / 10;
+                flowLevelResult = score1 / 10;
                 document.FKS.Besorgnis.value = score2 / 3;
+                anxietyLevelResult = score2/3;
                 document.FKS.Anforderung.value = score3;
+                challengeLevelResult = score3;
             }
         }
 
+
+        function reset(){
+            flowLevelResult = undefined;
+            anxietyLevelResult = undefined;
+            challengeLevelResult = undefined;
+        }
+        
+        function postResults(){
+            let userID = document.querySelector("#f-UserID").value;
+            if (!userID) {
+                alert("User ID not specified.");
+                return;
+            }
+            if(!flowLevelResult || !anxietyLevelResult || !challengeLevelResult){
+                alert("You forgot to click evaluate. ")
+                return;
+            }
+            //window.location.host
+            postDataToRemote("http://localhost:9030", userID, {"Flow Level": flowLevelResult, "Anxiety Level":anxietyLevelResult, "Challenge Level" : challengeLevelResult});
+            
+            
+        }
+        
+        
+        async function postDataToRemote(url,name,jsonObj) {
+            
+            await fetch(url.toString(), {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+
+                //make sure to serialize your JSON body
+                body: JSON.stringify({
+                    userID: name,
+                    data: jsonObj
+                })
+            })
+                .then((response) => {
+                    //do something awesome that makes the world a better place
+                })
+        }
+
+        function onLoad() {
+            document.querySelector(".saveRemoteButton").addEventListener("click", e => e.preventDefault());
+        }
     </script>
 </head>
-<body>
+<body onload="onLoad()">
 
 <!--  FKS
 *       Online version of the Flow Short Scale 
@@ -64,7 +118,8 @@
 <h2>Flow Short Scale Questionnaire </h2>
 <p>
     Rheinberg et al. (2003)
-    Measures the the absorption of a person in an activity and the fluency of a person's performance under a given context. It has two scales:
+    Measures the the absorption of a person in an activity and the fluency of a person's performance under a given
+    context. It has two scales:
     Fluency of performance:
     Absorption by activity.
 </p>
@@ -270,15 +325,15 @@
         <tbody>
         <tr>
             <td class="middle">Flow level</td>
-            <td class="middle" nowrap=""><input type="text" name="FW"></td>
+            <td class="middle" nowrap=""><input type="text" name="FW" readonly></td>
         </tr>
         <tr>
             <td class="middle">Anxiety level</td>
-            <td class="middle" nowrap=""><input type="text" name="Besorgnis"></td>
+            <td class="middle" nowrap=""><input type="text" name="Besorgnis" readonly></td>
         </tr>
         <tr>
             <td class="middle">Challenge level</td>
-            <td class="middle" nowrap=""><input type="text" name="Anforderung"></td>
+            <td class="middle" nowrap=""><input type="text" name="Anforderung" readonly></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -287,11 +342,13 @@
         <tr>
             <td colspan="2" class="middlecenter" align="center"><input type="button" value="evaluate"
                                                                        onclick="calculateResults()"> <input type="reset"
-                                                                                                            value="reset">
+                                                                                                            value="reset" onclick="reset()">
             </td>
         </tr>
         </tbody>
     </table>
+
 </form>
+<button class="saveRemoteButton" onclick="postResults()"> POST</button>
 </body>
 </html>

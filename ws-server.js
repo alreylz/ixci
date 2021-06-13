@@ -45,6 +45,31 @@ app.get('/flow.sc',function(req, res) {
 });
 
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+
+app.post('/', function (req, res) {
+    console.log(req.body);
+
+    var fs = require('fs');
+    fs.writeFile(`/tmp/${req.body.userID}`, req.body.data, function (err) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log("The file was saved!");
+    });
+    
+    
+    res.send('Saved successfully the file for the user' + req.body.userID )
+    
+})
+
+
+
+
+
+
 
 
 // Aquí está obteniendo el servidor de web sockets, diciéndole que ha creado un server de http a manita.
