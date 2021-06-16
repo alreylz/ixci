@@ -128,7 +128,19 @@ function tryConnectWS() {
 
 
                             break;
+                        //Información sobre la solución ideal del Minijuego.
+                        case "MinigameSolution":
+                            //DisplayMinigameSolution(wsMessageAsJavasriptObject);
 
+
+                            break;
+
+
+                        //Información sobre el progreso del usuario en el minijuego
+                        case "MiniGameStatus":
+                            DisplayCurrentMinigameStatus(wsMessageAsJavasriptObject);
+
+                            break;
                     }
 
 
@@ -146,26 +158,6 @@ function tryConnectWS() {
                     // var imageUrl = urlCreator.createObjectURL( blob );
                     // imgElemForRemote.src = imageUrl;
                     break;
-
-
-            }
-
-
-            if (wsMessageAsJavasriptObject["MessageType"] === 1) {
-
-
-                // Recibi
-                if (wsMessageAsJavasriptObject["OpCode"] === "GeneralStatus") {
-                }
-
-                //Información sobre la solución ideal del Minijuego.
-                if (wsMessageAsJavasriptObject["OpCode"] === "MinigameSolution") {
-
-                }
-                //Información sobre el progreso del usuario en el minijuego
-                if (wsMessageAsJavasriptObject["OpCode"] === "MiniGameStatus") {
-
-                }
 
 
             }
@@ -216,6 +208,71 @@ commandButtons.forEach(
         return false;
     }
 );
+
+function DisplayCurrentMinigameStatus(wsMessage) {
+
+    let CurrentMGStatusPanel = document.querySelector("#CurrentMinigameStatusPanel");
+
+
+    let htmlToPutInPanel = "";
+
+   
+
+    CurrentMGStatusPanel.innerHTML = `<p>  ${wsMessage.Data["CorrectionSummary"]}</p> `;
+
+
+    //User Ordering
+    console.log(wsMessage.Data["UserOrdering"]);
+    let dictionaryOrderedElems = JSON.parse(wsMessage.Data["UserOrdering"]);
+    // console.log("EXAMPLE OF DATA EXTRACTED" + wsMessage["UserOrdering"])
+    for (i = 0; i < 5; i++) {
+        try {
+            
+            htmlToPutInPanel += ` Position ${i + 1}` + "</br>" + `${dictionaryOrderedElems[i]["NodeId"]} - ${dictionaryOrderedElems[i]["Weight"]}   ` + "</br>";
+        } catch (e) {
+            console.log(`${i} slot is empty by now in game.`)
+        }
+    }
+
+
+    
+    //Correction Summary
+    console.log("MESSAGE DATA KEYS:" + Object.keys(wsMessage.Data));
+    console.log("EXAMPLE OF DATA EXTRACTED" + wsMessage.Data["CorrectionSummary"])
+    
+    htmlToPutInPanel += wsMessage.Data["CorrectionSummary"].toString();
+
+    //ADD EVERYTHINH
+    CurrentMGStatusPanel.innerHTML = htmlToPutInPanel
+
+}
+
+
+function DisplayMinigameSolution(wsMessage) {
+
+
+    let expectedOrderList = JSON.parse(wsMessage.Data["ExpectedOrder"]);
+
+
+    let minigameSolutionPanel = document.querySelector("#MinigameSolutionPanel");
+
+    let htmlToPutInPanel = "<h3> Expected solution to the task: </h3><pre>";
+    console.log("Expected order list " + expectedOrderList)
+
+    console.log(Object.keys(expectedOrderList));
+    for (i = 1; i <= 5; i++) {
+        console.log(expectedOrderList[i]);
+        htmlToPutInPanel += ` Position ${i}` + "</br>" + `${expectedOrderList[i]}` + "</br>";
+    }
+    minigameSolutionPanel.innerHTML = htmlToPutInPanel + "</pre>";
+
+    // expectedOrderList.forEach((v, i) => htmlToPutInPanel += ` Position ${i} : Node: ${v}` + " <br>")
+    // minigameSolutionPanel.innerHTML = htmlToPutInPanel;
+    //
+    // console.log("Expected order list "  + expectedOrderList)
+
+
+}
 
 
 function DisplayIncomingMessageInClientLog(msg) {
@@ -316,7 +373,7 @@ function DisplayRemoteGeneralStatus(wsMessage) {
 
         // console.log(wsMessage.Data.Measures)
         // console.log(typeof (JSON.parse(wsMessage.Data.Measures)))
-       
+
         let measuresDict = JSON.parse(wsMessage.Data.Measures)
         // console.log(Object.keys(measuresDict))
         // console.log(measuresDict)
