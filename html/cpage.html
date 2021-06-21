@@ -8,14 +8,44 @@
 
     <link rel="stylesheet" href="browser-client.css">
 
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+
+
 </head>
 
 <body>
-<h1> WOZ Client</h1>
-<div class="card-set">
+<header class="card-set-row neat-card">
+
+    <!--    <div class="card-es page-icon"></div>-->
+    <div  style="flex:1 1 auto; max-width:18%; height: auto; margin:0.5em 0; margin-left:2em; ">
+        <img class="" style="width: auto;  min-height:20vh; max-height: 30vh" src="wozIcon.png"/>
+    </div>
+    <h1 class="card-es page-title x-axis-align-c text-center"> WOZ Browser Client </h1>
+    <!--    <menu class="card-es x-axis-align-fill card-set-row m-axis-align-children-fill">-->
+    <!--        <ul class="card-es card-set-row x-axis-align-c">-->
+    <!--            <a href="#" class="card-es">-->
+    <!--                <li> Link 1</li>-->
+    <!--            </a>-->
+    <!--            <a href="#" class="card-es">-->
+    <!--                <li> Link 2</li>-->
+    <!--            </a><a href="#" class="card-es">-->
+    <!--            <li> Link 3</li>-->
+    <!--        </a>-->
+    <!--        </ul>-->
+    <!--    </menu>-->
+
+</header>
+
+
+<div class="card-set-row">
+
     <!-- Box showing the status of the connection with the websocket server -->
-    <div id="ws-server-connection-status" class="card">
-        <h3> WebSocket Server Connection Status:</h3>
+    <div id="ws-server-connection-status" class="card-es neat-card">
+        <div class="card-header">
+            <h3 class="card-header-h"> WebSocket Server Connection Status:</h3>
+        </div>
         <ul>
             <li>Connection:<span class="status-box"> </span></li>
             <li>Hostname: <span id="conn-hostname"> </span></li>
@@ -24,7 +54,7 @@
 
 
     <!-- Prompt to connect to a remote websocket server -->
-    <div id="connection-prompt" class="card">
+    <div id="connection-prompt" class="card-es">
         <label for="hostname"> Enter here the hostname of the server to connect to </label> <input id="hostname"
                                                                                                    type="text"
                                                                                                    name="ip-port"/>
@@ -32,148 +62,181 @@
     </div>
 
 
-    <div id="GameClientGeneralStatus" class="card-big  card-set">
-        <div class="inner-flex-col card">
-            <ul>
+    <div id="GameClientGeneralStatus" class="card-big  card-set-row neat-card m-axis-align-children-fill">
+
+        <div class="card-header-gray card-es ">
+            <h3 class="card-header-h card-header-h-gray">Game Client General Monitoring</h3>
+        </div>
+
+        <div class="card-set-col card-es neat-card">
+            <div class="card-header-gray"><h3 class="card-header-h-gray text-center">Scene data</h3></div>
+
+            <ul class="card-content-default">
                 <li>Current Unity Scene: <span data-id="m-SceneName"> N/A </span></li>
                 <li>ActiveGraph : <span data-id="m-ActiveGraphName"> N/A </span></li>
             </ul>
         </div>
-        <div class="inner-flex-col card">
-            Antilatency Devices: <span data-id="m-AntilatencyDeviceList"> N/A </span>
+        <div class="card-set-col card-es neat-card ">
+            <div class="card-header-gray">
+                <h3 class="card-header-h card-header-h-gray text-center">Antilatency Devices</h3>
+            </div>
+            <div class="card-es card-content-default">
+                <span data-id="m-AntilatencyDeviceList"> N/A </span>
+            </div>
         </div>
-        <div class="inner-flex-col card">
-            <ul>
+        <div class="card-set-col card-es neat-card">
+            <div class="card-header-gray">
+                <h3 class="card-header-h card-header-h-gray text-center">Metrics</h3>
+            </div>
+            <ul class="card-content-default">
                 <li>Travelled Distance <span data-id="m-TravelledDistance"> N/A </span></li>
                 <li>Interaction Counter <span data-id="m-InteractionCounter"> N/A </span></li>
-                
+
             </ul>
         </div>
     </div>
 
-    
-    
-    <div class="card-big card-set">
-        <div id="MinigameSolutionPanel" class="card">
-            
+
+    <div class="card-big card-set-row neat-card bg-1">
+
+        <div class="card-header-red card-es x-axis-align-c">
+            <h3 class="card-header-h card-header-h-red">Game Client General Monitoring</h3>
         </div>
-        
-        <div id="CurrentMinigameStatusPanel" class="card">
-            
+
+        <div class="card-es neat-card card-content-default">
+            <div id="MinigameSolutionPanel" class="neat-card card-es card-content-default">
+                <div class="card-header-yellow card-es ">
+                    <h3 class="card-header-h card-header-h-yellow">Expected results</h3>
+                </div>
+                <p>
+                    Here the expected results of the minigame are displayed.
+                </p>
+
+            </div>
+
+            <div id="CurrentMinigameStatusPanel" class="neat-card card-es card-content-default">
+                <div class="card-header-gray card-es ">
+                    <h3 class="card-header-h card-header-h-gray">Current Status</h3>
+                </div>
+                <p>
+                    Here the current progress of the minigame is showed (how the user is performing).
+                </p>
+            </div>
         </div>
-        
-        
-        
+
     </div>
-    
-    
 
-    <div class="card">
-        <h3><span class="card-header"> RPCs</span></h3>
-        <div class="row">
-            <input id="f-SceneName" type="text"
-                   placeholder="Write name of the scene to load in the remote side."/>
-            <button data-id="b-LoadScene"> Load Scene</button>
+
+    <div class="card-es card-set-col neat-card">
+        <div class="card-es card-header text-center">
+            <h3 class="card-header-h ">RPCs</h3>
         </div>
 
-        <div class="row">
-            <label for="f-GraphName">Graph name</label> <input type="text"
-                                                               placeholder="Enter the name of the graph to load."
-                                                               id="f-GraphName"/>
-            <label for="checkbox-LoadRenderInfo"> Load Render Info? </label>
-            <input id="checkbox-LoadRenderInfo" type="checkbox" checked="true"/>
+        <div class="rpc-form card-es card-content-default card-set-col">
 
-            <button data-id="b-LoadGraph"> Load Graph</button>
-        </div>
-        <div id="graph-control-panel">
-            <div> -Active graph name goes here-</div>
-            <button data-id="b-HideEdges"> Hide edge/s</button>
-            <button data-id="b-ShowEdges"> Show edge/s</button>
+            <div class="card-es ">
+                <label for="f-SceneName" class="x-axis-align-c"> Load a Unity Scene: </label>
+                <input id="f-SceneName" type="text"
+                       placeholder="Write name of the scene to load in the remote side."/>
+                <button data-id="b-LoadScene"> Load Scene</button>
+            </div>
+
+            <div class="card-es">
+                <label for="f-GraphName" class="x-axis-align-c">Load a Graph: </label> <input type="text"
+                                                                                              placeholder="Enter the name of the graph to load."
+                                                                                              id="f-GraphName"/>
+                <label for="checkbox-LoadRenderInfo" class="x-axis-align-c"> Load Render Info? </label>
+                <input id="checkbox-LoadRenderInfo" type="checkbox" checked="true"/>
+
+                <button data-id="b-LoadGraph"> Load Graph</button>
+            </div>
+
+            <div class="card-es" id="graph-control-panel">
+                <div> -Active graph name goes here-</div>
+                <button data-id="b-HideEdges"> Hide edge/s</button>
+                <button data-id="b-ShowEdges"> Show edge/s</button>
+            </div>
+
         </div>
 
     </div>
 
 
     <!-- Position  and rotation map -->
-    <div id="GraphicPosRotMonitor" class="card-big row">
-
-        <h3 class="card-header row"> Rotation and Position Monitor</h3>
-
+    <div id="GraphicPosRotMonitor" class="card-big card-set-col neat-card">
+        <div class="card-header card-header-gray">
+            <h3 class="card-header-h-gray"> User Position & Rotation Monitor</h3>
+        </div>
         <!-- SVG Panel where the remote coords and rotation are represented -->
-        <svg id="world2D" width="100%" height="500" class="flex-row">
+        <svg id="world2D" width="100%" height="500" class="card-es">
             <!-- User representation : a circle + a line which states the gazing direction -->
             <g id="user-rep">
-                <circle class="user-head-svg" cx="0" cy="0" r="15"></circle>
+                <circle class="user-head-svg" cx="448" cy="250" r="15"></circle>
                 <path id="user-head-dir"></path>
                 <!-- <image class="user-head-icon" href="img1.JPG" x="0" y="0" width="1" height="1"/>-->
-
             </g>
 
         </svg>
     </div>
 
-    <div>
-        <div id="pageContent" class="card-set">
 
-            <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
-            <div id="monitoring-config-panel" class="card">
-                <h3><span class="card-header">Remote Websocket Monitoring configuration</span></h3>
-                <div class="row">
-                    Here you can put whatever is currently being monitored.
-                </div>
+    <!-- remote user view -->
+    <div class="card-es card-set-col neat-card card-small">
+        <div class="card-header card-es">
+            <h3 class="card-header-h"> Remote User View </h3>
+        </div>
+        <div class=card-es">
+            <img id="remoteView" width="480px" height="320px" src=""/>
+        </div>
+    </div>
 
 
-                <div class="row">
-                    <label for="checkbox-MonitorGameView"> Monitor Game View </label> <input
-                        id="checkbox-MonitorGameView"
-                        type="checkbox" checked="checked"/>
-                    <label for="f-TMonitorGameview"> Period </label> <input type="number" id="f-TMonitorGameview">
-                </div>
+    <div id="pageContent" class="card-es card-set-row neat-card">
 
-                <div class="row">
-                    <label for="checkbox-MonitorPosRot"> Monitor User position and rotation </label> <input
-                        id="checkbox-MonitorPosRot" type="checkbox" checked="checked"/>
-                    <label for="f-TMonitorPosRot"> Monitoring period </label> <input type="number"
-                                                                                     id="f-TMonitorPosRot"/>
-                </div>
-                <button data-id="b-GameMonitoringConfiguration"> Send Changes</button>
+        <div class="card-es">
+            <h3 class="card-header-gray"><span class="card-header-h-gray"> Experiment Configuration </span></h3>
 
+            <div class="card-es card-content-default bg-2">
+                <b>Current Experiment Log Configuration:</b>
+                <p>
+                    <span> Place here whatever we need to know from the ongoing experiment.</span>
+                </p>
+                <button id="b-EditCurrentLogConfig"> Edit Configuration</button>
             </div>
 
-
-            <div class="card">
-                <h3><span class="card-header"> Experiment Log Configuration </span></h3>
-
-                <div id="ExperimentLogCurrentConfiguration" class="row">
-                    Current Experiment Log Configuration
-                    <button id="b-EditCurrentLogConfig"> Edit Configuration</button>
-                </div>
-
-                <div class="row">
-
-                    <div class="row">
-                        <label for="f-UserID"> Identifier of the user:</label>
+            <div id="ExperimentLogCurrentConfiguration" class="card-content-default rpc-form card-set-col">
+                <!-- this part of the page is hidden unless the change configuration button has been pressed -->
+                <div class="edit-configuration">
+                    <div class="card-es card-set-row">
+                        <label for="f-UserID" class="x-axis-align-c"> Identifier of the user:</label>
                         <input id="f-UserID" type="text" placeholder="Put here the id of the user, to identify it"/>
                     </div>
 
-                    <label for="f-ExpCondition"> Experimental Condition </label>
-                    <select id="f-ExpCondition" name="f-NumExpCondition">
-                        <option value="0"> Teleport</option>
-                        <option value="1"> Physical Movement</option>
-                    </select>
+                    <div class="card-es ">
+                        <label for="f-ExpCondition" class="x-axis-align-c"> Experimental Condition </label>
+                        <select id="f-ExpCondition" name="f-NumExpCondition">
+                            <option value="0"> Teleport</option>
+                            <option value="1"> Physical Movement</option>
+                        </select>
 
-                    <select id="s-NamedTimers">
-                        <option value="trainingDuration"> TrainingDuration</option>
-                        <option value="experimentDuration"> ExperimentDuration</option>
-                        <!-- add more dynamically here -->
-                    </select>
+                    </div>
+                    <div class="card-es">
 
-
-                    <button data-id="b-StartNamedTimer">Start Named Timer</button>
-                    <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
-                    <button data-id="b-PauseNamedTimer">Stop Named Timer</button>
-
-
+                        <label for="f-NewNamedTimerName" class="x-axis-align-c"> Start a timer </label>
+                        <input id="f-NewNamedTimerName" type="text"/>
+                        <button data-id="b-StartNamedTimer">Start Named Timer</button>
+                    </div>
+                    <div class="card-es">
+                        <select id="s-NamedTimers">
+                            <option value="trainingDuration"> TrainingDuration</option>
+                            <option value="experimentDuration"> ExperimentDuration</option>
+                            <!-- add more dynamically here -->
+                        </select>
+                        <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
+                        <button data-id="b-PauseNamedTimer">Stop Named Timer</button>
+                    </div>
+                </div>
+                <div class="card-es">
                     <button data-id="b-EndExperiment"> End Experiment</button>
                 </div>
             </div>
@@ -182,51 +245,55 @@
         </div>
 
 
-        <div class="card">
-            <h3> Remote User View </h3>
-            <img id="remoteView" width="480px" height="320px" src=""/>
+        <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
+        <div id="monitoring-config-panel" class="card-es card-set-col neat-card">
+
+            <h3 class="card-header card-es">
+                <span class="card-header-h">Remote Websocket Monitoring configuration</span>
+            </h3>
+            <div class="card-es card-content-default bg-3">
+                <h4>Current configuration</h4>
+                <p>
+                    Here you can put whatever is currently being monitored.
+                </p>
+            </div>
+
+            <div class="card-es card-set-col rpc-form card-content-default bg-1">
+
+                <div class="card-es ">
+                    <label for="checkbox-MonitorGameView"> Monitor Game View </label> <input
+                        id="checkbox-MonitorGameView"
+                        type="checkbox" checked="checked"/>
+                    <label for="f-TMonitorGameview"> Period </label> <input type="number" id="f-TMonitorGameview">
+                </div>
+
+                <div class="card-es">
+                    <label for="checkbox-MonitorPosRot"> Monitor User position and rotation </label> <input
+                        id="checkbox-MonitorPosRot" type="checkbox" checked="checked"/>
+                    <label for="f-TMonitorPosRot"> Monitoring period </label> <input type="number"
+                                                                                     id="f-TMonitorPosRot"/>
+                </div>
+                <button class="card-es x-axis-align-r " data-id="b-GameMonitoringConfiguration"> Send Changes</button>
+            </div>
         </div>
-
-
-        <div id="client-log">
-
-            <!-- here raw incoming messages will be put -->
-        </div>
-        <button onclick="ClearClientLog()"> Clear log</button>
-
-
-        <h2>Monitoring</h2>
-        <p>
-
-
-            Status of the connection:
-            Scene:
-            User looking at:
-            Antilatency list of connected devices:
-            Head displacement data: e.g. position.
-
-            Ordering status: of the nodes.
-
-        </p>
-
-        <h2> RPCs</h2>
-        <p>
-            ChangeScene(nameOfTheScene);
-            SendChatMessage
-            HideAllNodes
-            HideNode
-            HideAllEdges
-            LoadGraph(nameOfGraph,bool loadRenderingInfo)
-
-
-        </p>
-
-
-        <!-- f- for field names -->
-        <!-- b- for button id's -->
 
 
     </div>
+
+
+    <div class="card-es card-set-row card-big">
+
+        <div id="client-log" class="card-es" >
+            <!-- here raw incoming messages will be put -->
+        </div>
+        <button class="card-es" onclick="ClearClientLog()"> Clear log</button>
+    </div>
+
+
+    <!-- f- for field names -->
+    <!-- b- for button id's -->
+
+
 </div>
 
 
