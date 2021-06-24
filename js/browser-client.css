@@ -92,6 +92,7 @@ menu ul a li {
 
 h1 {
     margin: 0;
+    font-size: 4.5em;
 }
 
 .page-title {
@@ -382,4 +383,19 @@ h3, h4, h5, h6 {
 /* Game Client general monitoring box */
 #GameClientGeneralStatus {
     background-image: -moz-linear-gradient(50deg, #32274b, #673c92);
+}
+
+
+footer{
+    color: white;
+     flex:0 0 100% !important;
+    background-color:#546585;
+    min-height: 20vh;
+    align-content: stretch;
+    justify-content: center;
+}
+
+footer .card-es{
+    margin-top: 0;
+    margin-left: 2em;
 }

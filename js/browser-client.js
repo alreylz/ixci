@@ -130,7 +130,7 @@ function tryConnectWS() {
                             break;
                         //Información sobre la solución ideal del Minijuego.
                         case "MinigameSolution":
-                            //DisplayMinigameSolution(wsMessageAsJavasriptObject);
+                            DisplayMinigameSolution(wsMessageAsJavasriptObject);
 
 
                             break;
@@ -209,38 +209,52 @@ commandButtons.forEach(
     }
 );
 
+
 function DisplayCurrentMinigameStatus(wsMessage) {
 
-    let CurrentMGStatusPanel = document.querySelector("#CurrentMinigameStatusPanel");
+    let CurrentMGStatusPanel = document.querySelector("#MinigameStatusDisplay");
 
 
     let htmlToPutInPanel = "";
-
-   
-
-    CurrentMGStatusPanel.innerHTML = `<p>  ${wsMessage.Data["CorrectionSummary"]}</p> `;
-
 
     //User Ordering
     console.log(wsMessage.Data["UserOrdering"]);
     let dictionaryOrderedElems = JSON.parse(wsMessage.Data["UserOrdering"]);
     // console.log("EXAMPLE OF DATA EXTRACTED" + wsMessage["UserOrdering"])
+
+
+    htmlToPutInPanel = "<ul>"
+
+
     for (i = 0; i < 5; i++) {
         try {
-            
-            htmlToPutInPanel += ` Position ${i + 1}` + "</br>" + `${dictionaryOrderedElems[i]["NodeId"]} - ${dictionaryOrderedElems[i]["Weight"]}   ` + "</br>";
+
+            htmlToPutInPanel += "<li>" + `<b> Position ${i + 1} </b>:  ${dictionaryOrderedElems[i]["NodeId"]} - ${dictionaryOrderedElems[i]["Weight"]}   ` + "</li>";
         } catch (e) {
             console.log(`${i} slot is empty by now in game.`)
         }
     }
 
+    htmlToPutInPanel += "</ul>"
+    if ("CorrectionSummary" in wsMessage.Data)
+        var corrSummary = JSON.parse(wsMessage.Data["CorrectionSummary"]);
 
-    
+    if (corrSummary)
+        htmlToPutInPanel += `
+            <ul>
+                <li> Task: Top ${corrSummary["numSlotsUsed"].toString()} nodes. </li>
+                <li> Number of Empty Slots: ${corrSummary["numEmptySlots"].toString()}. </li>
+                <li> Number of errors: ${corrSummary["numErrors"].toString()}. </li>
+                <li> Correctly ordered: ${corrSummary["correctlyOrdered"].toString()}. </li>
+            </ul>
+        `;
+
+
     //Correction Summary
     console.log("MESSAGE DATA KEYS:" + Object.keys(wsMessage.Data));
     console.log("EXAMPLE OF DATA EXTRACTED" + wsMessage.Data["CorrectionSummary"])
-    
-    htmlToPutInPanel += wsMessage.Data["CorrectionSummary"].toString();
+
+    // htmlToPutInPanel += wsMessage.Data["CorrectionSummary"].toString();
 
     //ADD EVERYTHINH
     CurrentMGStatusPanel.innerHTML = htmlToPutInPanel
@@ -254,17 +268,18 @@ function DisplayMinigameSolution(wsMessage) {
     let expectedOrderList = JSON.parse(wsMessage.Data["ExpectedOrder"]);
 
 
-    let minigameSolutionPanel = document.querySelector("#MinigameSolutionPanel");
+    let minigameSolutionPanel = document.querySelector("#MinigameSolutionDisplay");
 
-    let htmlToPutInPanel = "<h3> Expected solution to the task: </h3><pre>";
+     let htmlToPutInPanel = "<ul>";
+         // "<h3> Expected solution to the task: </h3><pre>";
     console.log("Expected order list " + expectedOrderList)
 
     console.log(Object.keys(expectedOrderList));
     for (i = 1; i <= 5; i++) {
         console.log(expectedOrderList[i]);
-        htmlToPutInPanel += ` Position ${i}` + "</br>" + `${expectedOrderList[i]}` + "</br>";
+        htmlToPutInPanel += `<li> <b> Position ${i} </b> : ${expectedOrderList[i]} </li>`;
     }
-    minigameSolutionPanel.innerHTML = htmlToPutInPanel + "</pre>";
+    minigameSolutionPanel.innerHTML = htmlToPutInPanel + "</ul>";
 
     // expectedOrderList.forEach((v, i) => htmlToPutInPanel += ` Position ${i} : Node: ${v}` + " <br>")
     // minigameSolutionPanel.innerHTML = htmlToPutInPanel;

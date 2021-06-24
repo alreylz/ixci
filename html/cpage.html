@@ -19,22 +19,23 @@
 <header class="card-set-row neat-card">
 
     <!--    <div class="card-es page-icon"></div>-->
-    <div  style="flex:1 1 auto; max-width:18%; height: auto; margin:0.5em 0; margin-left:2em; ">
-        <img class="" style="width: auto;  min-height:20vh; max-height: 30vh" src="wozIcon.png"/>
+    <div style="flex:1 1 auto; max-width:20em; height: auto; margin:0.5em 0; margin-left:2em; ">
+        <img class="" style=" max-width: 100%; height: auto " src="wozIcon.png"/>
     </div>
     <h1 class="card-es page-title x-axis-align-c text-center"> WOZ Browser Client </h1>
-    <!--    <menu class="card-es x-axis-align-fill card-set-row m-axis-align-children-fill">-->
-    <!--        <ul class="card-es card-set-row x-axis-align-c">-->
-    <!--            <a href="#" class="card-es">-->
-    <!--                <li> Link 1</li>-->
-    <!--            </a>-->
-    <!--            <a href="#" class="card-es">-->
-    <!--                <li> Link 2</li>-->
-    <!--            </a><a href="#" class="card-es">-->
-    <!--            <li> Link 3</li>-->
-    <!--        </a>-->
-    <!--        </ul>-->
-    <!--    </menu>-->
+    <menu class="card-es x-axis-align-fill card-set-row m-axis-align-children-fill">
+        <ul class="card-es card-set-row x-axis-align-c">
+            <a href="#client-log" class="card-es">
+                <li style="background-color: #505050;"> Log window</li>
+            </a>
+            <a href="#ExperimentLogCurrentConfiguration" class="card-es">
+                <li> Experiment Config 2</li>
+            </a>
+            <!--<a href="#" class="card-es">-->
+            <!--                <li> Link 3</li>-->
+            <!--            </a>-->
+        </ul>
+    </menu>
 
 </header>
 
@@ -65,7 +66,7 @@
     <div id="GameClientGeneralStatus" class="card-big  card-set-row neat-card m-axis-align-children-fill">
 
         <div class="card-header-gray card-es ">
-            <h3 class="card-header-h card-header-h-gray">Game Client General Monitoring</h3>
+            <h3 class="card-header-h card-header-h-gray">Game Client Task Monitoring</h3>
         </div>
 
         <div class="card-set-col card-es neat-card">
@@ -108,7 +109,7 @@
                 <div class="card-header-yellow card-es ">
                     <h3 class="card-header-h card-header-h-yellow">Expected results</h3>
                 </div>
-                <p>
+                <p id="MinigameSolutionDisplay">
                     Here the expected results of the minigame are displayed.
                 </p>
 
@@ -118,7 +119,7 @@
                 <div class="card-header-gray card-es ">
                     <h3 class="card-header-h card-header-h-gray">Current Status</h3>
                 </div>
-                <p>
+                <p id="MinigameStatusDisplay">
                     Here the current progress of the minigame is showed (how the user is performing).
                 </p>
             </div>
@@ -283,7 +284,7 @@
 
     <div class="card-es card-set-row card-big">
 
-        <div id="client-log" class="card-es" >
+        <div id="client-log" class="card-es">
             <!-- here raw incoming messages will be put -->
         </div>
         <button class="card-es" onclick="ClearClientLog()"> Clear log</button>
@@ -296,6 +297,14 @@
 
 </div>
 
+<footer class="card-es card-set-row neat-card x-axis-align-fill">
+    <h4 class="card-es x-axis-align-c m-axis-self-stretch "> Alejandro Rey López @uc3m </h4>
+    <ul class="card-es m-axis-self-stretch text-center x-axis-align-c">
+        <li>Github</li>
+        <li>Linkedin</li>
+        <li>Web</li>
+    </ul>
+</footer>
 
 <script src="rpcs.js"></script>
 <script src="browser-client.js"></script>
