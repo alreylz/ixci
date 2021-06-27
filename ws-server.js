@@ -1,6 +1,4 @@
-﻿
-
-//Monitoring / Wizard of OZ server code.
+﻿//Monitoring / Wizard of OZ server code.
 
 const express = require('express'); /* We the express package to create a quick and dirty web-server */
 var app = express();
@@ -26,21 +24,21 @@ let game_clients = [];
 /* SUPPORTED URL PATTERNS */
 
 
-app.get('/home',function(req, res) {
+app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
 });
 
 
-app.get('/msii-monitor',function(req, res) {
+app.get('/msii-monitor', function (req, res) {
     console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
     res.sendFile(__dirname + '/html/cpage.html');
 });
 
-app.get('/nasa.tlx',function(req, res) {
+app.get('/nasa.tlx', function (req, res) {
     res.sendFile(__dirname + '/html/NASA_TLX.html');
 });
 
-app.get('/flow.sc',function(req, res) {
+app.get('/flow.sc', function (req, res) {
     res.sendFile(__dirname + '/html/FlowShortScale.html');
 });
 
@@ -49,20 +47,32 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 
-app.post('/', function (req, res) {
+// 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS. 
+const Q_SAVEPATH = "logging/exp1/"
+let fs = require('fs');
+fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`,{recursive:true}).then( () => console.log("Success on initialising the persistency directories for questionniaires")).catch(() => console.log("SHIT, something went wrong dudeeeee!"));
+
+
+//saves the json data it receives as a file in the server side.
+app.post('/questionnaires', function (req, res) {
+
+    let whereToSave = `${__dirname}/${Q_SAVEPATH}${req.body.filename}.${req.body.type}`;
+
+    console.log("'/questionnaires' POST REQUEST received:");
     console.log(req.body);
 
-    var fs = require('fs');
-    fs.writeFile(`/tmp/${req.body.userID}`, req.body.data, function (err) {
+    //We write the file to disk in the configured directory.
+    fs.writeFile(whereToSave, JSON.stringify(req.body.data,undefined,3), 
+        function (err) {
         if (err) {
-            return console.log(err);
+            return console.log(`Error saving the questionnaire file at ${whereToSave}:  ${err}.`);
         }
-        console.log("The file was saved!");
+        console.log(`Successfully saved the questionnaire data at ${whereToSave}.`);
     });
-    
-    
-    res.send('Saved successfully the file for the user' + req.body.userID )
-    
+
+
+    res.send('Saved successfully the file for the user' + req.body.userID)
+
 })
 
 
@@ -71,17 +81,17 @@ app.post('/', function (req, res) {
 
 
 
-
 // Aquí está obteniendo el servidor de web sockets, diciéndole que ha creado un server de http a manita.
-const wss = new WebSocket.Server({ server }, {port: port});
+const wss = new WebSocket.Server({server}, {port: port});
 
 // We create a method which creates unique ids made of 3 randomly generated hex strings (using the s4());
 wss.getUniqueID = function () {
-    
+
     function s4() {
         //generates a number between 1 and 16 , then converts it to base HEX and then avoids the first letter.
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
+
     return s4() + s4() + '-' + s4();
 };
 
@@ -119,21 +129,17 @@ wss.getUniqueID = function () {
 // }
 
 
-
 //When a connection is established on a websocket.
 wss.on('connection', function connection(_ws) {
-    
+
     //obtenemos la instancia del web socket (ws)
     //podemos tener varios clientes conectándose a nuestro servidor web, por lo que necesitamos una manera de identificar las diferentes conexiones bidireccionales.
 
     //When a message is received in any web socket handled by this server. 
     _ws.on('message', function incoming(_message) {
 
-        
-        
-        
-        
-        switch(_message){
+
+        switch (_message) {
             case 'woz': // if is a web client, used for game monitoring and command triggering
                 _ws.id = wss.getUniqueID(); // give an id property to the web socket, 
                                             // so that we can distinguish between sockets later
@@ -148,86 +154,76 @@ wss.on('connection', function connection(_ws) {
                 _ws.send("Connection established with Server. You are a game_client");
 
                 break;
-                
+
             default: // If connection has already been confirmed.
-                
+
                 //a) message comes from game --> pass it to browser clients.
-                if( game_clients.length > 0 && game_clients.find( elem => elem.id === _ws.id ))
-                {
+                if (game_clients.length > 0 && game_clients.find(elem => elem.id === _ws.id)) {
                     console.log(`[IN] -->> Message received from game_client ${_ws.id}`);
-                    browser_sockets.forEach( _sock => _sock.send(_message));
+                    browser_sockets.forEach(_sock => _sock.send(_message));
                     console.log("[OUT] <<-- Message sent to all browser clients ");
                 }
                 //b) message comes from browser client --> send it to game_clients
-                else 
-                {
+                else {
                     console.log(`[IN] -->> Message received from browser_client ${_ws.id}`);
-                    game_clients.forEach( _sock => _sock.send(_message));
+                    game_clients.forEach(_sock => _sock.send(_message));
                     console.log("[OUT] <<-- Message sent to all game clients ");
                 }
-                // UNCOMMENT TO DISPLAY ALL MESSAGES.
-                //console.log(`>> received message: ${_message}`);
-                
+            // UNCOMMENT TO DISPLAY ALL MESSAGES.
+            //console.log(`>> received message: ${_message}`);
+
         }
 
-       
+
     });
-    _ws.on('close', function(){
+    _ws.on('close', function () {
         const idx = browser_sockets.findIndex(el => el.id == _ws.id);
         const idg = game_clients.findIndex(el => el.id == _ws.id)
 
-        if(idx > -1){
+        if (idx > -1) {
             const deleted = browser_sockets.splice(idx, 1);
             console.log(`deleted browser_socket.`);
-        }
-        else{
+        } else {
             const deleted = game_clients.splice(idx, 1);
             console.log(`deleted game_client.`);
         }
     })
-    
-    
+
+
 });
 
 //When the server has to be shut down, I created this method to perform cleanup.
 wss.close = function cleanup() {
 
-    console.log("Closing all web socket connections from server "+ Date.now())
-    game_clients.forEach((s => { s.send("server instructs to shut down the connection"); s.close(); s.terminate();}));
-    
+    console.log("Closing all web socket connections from server " + Date.now())
+    game_clients.forEach((s => {
+        s.send("server instructs to shut down the connection");
+        s.close();
+        s.terminate();
+    }));
+
 };
 
 
 //server.listen(process.env.PORT);
 console.log("Server started");
 
-server.listen(port, function(){
+server.listen(port, function () {
     console.log(`Web Server (HTTP) listening on *:${port}`);
 });
 
 
-
-
 /* [NOT REQUIRED YET] app.use junto con express.static define la estructura de la uri para acceder a elementos estáticos */
-app.use('/',express.static(__dirname + '/js'));
-app.use('/',express.static(__dirname + '/static'));
+app.use('/', express.static(__dirname + '/js'));
+app.use('/', express.static(__dirname + '/stylesheets'));
+app.use('/', express.static(__dirname + '/static'));
 
 
-
-
-process.on('SIGINT', function(){
+process.on('SIGINT', function () {
     wss.close();
 
     process.exit();
 });
-
-
-
-
-
-
-
-
 
 
 // const express = require('express')
@@ -262,9 +258,6 @@ process.on('SIGINT', function(){
 //
 // // Serve static files in Express.
 // app.use('/pathOfChoosing', express.static('static'))
-
-
-
 
 
 // const ws = require('ws');

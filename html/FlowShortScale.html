@@ -3,98 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Flow Short Scale Questionnaire</title>
-    <script>
 
-        let flowLevelResult;
-        let anxietyLevelResult;
-        let challengeLevelResult;
-        
-        function calculateResults() {
-            var items = 0;
-            var score1 = 0;
-            var score2 = 0;
-            var score3 = 0;
-            var i = 0;
-            //Iterate over form elements.
-            for (i = 0; i < 70; i++) {
-                console.log(document.FKS.elements[i]);
-                if (document.FKS.elements[i].checked == true) {
-                    items++;
-                    score1 = score1 + (document.FKS.elements[i].value / 1);
-                }
-            }
-            for (i = 70; i < 91; i++) {
-                if (document.FKS.elements[i].checked == true) {
-                    items++;
-                    score2 = score2 + (document.FKS.elements[i].value / 1);
-                }
-            }
-            for (i = 0; i < 7; i++) {
-                if (document.FKS.i14[i].checked == true) {
-                    items++;
-                    score3 = document.FKS.i14[i].value / 1;
-                }
-            }
-            if (items != 14) {
-                alert("Please answer all items...");
-            } else {
-                document.FKS.FW.value = score1 / 10;
-                flowLevelResult = score1 / 10;
-                document.FKS.Besorgnis.value = score2 / 3;
-                anxietyLevelResult = score2/3;
-                document.FKS.Anforderung.value = score3;
-                challengeLevelResult = score3;
-            }
-        }
+    <script src="Utils.js"></script>
+    <script src="FSS.js"></script>
+
+    <link rel="stylesheet" href="FSS.css"/>
 
 
-        function reset(){
-            flowLevelResult = undefined;
-            anxietyLevelResult = undefined;
-            challengeLevelResult = undefined;
-        }
-        
-        function postResults(){
-            let userID = document.querySelector("#f-UserID").value;
-            if (!userID) {
-                alert("User ID not specified.");
-                return;
-            }
-            if(!flowLevelResult || !anxietyLevelResult || !challengeLevelResult){
-                alert("You forgot to click evaluate. ")
-                return;
-            }
-            //window.location.host
-            postDataToRemote("http://localhost:9030", userID, {"Flow Level": flowLevelResult, "Anxiety Level":anxietyLevelResult, "Challenge Level" : challengeLevelResult});
-            
-            
-        }
-        
-        
-        async function postDataToRemote(url,name,jsonObj) {
-            
-            await fetch(url.toString(), {
-                method: "post",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-
-                //make sure to serialize your JSON body
-                body: JSON.stringify({
-                    userID: name,
-                    data: jsonObj
-                })
-            })
-                .then((response) => {
-                    //do something awesome that makes the world a better place
-                })
-        }
-
-        function onLoad() {
-            document.querySelector(".saveRemoteButton").addEventListener("click", e => e.preventDefault());
-        }
-    </script>
 </head>
 <body onload="onLoad()">
 
@@ -115,240 +30,288 @@
 * authors and obliges the licensee to make the derivative works
 * available under the same license (copyleft principle). Who does not
 * follow the license conditions, automatically loses all rights. -->
-<h2>Flow Short Scale Questionnaire </h2>
-<p>
-    Rheinberg et al. (2003)
+<h1>Flow Short Scale Questionnaire </h1>
+<p id="q-explanation">
+    Questionnaire proposed by <b> Rheinberg et al. (2003) </b> <br/>
     Measures the the absorption of a person in an activity and the fluency of a person's performance under a given
-    context. It has two scales:
-    Fluency of performance:
-    Absorption by activity.
+    context.
+    Propiedades psicométricas en el paper: 10.3389/fpsyg.2018.02542
+    Ver Measuring Optimal Reading
+    Experiences: The Reading Flow
+    Short Scale.
+
+    <q> One particularly prominent general flow scale in European
+        flow research is the Flow Short Scale (FSS; Rheinberg et al., 2003),
+        a brief 13-item measure, with three supplemental items assessing
+        perceived balance of skills and challenges. The FSS has been
+        shown to have good psychometric properties (a = 0.90), a stable
+        3-factor structure comprising Absorption, Smooth Processing,
+        and Concern, and the expected associations with theoretically
+        related constructs such as skills-challenge balance, performance,
+        and self-efficacy, supporting the scale’s validity </q>
+
+
 </p>
-<div>
+<div id="questionnaire-container">
+
     <label for="f-UserID"> User ID</label>
     <input type="text" placeholder="Enter here a user id" id="f-UserID"/>
+
+
+    <form name="FKS">
+        <!-- Questionnaire as a table -->
+        <table cellspacing="0" cellpadding="8" border="0" bgcolor="#E6E6E6">
+            <tbody>
+            <tr>
+                <td colspan="2">
+                </td>
+                <td style="text-align:center;"> partly</td>
+                <td colspan="2">
+                </td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">I feel just the right amount of challenge.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i01" value="1">-<input
+                        type="radio" name="i01" value="2">-<input type="radio" name="i01" value="3">-<input type="radio"
+                                                                                                            name="i01"
+                                                                                                            value="4">-<input
+                        type="radio" name="i01" value="5">-<input type="radio" name="i01" value="6">-<input type="radio"
+                                                                                                            name="i01"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">My thoughts/activities run fluidly and smoothly.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i02" value="1">-<input
+                        type="radio" name="i02" value="2">-<input type="radio" name="i02" value="3">-<input type="radio"
+                                                                                                            name="i02"
+                                                                                                            value="4">-<input
+                        type="radio" name="i02" value="5">-<input type="radio" name="i02" value="6">-<input type="radio"
+                                                                                                            name="i02"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">I don't notice time passing.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i03" value="1">-<input
+                        type="radio" name="i03" value="2">-<input type="radio" name="i03" value="3">-<input type="radio"
+                                                                                                            name="i03"
+                                                                                                            value="4">-<input
+                        type="radio" name="i03" value="5">-<input type="radio" name="i03" value="6">-<input type="radio"
+                                                                                                            name="i03"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">I have no difficulty concentrating.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i04" value="1">-<input
+                        type="radio" name="i04" value="2">-<input type="radio" name="i04" value="3">-<input type="radio"
+                                                                                                            name="i04"
+                                                                                                            value="4">-<input
+                        type="radio" name="i04" value="5">-<input type="radio" name="i04" value="6">-<input type="radio"
+                                                                                                            name="i04"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">My mind is completely clear.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i05" value="1">-<input
+                        type="radio" name="i05" value="2">-<input type="radio" name="i05" value="3">-<input type="radio"
+                                                                                                            name="i05"
+                                                                                                            value="4">-<input
+                        type="radio" name="i05" value="5">-<input type="radio" name="i05" value="6">-<input type="radio"
+                                                                                                            name="i05"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">I am totally absorbed in what I am doing.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i06" value="1">-<input
+                        type="radio" name="i06" value="2">-<input type="radio" name="i06" value="3">-<input type="radio"
+                                                                                                            name="i06"
+                                                                                                            value="4">-<input
+                        type="radio" name="i06" value="5">-<input type="radio" name="i06" value="6">-<input type="radio"
+                                                                                                            name="i06"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">The right thoughts/movements occur of their own accord.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i07" value="1">-<input
+                        type="radio" name="i07" value="2">-<input type="radio" name="i07" value="3">-<input type="radio"
+                                                                                                            name="i07"
+                                                                                                            value="4">-<input
+                        type="radio" name="i07" value="5">-<input type="radio" name="i07" value="6">-<input type="radio"
+                                                                                                            name="i07"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">I know what I have to do each step of the way.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i08" value="1">-<input
+                        type="radio" name="i08" value="2">-<input type="radio" name="i08" value="3">-<input type="radio"
+                                                                                                            name="i08"
+                                                                                                            value="4">-<input
+                        type="radio" name="i08" value="5">-<input type="radio" name="i08" value="6">-<input type="radio"
+                                                                                                            name="i08"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">I feel that I have everything under control.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i09" value="1">-<input
+                        type="radio" name="i09" value="2">-<input type="radio" name="i09" value="3">-<input type="radio"
+                                                                                                            name="i09"
+                                                                                                            value="4">-<input
+                        type="radio" name="i09" value="5">-<input type="radio" name="i09" value="6">-<input type="radio"
+                                                                                                            name="i09"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">I am completely lost in thought.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i10" value="1">-<input
+                        type="radio" name="i10" value="2">-<input type="radio" name="i10" value="3">-<input type="radio"
+                                                                                                            name="i10"
+                                                                                                            value="4">-<input
+                        type="radio" name="i10" value="5">-<input type="radio" name="i10" value="6">-<input type="radio"
+                                                                                                            name="i10"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">Something important to me is at stake here.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i11" value="1">-<input
+                        type="radio" name="i11" value="2">-<input type="radio" name="i11" value="3">-<input type="radio"
+                                                                                                            name="i11"
+                                                                                                            value="4">-<input
+                        type="radio" name="i11" value="5">-<input type="radio" name="i11" value="6">-<input type="radio"
+                                                                                                            name="i11"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">I won't make any mistake here.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i12" value="1">-<input
+                        type="radio" name="i12" value="2">-<input type="radio" name="i12" value="3">-<input type="radio"
+                                                                                                            name="i12"
+                                                                                                            value="4">-<input
+                        type="radio" name="i12" value="5">-<input type="radio" name="i12" value="6">-<input type="radio"
+                                                                                                            name="i12"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr bgcolor="#CCCCCC">
+                <td class="middle" style="padding: 8;">I am worried about failing.</td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i13" value="1">-<input
+                        type="radio" name="i13" value="2">-<input type="radio" name="i13" value="3">-<input type="radio"
+                                                                                                            name="i13"
+                                                                                                            value="4">-<input
+                        type="radio" name="i13" value="5">-<input type="radio" name="i13" value="6">-<input type="radio"
+                                                                                                            name="i13"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
+            </tr>
+            <tr class="skip">
+                <td colspan="4">
+                    <hr>
+                </td>
+            </tr>
+            <tr>
+                <td class="middle" style="padding: 8;">For me personally, the current demands are...</td>
+                <td class="middlecenter" style="padding: 8;" align="center">too low</td>
+                <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i14" value="1">-<input
+                        type="radio" name="i14" value="2">-<input type="radio" name="i14" value="3">-<input type="radio"
+                                                                                                            name="i14"
+                                                                                                            value="4">-<input
+                        type="radio" name="i14" value="5">-<input type="radio" name="i14" value="6">-<input type="radio"
+                                                                                                            name="i14"
+                                                                                                            value="7">
+                </td>
+                <td class="middlecenter" style="padding: 8;" nowrap="">too high</td>
+            </tr>
+            <tr class="skip">
+                <td colspan="4">
+                    <hr>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <!-- Table Results -->
+        <table id="original-results-table" cellspacing="0" cellpadding="4" border="0">
+            <tbody>
+            <tr>
+                <td class="middle">Flow level</td>
+                <td class="middle" nowrap=""><input type="text" name="FW" readonly></td>
+            </tr>
+            <tr>
+                <td class="middle">Anxiety level</td>
+                <td class="middle" nowrap=""><input type="text" name="Besorgnis" readonly></td>
+            </tr>
+            <tr>
+                <td class="middle">Challenge level</td>
+                <td class="middle" nowrap=""><input type="text" name="Anforderung" readonly></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td nowrap="">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="middlecenter" align="center"><input type="button" value="evaluate"
+                                                                           onclick="calculateResults()"> <input
+                        type="reset"
+                        value="reset"
+                        onclick="resetQuestionnaire()">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+
 </div>
 
-<form name="FKS">
+<div class="button-row">
+    <button class="saveRemoteButton" onclick="postResults()"> Save</button>
+    <button class="clearFormButton" onclick="clearForm()">Clear</button>
+</div>
+<div id="results-div">
+    <h3> Results: </h3>
+    <label for="flow-level-res">Flow level</label>
+    <input type="text" name="flow-level" id="flow-level-res" readonly/>
+    <label for="anxiety-level-res">Anxiety level</label>
+    <input type="text" name="anxiety-level" id="anxiety-level-res" readonly/>
+    <label for="challenge-level-res">Challenge level</label>
+    <input type="text" name="challenge-level" id="challenge-level-res" readonly/>
+</div>
 
-    <br>
-    <table cellspacing="0" cellpadding="8" border="0" bgcolor="#E6E6E6">
-        <tbody>
-        <tr>
-            <td colspan="2">
-            </td>
-            <td style="text-align:center;"> partly</td>
-            <td colspan="2">
-            </td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">I feel just the right amount of challenge.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i01" value="1">-<input
-                    type="radio" name="i01" value="2">-<input type="radio" name="i01" value="3">-<input type="radio"
-                                                                                                        name="i01"
-                                                                                                        value="4">-<input
-                    type="radio" name="i01" value="5">-<input type="radio" name="i01" value="6">-<input type="radio"
-                                                                                                        name="i01"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">My thoughts/activities run fluidly and smoothly.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i02" value="1">-<input
-                    type="radio" name="i02" value="2">-<input type="radio" name="i02" value="3">-<input type="radio"
-                                                                                                        name="i02"
-                                                                                                        value="4">-<input
-                    type="radio" name="i02" value="5">-<input type="radio" name="i02" value="6">-<input type="radio"
-                                                                                                        name="i02"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">I don't notice time passing.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i03" value="1">-<input
-                    type="radio" name="i03" value="2">-<input type="radio" name="i03" value="3">-<input type="radio"
-                                                                                                        name="i03"
-                                                                                                        value="4">-<input
-                    type="radio" name="i03" value="5">-<input type="radio" name="i03" value="6">-<input type="radio"
-                                                                                                        name="i03"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">I have no difficulty concentrating.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i04" value="1">-<input
-                    type="radio" name="i04" value="2">-<input type="radio" name="i04" value="3">-<input type="radio"
-                                                                                                        name="i04"
-                                                                                                        value="4">-<input
-                    type="radio" name="i04" value="5">-<input type="radio" name="i04" value="6">-<input type="radio"
-                                                                                                        name="i04"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">My mind is completely clear.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i05" value="1">-<input
-                    type="radio" name="i05" value="2">-<input type="radio" name="i05" value="3">-<input type="radio"
-                                                                                                        name="i05"
-                                                                                                        value="4">-<input
-                    type="radio" name="i05" value="5">-<input type="radio" name="i05" value="6">-<input type="radio"
-                                                                                                        name="i05"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">I am totally absorbed in what I am doing.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i06" value="1">-<input
-                    type="radio" name="i06" value="2">-<input type="radio" name="i06" value="3">-<input type="radio"
-                                                                                                        name="i06"
-                                                                                                        value="4">-<input
-                    type="radio" name="i06" value="5">-<input type="radio" name="i06" value="6">-<input type="radio"
-                                                                                                        name="i06"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">The right thoughts/movements occur of their own accord.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i07" value="1">-<input
-                    type="radio" name="i07" value="2">-<input type="radio" name="i07" value="3">-<input type="radio"
-                                                                                                        name="i07"
-                                                                                                        value="4">-<input
-                    type="radio" name="i07" value="5">-<input type="radio" name="i07" value="6">-<input type="radio"
-                                                                                                        name="i07"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">I know what I have to do each step of the way.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i08" value="1">-<input
-                    type="radio" name="i08" value="2">-<input type="radio" name="i08" value="3">-<input type="radio"
-                                                                                                        name="i08"
-                                                                                                        value="4">-<input
-                    type="radio" name="i08" value="5">-<input type="radio" name="i08" value="6">-<input type="radio"
-                                                                                                        name="i08"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">I feel that I have everything under control.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i09" value="1">-<input
-                    type="radio" name="i09" value="2">-<input type="radio" name="i09" value="3">-<input type="radio"
-                                                                                                        name="i09"
-                                                                                                        value="4">-<input
-                    type="radio" name="i09" value="5">-<input type="radio" name="i09" value="6">-<input type="radio"
-                                                                                                        name="i09"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">I am completely lost in thought.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i10" value="1">-<input
-                    type="radio" name="i10" value="2">-<input type="radio" name="i10" value="3">-<input type="radio"
-                                                                                                        name="i10"
-                                                                                                        value="4">-<input
-                    type="radio" name="i10" value="5">-<input type="radio" name="i10" value="6">-<input type="radio"
-                                                                                                        name="i10"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">Something important to me is at stake here.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i11" value="1">-<input
-                    type="radio" name="i11" value="2">-<input type="radio" name="i11" value="3">-<input type="radio"
-                                                                                                        name="i11"
-                                                                                                        value="4">-<input
-                    type="radio" name="i11" value="5">-<input type="radio" name="i11" value="6">-<input type="radio"
-                                                                                                        name="i11"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">I won't make any mistake here.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i12" value="1">-<input
-                    type="radio" name="i12" value="2">-<input type="radio" name="i12" value="3">-<input type="radio"
-                                                                                                        name="i12"
-                                                                                                        value="4">-<input
-                    type="radio" name="i12" value="5">-<input type="radio" name="i12" value="6">-<input type="radio"
-                                                                                                        name="i12"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr bgcolor="#CCCCCC">
-            <td class="middle" style="padding: 8;">I am worried about failing.</td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">not at all</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i13" value="1">-<input
-                    type="radio" name="i13" value="2">-<input type="radio" name="i13" value="3">-<input type="radio"
-                                                                                                        name="i13"
-                                                                                                        value="4">-<input
-                    type="radio" name="i13" value="5">-<input type="radio" name="i13" value="6">-<input type="radio"
-                                                                                                        name="i13"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">very much</td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <hr>
-            </td>
-        </tr>
-        <tr>
-            <td class="middle" style="padding: 8;">For me personally, the current demands are...</td>
-            <td class="middlecenter" style="padding: 8;" align="center">too low</td>
-            <td class="middlecenter" style="padding: 8;" nowrap=""><input type="radio" name="i14" value="1">-<input
-                    type="radio" name="i14" value="2">-<input type="radio" name="i14" value="3">-<input type="radio"
-                                                                                                        name="i14"
-                                                                                                        value="4">-<input
-                    type="radio" name="i14" value="5">-<input type="radio" name="i14" value="6">-<input type="radio"
-                                                                                                        name="i14"
-                                                                                                        value="7"></td>
-            <td class="middlecenter" style="padding: 8;" nowrap="">too high</td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <hr>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <br>
-    <table cellspacing="0" cellpadding="4" border="0">
-        <tbody>
-        <tr>
-            <td class="middle">Flow level</td>
-            <td class="middle" nowrap=""><input type="text" name="FW" readonly></td>
-        </tr>
-        <tr>
-            <td class="middle">Anxiety level</td>
-            <td class="middle" nowrap=""><input type="text" name="Besorgnis" readonly></td>
-        </tr>
-        <tr>
-            <td class="middle">Challenge level</td>
-            <td class="middle" nowrap=""><input type="text" name="Anforderung" readonly></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td nowrap="">&nbsp;</td>
-        </tr>
-        <tr>
-            <td colspan="2" class="middlecenter" align="center"><input type="button" value="evaluate"
-                                                                       onclick="calculateResults()"> <input type="reset"
-                                                                                                            value="reset" onclick="reset()">
-            </td>
-        </tr>
-        </tbody>
-    </table>
 
-</form>
-<button class="saveRemoteButton" onclick="postResults()"> POST</button>
 </body>
 </html>

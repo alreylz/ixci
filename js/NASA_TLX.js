@@ -368,15 +368,6 @@ function saveResultsToFile() {
 }
 
 
-//Creates an object with as many keys as variables passed in the url.
-function getUrlVars() {
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-
 
 // Function to download data to a file
 function download(content, fileName, contentType) {

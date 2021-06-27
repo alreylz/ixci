@@ -1,0 +1,242 @@
+﻿$color1: #748FB3;
+$color2: #6FAAB3;
+$color3: #B386A3;
+$color4: #B39762;
+$color5: #B39762;
+
+
+@mixin flex-container($direction, $wrap:wrap) {
+  display: flex;
+  flex-direction: $direction;
+  flex-wrap: $wrap;
+}
+
+@mixin flex-item($initialSize:auto, $can-grow:1, $can-shrink:1) {
+  flex-basis: $initialSize;
+  flex-grow: $can-grow;
+  flex-shrink: $can-grow;
+}
+
+//Cross-axis alignment
+@mixin xa-align-self($alignment:center) {
+  align-self: $alignment;
+}
+
+@mixin xa-align-children($alignment: stretch) {
+  align-items: $alignment;
+}
+
+@mixin xa-spacing-children($spacing: space-around) {
+  align-content: $spacing; // e.g. space-around , space-between , center
+}
+
+//Main-axis distribution of items.
+@mixin ma-align-content($alignment:space-between) {
+  justify-content: $alignment;
+}
+
+@mixin flex-gap($sizem:2em, $sizex:2em) {
+  gap: $sizem $sizex;
+}
+
+// Gap creation
+@mixin ma-gap($gap-size: 1em) {
+  column-gap: $gap-size;
+}
+
+@mixin xa-gap($gap-size:1em) {
+  row-gap: $gap-size;
+}
+
+
+body {
+  margin: 0;
+  padding: 0 2em 0 2em;
+  background-color: #6FAAB3;
+  font-family: 'Merriweather', serif;
+  font-size: large;
+}
+
+h1 {
+  color: white;
+  box-sizing: border-box;
+  padding-left: 1em;
+  margin-right: 25%;
+  border-left: white 0.5em solid;
+  border-bottom: white 0.1em solid;
+}
+
+p {
+  padding: 1.5em;
+  border: white solid 0.2em;
+  background: white;
+}
+
+div {
+  margin-right: 25%;
+}
+
+#q-explanation {
+  margin-right: 25%;
+}
+
+q{
+  display: block;
+  
+  &:before{
+    font-size: xxx-large;
+    content: &quot;
+    color:#769bb0;
+   
+  }
+  
+  border-bottom: 0.1em solid #769bb0 ;
+}
+
+
+#questionnaire-container {
+  @include flex-container(column, wrap);
+  @include xa-align-children(flex-start);
+  gap: 0.5em 0;
+
+  label[for="f-UserID"] {
+    color: white;
+    font-weight: bold;
+  }
+
+  #f-UserID {
+    padding: 1em;
+  }
+
+  form {
+    width: 100%;
+
+    table {
+      width: inherit;
+
+      // Make first table row another color.
+      tr:first-child {
+        td:first-child {
+          background: $color1;
+        }
+
+        td:nth-child(3) {
+          background: $color1
+        }
+      }
+
+      //Center radio buttons in td.
+      tr {
+        td:nth-child(3) {
+          text-align: center;
+        }
+      }
+    }
+
+
+  }
+
+}
+
+
+.button-row{
+  @include flex-container(row,wrap);
+  @include ma-align-content();
+  margin-bottom: 1em;
+  button:hover{
+    animation: ease-in;
+    animation-duration: 2s;
+    background: #B386A3;
+  }
+}
+
+.saveRemoteButton{
+  background: #448c7b;
+}
+.clearFormButton{
+  background: #B386A3;
+}
+
+#results-div {
+  margin: 0;
+  width: 25%;
+  padding: 1em;
+  color: white;
+
+  font-size: xx-large;
+  @include flex-container(column, nowrap);
+  display: inline-flex;
+  @include xa-align-children(stretch);
+  @include flex-gap(0.3em);
+  background: $color5;
+
+  h3 {
+    margin: 0;
+  }
+
+  label, input {
+    font-size: large;
+  }
+
+  input {
+    padding: 1em;
+  }
+
+
+}
+
+button {
+  font-size: xx-large;
+  
+  border:none;
+  color: white;
+  padding: 2em;
+}
+
+//Hide original results table.
+#original-results-table {
+  display: none;
+}
+
+
+//
+//h1{
+//  background-color: $color5;
+//}
+//
+//table {
+//  display: flex;
+//  flex-direction: row;
+//  margin: 0 20%;
+//
+//  tbody {
+//    background: #8c5466;
+//    
+//    display: flex;
+//    flex: 1 1 100%;
+//    flex-direction: column;
+//  }
+//
+//  tr {
+//    flex: 1 1 33%;
+//    display: flex ;
+//    flex-direction: row;
+//    td {
+//      &:first-child {
+//        background: red;
+//      }
+//      &:nth-child(2){
+//        background: $color2;
+//      }
+//      &:nth-child(3){
+//        background: #547a78;
+//      }
+//      
+//    }
+//  }
+//}
+
+
+.saveRemoteButton {
+
+}
