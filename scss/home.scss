@@ -1,0 +1,47 @@
+﻿@import "theme";
+@import "utils";
+
+body {
+  color: white;
+  margin: 0;
+  padding: 0;
+  background: $color2;
+}
+
+
+h1{
+  margin:1em;
+  background: #b4d7de;
+  padding:1em;
+}
+
+
+menu {
+  @include flex-container(row,wrap);
+  
+  ul {
+    @include  flex-item(33%,0,1);
+    @include flex-container(column,wrap);
+    
+    list-style: none;
+    color: white;
+    text-decoration: none;
+
+    li {
+      margin-bottom: 1em;
+      background-color: #bd8696;
+      padding: 1vh;
+    }
+
+    a,a:visited{
+      color: inherit;
+      text-decoration: inherit;
+      
+    }
+
+  }
+
+}
+
+
+

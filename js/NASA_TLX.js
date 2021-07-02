@@ -353,6 +353,11 @@ function saveResultsToFile() {
 
     let resultsObject = {};
 
+    resultsObject["UserID"] = user_id;
+    let now  = new Date();
+    resultsObject["Timestamp"] =  `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}  `+ `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+    
+    
     for (let scaleIterator = 0; scaleIterator < scale.length; scaleIterator++) {
         //Create a js object per scale.
         resultsObject[scale[scaleIterator]] = {
@@ -363,8 +368,13 @@ function saveResultsToFile() {
     }
     resultsObject["Overall"] = results_overall;
 
-    download(JSON.stringify(resultsObject, results_overall, null, 2), `${user_id}_nasaTLX.json`, 'text/plain');
+    
+    postJsonFileToRemote("/questionnaires", user_id, resultsObject, "nasa.tlx").then(()=> alert("Success uploading the questionnaire."));
+    
+    // download(JSON.stringify(resultsObject, results_overall, null, 2), `${user_id}_nasaTLX.json`, 'text/plain');
 
+    
+    
 }
 
 

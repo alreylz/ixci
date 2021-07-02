@@ -252,6 +252,7 @@ function postResults() {
     //window.location.host
     postJsonFileToRemote("http://localhost:9030/questionnaires", userID, {
         "UserID": userID,
+        "Timestamp":  `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}  `+ `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`,
         "Flow Level": flowLevelResult,
         "Anxiety Level": anxietyLevelResult,
         "Challenge Level": challengeLevelResult,

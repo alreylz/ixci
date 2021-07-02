@@ -1,0 +1,44 @@
+﻿
+// FLEXBOX MIXINS
+@mixin flex-container($direction, $wrap:wrap) {
+  display: flex;
+  flex-direction: $direction;
+  flex-wrap: $wrap;
+}
+
+@mixin flex-item($initialSize:auto, $can-grow:1, $can-shrink:1) {
+  flex-basis: $initialSize;
+  flex-grow: $can-grow;
+  flex-shrink: $can-grow;
+}
+
+//Cross-axis alignment
+@mixin xa-align-self($alignment:center) {
+  align-self: $alignment;
+}
+
+@mixin xa-align-children($alignment: stretch) {
+  align-items: $alignment;
+}
+
+@mixin xa-spacing-children($spacing: space-around) {
+  align-content: $spacing; // e.g. space-around , space-between , center
+}
+
+//Main-axis distribution of items.
+@mixin ma-align-content($alignment:space-between) {
+  justify-content: $alignment;
+}
+
+@mixin flex-gap($sizem:2em, $sizex:2em) {
+  gap: $sizem $sizex;
+}
+
+// Gap creation
+@mixin ma-gap($gap-size: 1em) {
+  column-gap: $gap-size;
+}
+
+@mixin xa-gap($gap-size:1em) {
+  row-gap: $gap-size;
+}
