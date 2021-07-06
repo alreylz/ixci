@@ -1,5 +1,24 @@
-﻿$color1: #748FB3;
+﻿// Color palette
+$d-blue: #44546a;
+$mid-blue: #5789a1;
+$l-blue-dull: #acd2d1;
+$l-blue-shiny: #82cff4;
+$greyish: #c8c8c8;
+$purplish: #8e98cc;
+$greenish:#59926d;
+$yellowish: #fdd866;
+$pinkish: #B386A3;
+
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+
+
+$color1: #748FB3;
 $color2: #6FAAB3;
-$color3: #B386A3;
+
 $color4: #B39762;
-$color5: #B39762;
+$color5: #44546a;
+
+
+//$greenish-lightened: adjust-color($greenish,$saturation:-10%); // Varies the saturation of a given color + shinier / - darker and duller
+//$greenish-lightened: adjust-color($greenish,$hue:30deg); // Changes the color hue itsellf
+//$greenish-lightened: adjust-color($greenish,$lightness: 10% );

@@ -1,47 +1,142 @@
 ﻿@import "theme";
 @import "utils";
 
-body {
-  color: white;
-  margin: 0;
+* {
   padding: 0;
-  background: $color2;
+  margin: 0;
 }
 
-
-h1{
-  margin:1em;
-  background: #b4d7de;
-  padding:1em;
+body {
+  @include flex-container(column, nowrap);
+  color: white;
+  background: $l-blue-dull;
 }
 
-
-menu {
-  @include flex-container(row,wrap);
+//Flex row header
+header {
+  @include flex-item(10vh, 1, 0);
   
+  @include flex-container(row,wrap);
+  @include xa-align-children(stretch);
+  
+  &>*:not(h1){
+    color:$yellowish;
+    
+  }
+  
+  >*{
+    @include flex-item(20%,1,1);
+    @include xa-align-self(center);
+  }
+  box-sizing: border-box;
+  
+  margin: 1em;
+  padding: 1em;
+  background: $mid-blue;
+  
+  h1 {
+  }
+
+}
+//Flex row Menu
+menu {
+  @include flex-item(80vh, 1, 1);
+  max-height: 80vh;
+  
+  margin: 0 5em;
+  @include flex-container(row, wrap);
+
   ul {
-    @include  flex-item(33%,0,1);
-    @include flex-container(column,wrap);
+    @include flex-item(33%, 1, 1);
+    @include flex-container(column, wrap);
     
     list-style: none;
     color: white;
     text-decoration: none;
 
     li {
+      $menu-item-color:$d-blue;
+      
+      @include flex-item(10vh 1,1);
+      @include flex-container(column,nowrap);
+      
+      //align links horizontally and vertically.
+      @include ma-align-content(center);
+      @include xa-align-children(center);
+      
       margin-bottom: 1em;
-      background-color: #bd8696;
+      background: $menu-item-color;
       padding: 1vh;
-    }
 
-    a,a:visited{
-      color: inherit;
-      text-decoration: inherit;
+      a, a:visited, a:hover {
+        font-size: large;
+        display: flex;
+        color: inherit;
+        text-decoration: inherit;
+      }
+      
+      
+      &:hover{
+        color:$yellowish;
+        background: lighten($menu-item-color,10 );
+      }
+      
+      
+      
+      
       
     }
+
+    
 
   }
 
 }
+//Flex row footer
+footer {
+  @include flex-item(10vh, 1, 1);
 
 
+  @include flex-container(row, wrap);
+  background: $mid-blue;
+  margin: 1em;
+  padding: 1em;
+
+  text-align: center;
+
+  h6 {
+    padding: 0.3em 0;
+    font-size: small;
+    border-bottom: 0.2em solid $yellowish;
+  }
+
+  ul {
+    font-size: x-small;
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    @include flex-item(33%, 0, 1);
+    @include flex-container(column, wrap);
+
+    h6 {
+
+    }
+
+    li {
+      display: inline-flex;
+      margin: 0.2em 0;
+
+      &:first-of-type {
+        @include xa-align-self(flex-start);
+      }
+
+      &:last-of-type {
+        @include xa-align-self(flex-end);
+      }
+    }
+
+
+  }
+}
 

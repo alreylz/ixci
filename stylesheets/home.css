@@ -1,25 +1,53 @@
-body {
-  color: white;
-  margin: 0;
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
+* {
   padding: 0;
-  background: #6FAAB3;
+  margin: 0;
 }
 
-h1 {
+body {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  color: white;
+  background: #acd2d1;
+}
+
+header {
+  flex-basis: 10vh;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  box-sizing: border-box;
   margin: 1em;
-  background: #b4d7de;
   padding: 1em;
+  background: #5789a1;
 }
-
+header > *:not(h1) {
+  color: #fdd866;
+}
+header > * {
+  flex-basis: 20%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  align-self: center;
+}
 menu {
+  flex-basis: 80vh;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-height: 80vh;
+  margin: 0 5em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 menu ul {
   flex-basis: 33%;
-  flex-grow: 0;
-  flex-shrink: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -28,13 +56,67 @@ menu ul {
   text-decoration: none;
 }
 menu ul li {
+  flex-basis: 10vh 1;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 1em;
-  background-color: #bd8696;
+  background: #44546a;
   padding: 1vh;
 }
-menu ul a, menu ul a:visited {
+menu ul li a, menu ul li a:visited, menu ul li a:hover {
+  font-size: large;
+  display: flex;
   color: inherit;
   text-decoration: inherit;
+}
+menu ul li:hover {
+  color: #fdd866;
+  background: #586d89;
+}
+
+footer {
+  flex-basis: 10vh;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background: #5789a1;
+  margin: 1em;
+  padding: 1em;
+  text-align: center;
+}
+footer h6 {
+  padding: 0.3em 0;
+  font-size: small;
+  border-bottom: 0.2em solid #fdd866;
+}
+footer ul {
+  font-size: x-small;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-basis: 33%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+footer ul li {
+  display: inline-flex;
+  margin: 0.2em 0;
+}
+footer ul li:first-of-type {
+  align-self: flex-start;
+}
+footer ul li:last-of-type {
+  align-self: flex-end;
 }
 
 /*# sourceMappingURL=home.css.map */

@@ -1,12 +1,15 @@
 ﻿@import "theme";
 @import "utils";
 
+
+
+
 body {
   margin: 0;
   padding: 0 2em 0 2em;
   background-color: #6FAAB3;
   font-family: 'Merriweather', serif;
-  font-size: large;
+  font-weight: lighter;
 }
 
 h1 {
@@ -22,6 +25,10 @@ p {
   padding: 1.5em;
   border: white solid 0.2em;
   background: white;
+}
+p br{
+  display:block;
+  margin:0.5em 0;
 }
 
 div {

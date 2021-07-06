@@ -1,9 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
 body {
   margin: 0;
   padding: 0 2em 0 2em;
   background-color: #6FAAB3;
   font-family: "Merriweather", serif;
-  font-size: large;
+  font-weight: lighter;
 }
 
 h1 {
@@ -19,6 +20,11 @@ p {
   padding: 1.5em;
   border: white solid 0.2em;
   background: white;
+}
+
+p br {
+  display: block;
+  margin: 0.5em 0;
 }
 
 div {
@@ -102,7 +108,7 @@ q:before {
   display: inline-flex;
   align-items: stretch;
   gap: 0.3em 2em;
-  background: #B39762;
+  background: #44546a;
 }
 #results-div h3 {
   margin: 0;
