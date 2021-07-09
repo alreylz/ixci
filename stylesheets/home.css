@@ -34,6 +34,10 @@ header > * {
   flex-shrink: 1;
   align-self: center;
 }
+header h1 {
+  font-size: xx-large;
+}
+
 menu {
   flex-basis: 80vh;
   flex-grow: 1;
@@ -55,28 +59,27 @@ menu ul {
   color: white;
   text-decoration: none;
 }
-menu ul li {
+menu ul a, menu ul a:visited, menu ul a:hover {
+  font-size: x-large;
   flex-basis: 10vh 1;
   flex-grow: 1;
   flex-shrink: 1;
   display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1em;
   background: #44546a;
-  padding: 1vh;
-}
-menu ul li a, menu ul li a:visited, menu ul li a:hover {
-  font-size: large;
-  display: flex;
   color: inherit;
   text-decoration: inherit;
+  margin-bottom: 1em;
 }
-menu ul li:hover {
+menu ul a:hover, menu ul a:visited:hover, menu ul a:hover:hover {
   color: #fdd866;
   background: #586d89;
+}
+menu ul li {
+  display: flex;
 }
 
 footer {

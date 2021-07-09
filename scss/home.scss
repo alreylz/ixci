@@ -15,83 +15,80 @@ body {
 //Flex row header
 header {
   @include flex-item(10vh, 1, 0);
-  
-  @include flex-container(row,wrap);
+
+  @include flex-container(row, wrap);
   @include xa-align-children(stretch);
-  
-  &>*:not(h1){
-    color:$yellowish;
-    
+
+  & > *:not(h1) {
+    color: $yellowish;
+
   }
-  
-  >*{
-    @include flex-item(20%,1,1);
+
+  > * {
+    @include flex-item(20%, 1, 1);
     @include xa-align-self(center);
   }
+
   box-sizing: border-box;
-  
+
   margin: 1em;
   padding: 1em;
   background: $mid-blue;
-  
+
   h1 {
+    font-size: xx-large;
   }
 
 }
+
 //Flex row Menu
 menu {
   @include flex-item(80vh, 1, 1);
   max-height: 80vh;
-  
+
   margin: 0 5em;
   @include flex-container(row, wrap);
 
   ul {
+    $menu-item-color: $d-blue;
     @include flex-item(33%, 1, 1);
     @include flex-container(column, wrap);
-    
+
     list-style: none;
     color: white;
     text-decoration: none;
 
-    li {
-      $menu-item-color:$d-blue;
+
+    a, a:visited, a:hover {
+      font-size: x-large;
+
+      @include flex-item(10vh 1, 1);
       
-      @include flex-item(10vh 1,1);
-      @include flex-container(column,nowrap);
-      
-      //align links horizontally and vertically.
+      @include flex-container(row,wrap);
       @include ma-align-content(center);
       @include xa-align-children(center);
-      
-      margin-bottom: 1em;
+
       background: $menu-item-color;
-      padding: 1vh;
 
-      a, a:visited, a:hover {
-        font-size: large;
-        display: flex;
-        color: inherit;
-        text-decoration: inherit;
+
+      color: inherit;
+      text-decoration: inherit;
+      margin-bottom: 1em;
+
+      &:hover {
+        color: $yellowish;
+        background: lighten($menu-item-color, 10);
       }
-      
-      
-      &:hover{
-        color:$yellowish;
-        background: lighten($menu-item-color,10 );
-      }
-      
-      
-      
-      
-      
     }
-
+    
+    li{display: flex;}
+   
     
 
   }
 
 }
+
 //Flex row footer
 footer {
   @include flex-item(10vh, 1, 1);
