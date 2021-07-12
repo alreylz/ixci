@@ -9,7 +9,7 @@ const WsMessageTypes = {
 
 
 //Set to true if you want attempt auto connection of a browser client to the local ip.
-const AUTO_CONNECT_LOCAL = true;
+const AUTO_CONNECT_LOCAL = false;
 const DEFAULT_PORT = 9030;
 const DEFAULT_IP = "localhost";
 
@@ -24,7 +24,7 @@ setInterval(() => {
     if (socket == undefined) {
         document.querySelector("#pageContent").style.display = "none";
     } else {
-        document.querySelector("#pageContent").style.display = "block";
+        document.querySelector("#pageContent").style.display = "initial";
     }
 }, 3000);
 
@@ -57,7 +57,7 @@ if (AUTO_CONNECT_LOCAL) {
 } else {
     // Obtain hostname or <IpAddress:Port> to use for websocket connection from within the page.
     let connectToTxtBox = document.getElementById("hostname").value;
-
+    
     if (connectToTxtBox.startsWith("ws")) {
         socket = new WebSocket(websocketURL = `${connectToTxtBox}`)
     } else {
@@ -71,6 +71,16 @@ tryConnectWS();
 
 function tryConnectWS() {
 
+    
+    if(socket == undefined){
+        let connectToTxtBox = document.getElementById("hostname").value;
+        if (connectToTxtBox.startsWith("ws")) {
+            socket = new WebSocket(websocketURL = `${connectToTxtBox}`)
+        } else {
+            socket = new WebSocket(websocketURL = `ws://${connectToTxtBox}/`);
+        }
+    }
+    
 
     console.log(`[Websocket] Attempting Connection To : '${websocketURL}'  [AUTO_CONNECT_LOCAL=${AUTO_CONNECT_LOCAL}]`);
 
@@ -148,8 +158,13 @@ function tryConnectWS() {
 
                     //Display the received image data in Base 64
                     let imgElemForRemote = document.querySelector("#remoteView");
-                    imgElemForRemote.src = 'data:image/png;base64,' + wsMessageAsJavasriptObject.Data;
+                    
+                    //Decode as JPEG:
+                    // imgElemForRemote.src = 'data:image/jpeg;base64,' + wsMessageAsJavasriptObject.Data;
 
+                    //Decode as PNG
+                    imgElemForRemote.src = 'data:image/png;base64,' + wsMessageAsJavasriptObject.Data;
+                    
                     //@future There must be a better way
                     // var imageDataBuffer = new Uint8Array(msgObject.Data.imgData) ;
                     // console.log("BUFFER DATA" + imageDataBuffer);
@@ -296,9 +311,25 @@ function DisplayIncomingMessageInClientLog(msg) {
     //Formatting
     debugMessageDiv.setAttribute("class", "debugMsg");
 
+    
+    
     debugMessageDiv.textContent = msg; //event.data;
+    
+    try {
+       let parsedMsg=  JSON.parse(msg);
+        if( parsedMsg["MessageType"] === 2){
+            debugMessageDiv.textContent = `New Frame Received: ts=${parsedMsg["Timestamp"].toString()}s`;
+        }
+    }
+    catch (e){
+        
+    }
     clientLogDiv.appendChild(debugMessageDiv);
-
+    
+    
+    
+    
+    
 }
 
 function ClearClientLog() {

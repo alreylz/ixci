@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
 body {
   margin: 0;
   padding: 0;
@@ -191,6 +192,25 @@ h3, h4, h5, h6 {
   flex: 1 1 auto;
 }
 
+.card-f {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.card-f div {
+  flex-basis: 80%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.card-f button {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .card-content-default {
   padding: 1em 0.6em;
   margin: 0;
@@ -295,10 +315,17 @@ h3, h4, h5, h6 {
   margin-top: 1vh;
   min-height: 200px;
   max-height: 400px;
-  width: 90%;
+  flex-basis: 80vh;
+  flex-grow: 0;
   overflow-y: scroll;
+  overflow-x: hidden;
   color: white;
   border: 0.5em solid dimgray;
+}
+#client-log button {
+  flex-basis: 20vh;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .card-small {

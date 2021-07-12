@@ -221,6 +221,21 @@ h3, h4, h5, h6 {
   flex: 1 1 auto;
 }
 
+.card-f{
+  @include flex-item();
+  @include flex-container(row,wrap);
+  
+  div{
+  
+    @include flex-item(80%,0,0);
+  }
+  button{
+    @include flex-item();
+  }
+  
+  
+}
+
 .card-content-default {
   padding: 1em 0.6em;
   margin: 0;
@@ -323,15 +338,26 @@ h3, h4, h5, h6 {
 
 /* Terminal styling */
 #client-log {
+  
   background-color: black;
   margin: 0 auto;
   margin-top: 1vh;
   min-height: 200px;
   max-height: 400px;
-  width: 90%;
+  flex-basis: 80vh;
+  flex-grow:0;
+  //width: 90%;
+  
   overflow-y: scroll;
+  overflow-x: hidden;
   color: white;
   border: 0.5em solid dimgray;
+  
+  button {
+    @include flex-item(20vh,0,0);
+  }
+  
+  
 }
 
 .card-small {
@@ -353,6 +379,7 @@ h3, h4, h5, h6 {
 }
 
 #terminalActions > button {
+  
   margin: 0.5em 0.5em;
   padding: 2em;
   color: white;
