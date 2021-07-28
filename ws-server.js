@@ -27,6 +27,12 @@ let game_clients = [];
 app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
 });
+app.get('/test', function (req, res) {
+    res.sendFile(__dirname + '/html/grid-test.html');
+});
+
+
+
 
 
 app.get('/msii-monitor', function (req, res) {
