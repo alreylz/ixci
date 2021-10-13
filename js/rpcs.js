@@ -1,8 +1,10 @@
-﻿// Here we define the functions used to send information to execute a command in the remote game client/s
+﻿// JS Client TO Unity Game Communication
+// Here we define the functions used to SEND information to execute a command in the remote game client/s
+
 
 
 class RPCMessage{
-    
+    // Represents a message going from JS to Unity C#
     constructor(msgType = 0,opCode,DataDic,OptionsDic) {
     this.MessageType = msgType;
     this.OpCode = opCode;
@@ -34,6 +36,9 @@ function RPCCallsHookup( _ws /*a websocket instance*/) {
     document.querySelector('[data-id$=ShowEdges]').addEventListener("click", () => ChangeEdgesVisibility(true,_ws));
 
     document.querySelector('[data-id$=GameMonitoringConfiguration]').addEventListener("click", () => GameMonitoringConfiguration(_ws));
+    
+    
+    
     
     
 }

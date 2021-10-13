@@ -32,7 +32,10 @@ app.get('/test', function (req, res) {
 });
 
 
-
+app.get('/', function (req, res) {
+    console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
+    res.sendFile(__dirname + '/html/cPageRemake.html');
+});
 
 
 app.get('/msii-monitor', function (req, res) {

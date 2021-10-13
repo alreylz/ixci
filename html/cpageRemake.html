@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; utf-8">
+    <meta charset="UTF-8">
+    <title> @alreylz WOZ client </title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Header -->
+<header class="card-set-row neat-card">
+    <h1> WOZ Browser Client [Remade] </h1>
+</header>
+
+<!-- Body -->
+
+
+<!-- Prompt to connect to a remote websocket server -->
+<section id="s-connection-prompt">
+    <h3> Remote Connection Prompt</h3>
+    <label for="f-hostname"> Enter here the hostname of the server to connect to (starting by ws://) </label>
+    <input id="f-hostname" type="text" value="ws://"/>
+    <button id="connect" onclick="AttemptWSServerConnect();"> Connect</button>
+</section>
+
+<!-- Box showing the status of the connection with the websocket server -->
+<div id="ws-server-connection-status">
+    <h3> WebSocket Server Connection Status:</h3>
+    <ul>
+        <li>AUTO_CONNECT_LOCAL:<span data-id="connect-configuration"> </span></li>
+        <li>Connection:<span class="status-box"> </span></li>
+        <li>Hostname: <span id="conn-hostname"> </span></li>
+    </ul>
+</div>
+
+<!-- Consola donde se muestran los mensajes que irán llegando -->
+<section>
+    <h3> Full Log:</h3>
+    <hr/>
+    <div id="client-log">
+        Aquí van todos los mensajes que van llegando
+    </div>
+    <!-- here raw incoming messages will be put -->
+    <button  onclick="ClearClientLog()"> Clear log</button>
+</section>
+
+
+<section id="MonitoringSection">
+    <h2> Remote Monitoring </h2>
+    <hr/>
+
+    <!-- General status : e.g. active Scene (Last message received) -->
+    <section id="GeneralStatusSection">
+        <h3>Scene data</h3>
+        <ul>
+            <li>Current Unity Scene: <span data-id="m-SceneName"> N/A </span></li>
+            <li>ActiveGraph: <span data-id="m-ActiveGraphName"> N/A </span></li>
+        </ul>
+
+        <h3>Antilatency Devices</h3>
+        <span data-id="m-AntilatencyDeviceList"> N/A </span>
+
+    </section>
+    <!-- Basic Experiment metrics -->
+    <section id="UserPerformanceMonitoring">
+        <h3>Metrics</h3>
+        <ul>
+            <li>Travelled Distance: <span data-id="m-TravelledDistance"> N/A </span></li>
+            <li>Interaction Summary: <span data-id="m-InteractionSummary"> N/A </span></li>
+            <li>Interaction Detail: <span data-id="m-DetailInteraction"> N/A </span></li>
+            <li>Timers Summary: <span data-id="m-TimersSummary"> N/A </span></li>
+        </ul>
+        
+        <!-- Minigame Solution: Which nodes go in which slots  -->
+        <section id="MinigameSolutionPanel">
+            <h3 >Expected results</h3>
+            <p id="MinigameSolutionDisplay">
+                Here the expected results of the minigame are displayed.
+            </p>
+        </section>
+
+        <!-- User progress regarding the experiment -->
+        <section id="CurrentMinigameStatusPanel">
+            <h3 >Current Status</h3>
+            <p id="MinigameStatusDisplay">
+                Here the current progress of the minigame is showed (how the user is performing).
+            </p>
+        </section>
+
+
+        <!-- (COMPLEX) Position  and rotation map -->
+        <section id="GraphicPosRotMonitor" class="card-big card-set-col neat-card">
+            <div class="card-header card-header-gray">
+                <h3 class="card-header-h-gray"> User Position & Rotation Monitor</h3>
+            </div>
+            <!-- SVG Panel where the remote coords and rotation are represented -->
+            <svg id="world2D" width="100%" height="500" class="card-es">
+                <!-- User representation : a circle + a line which states the gazing direction -->
+                <g id="user-rep">
+                    <circle class="user-head-svg" cx="448" cy="250" r="15"></circle>
+                    <path id="user-head-dir"></path>
+                    <!-- <image class="user-head-icon" href="img1.JPG" x="0" y="0" width="1" height="1"/>-->
+                </g>
+
+            </svg>
+        </section>
+
+
+        <!-- (COMPLEX)remote user view -->
+        <section>
+            <h3 class="card-header-h"> Remote User View </h3>
+            <img id="remoteView" width="480px" height="320px" src=""/>
+        </section>
+    </section>
+
+
+</section>
+
+
+<section id="RPCForms">
+
+    <!-- Enclose each RPC call in a form -->
+
+    <!-- LOAD A UNITY SCENE -->
+    <form>
+        <label for="f-SceneName"> Load a Unity Scene: </label>
+        <select name="s-list-SceneName" >
+            <option value="Other" > Other </option>
+            <option value="Tutorial-BracerInteraction" >Tutorial-BracerInteraction</option>
+            <option value="Tutorial-Teleport" >Tutorial-Teleport</option>
+            
+            <option value="OrderingTask-BracerInteraction" >OrderingTask-BracerInteraction </option>
+            <option value="OrderingTask-Teleport" >OrderingTask-Teleport </option>
+            
+        </select>
+        <input id="f-SceneName" type="text"
+               placeholder="Write name of the scene to load in the remote side."/>
+        
+        
+        <button type="button" data-id="b-LoadScene"> Load Scene</button>
+    </form>
+
+    <!-- Experiment Type and Log configuration form: -->
+    <form>
+        <label for="f-ParticipantID" > Identifier of the user:</label>
+        <input  id="f-ParticipantID" type="text" placeholder="Put here the id of the user, to identify it"/>
+        <label for="f-ExpCondition"> Experimental Condition </label>
+        <select id="f-ExpCondition" name="f-NumExpCondition">
+            <option value="0"> Teleport</option>
+            <option value="1"> Physical Movement</option>
+        </select>
+        <button type="button" data-id="b-SetupExpTakeInfo"> Setup Experiment Info</button>
+    </form>
+
+
+    <!-- LOAD A GRAPH BY NAME (Needs to exist in the Game Client filesystem) -->
+    <form>
+        <label for="f-GraphName">Load a Graph: </label>
+        <input type="text"
+               placeholder="Enter the name of the graph to load."
+               id="f-GraphName"/>
+        <label for="checkbox-LoadRenderInfo"> Load Render Info? </label>
+        <input id="checkbox-LoadRenderInfo" type="checkbox" checked="true"/>
+        <button data-id="b-LoadGraph"> Load Graph</button>
+    </form>
+
+    <form>
+        <p> EDGE SHOWN STATUS : HIDDEN?</p>
+        <button type="button" data-id="b-HideEdges"> Hide edge/s</button>
+        <button type="button" data-id="b-ShowEdges"> Show edge/s</button>
+    </form>
+
+    <form>
+
+    </form>
+
+    <form>
+        <button type="button" data-id="b-EndExperiment"> End Experiment</button>
+    </form>
+
+
+    <!-- Working here -->
+
+    <!-- LATER: Div showing all timers that exist in the game if any -->
+
+    <h3> TIMERS</h3>
+
+    <!-- "Create a timer" form -->
+    <form>
+        <label> Create a new timer</label>
+        <input type="name"/>
+        <input type="button" value="New Timer (Not Started By default? )"/>
+    </form>
+
+
+    <form>
+
+        <ul>
+            <!-- Por cada timer existente, mostrar un nuevo li -->
+            <li>
+
+                <label> NOMBRE DEL TIMER <span> STATUS DEL TIMER </span></label>
+                <!-- Mostrar solo algunos de los botones dependiendo del estado -->
+                <button data-id="b-StartNamedTimer">Start Named Timer</button>
+                <button data-id="b-StartNamedTimer">Resume Named Timer</button>
+                <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
+                <button data-id="b-ResetNamedTimer">Stop Named Timer</button>
+            </li>
+        </ul>
+    </form>
+
+
+    <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
+    <h3 class="card-header card-es">
+        <span class="card-header-h">Periodic Websocket Monitoring configuration</span>
+    </h3>
+    <form>
+
+        <h4>Current configuration</h4>
+        <p>
+            Here you can put whatever is currently being monitored.
+        </p>
+
+
+        <label for="checkbox-MonitorGameView"> Monitor Game View </label> <input
+            id="checkbox-MonitorGameView"
+            type="checkbox" checked="checked"/>
+        <label for="f-TMonitorGameview"> Period </label> <input type="number" id="f-TMonitorGameview">
+
+
+        <label for="checkbox-MonitorPosRot"> Monitor User position and rotation </label> <input
+            id="checkbox-MonitorPosRot" type="checkbox" checked="checked"/>
+        <label for="f-TMonitorPosRot"> Monitoring period </label> <input type="number"
+                                                                         id="f-TMonitorPosRot"/>
+
+        <button type="button" class="" data-id="b-GameMonitoringConfiguration"> Send Changes</button>
+    </form>
+
+
+</section>
+
+<!-- f- for field names -->
+<!-- b- for button id's -->
+<!-- m- for remote monitoring display -->
+
+<footer class="card-es card-set-row neat-card x-axis-align-fill">
+    <h4 class="card-es x-axis-align-c m-axis-self-stretch "> Alejandro Rey López @uc3m </h4>
+    <ul class="card-es m-axis-self-stretch text-center x-axis-align-c">
+        <li>Github</li>
+        <li>Linkedin</li>
+        <li>Web</li>
+    </ul>
+</footer>
+
+<script src="rpcs2.js"></script>
+<script src="browser-client2.js"></script>
+
+</body>
+
+
+</html>
