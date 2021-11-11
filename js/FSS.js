@@ -249,15 +249,24 @@ function postResults() {
 
         console.log(qAnswers[q - 1]);
     }
-    //window.location.host
-    postJsonFileToRemote("http://localhost:9030/questionnaires", userID, {
+    
+    alert("Se van a enviar los datos al server!")
+    
+    
+    let now = new Date();
+    let jsonObj = {
         "UserID": userID,
         "Timestamp":  `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}  `+ `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`,
         "Flow Level": flowLevelResult,
         "Anxiety Level": anxietyLevelResult,
         "Challenge Level": challengeLevelResult,
         "Q Answers": qAnswers
-    }, "fss").then(() => alert("Sucessfully submitted the questionnaire."));
+    };
+    
+    //window.location.host
+    postJsonFileToRemote("/questionnaires", userID,jsonObj, "fss").then(() => alert("Sucessfully submitted the questionnaire."));
+
+    alert("Datos enviados" + jsonObj)
 
 
 }

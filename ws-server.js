@@ -33,7 +33,7 @@ app.get('/test', function (req, res) {
 
 
 app.get('/', function (req, res) {
-    console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
+    //console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
     res.sendFile(__dirname + '/html/cPageRemake.html');
 });
 
@@ -52,14 +52,111 @@ app.get('/flow.sc', function (req, res) {
 });
 
 
+app.put('/data.save', function (req, resp) {
+    
+    console.log("Received request to /data.save")
+    
+    if (req.method !== 'PUT'){
+        resp.status(400).send({ message: 'Only POST requests allowed' })
+        return;
+    }
+    
+    console.log("Obtaining a PUT request dude");
+
+    
+    //Procesamiento por chunks hasta completar el cacharro enviado
+    let data = '';
+    req.on('data', chunk => {
+        data += chunk;
+    })
+    req.on('end', () => {
+        console.log(JSON.parse(data)); 
+        resp.end();
+    })
+    
+    
+    
+    
+    // const actualData  = JSON.stringify(req.body);
+    // // = JSON.parse(req.body);
+    // console.log(actualData);
+    resp.status(200).send({message: ' JSON Correctly received!!'})
+    
+    
+});
+
+
+app.post('/file.save', function (req, resp) {
+
+    console.log("Received request to /file.save")
+
+    if (req.method !== 'POST'){
+        resp.status(400).send({ message: 'Only POST requests allowed' })
+        return;
+    }
+
+    //let whereToSave = `${__dirname}/${ED_SAVEPATH}${req.body.filename}.${req.body.type}`;
+
+    console.log("'/file.save' POST REQUEST received:");
+    console.log(req);
+
+    //console.log(JSON.parse(req.body))
+    //Procesamiento por chunks hasta completar el cacharro enviado
+    let data = '';
+    req.on('data', chunk => {
+        data += chunk;
+    })
+    req.on('end', () => {
+        //save
+        console.log(data)
+
+        //We write the file to disk in the configured directory.
+        console.log("GUARDANDO ARCHIVO WTF");
+        fs.writeFile(`${__dirname}/${Q_SAVEPATH}/cosaQueVieneDeClient.jpeg`, data ,
+            function (err) {
+                if (err) {
+                    return console.log("ERROR GUARDANDO ARCHIVO WTF");
+                }
+                console.log("GUARDANDO ARCHIVO WTF");
+            });
+        
+        
+        resp.end();
+    })
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+
+    // const actualData  = JSON.stringify(req.body);
+    // // = JSON.parse(req.body);
+    // console.log(actualData);
+    resp.status(200).send({message: ' JSON Correctly received!!'})
+
+
+});
+
+
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+//Extra attempts:
+// fileUpload = require('express-fileupload')
+// app.use(express.json()) // for parsing application/json
 
 
 // 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS. 
 const Q_SAVEPATH = "logging/exp1/"
+const ED_SAVEPATH = "logging/exp1/"
 let fs = require('fs');
-fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`,{recursive:true}).then( () => console.log("Success on initialising the persistency directories for questionniaires")).catch(() => console.log("SHIT, something went wrong dudeeeee!"));
+const {response} = require("express");
+fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`, {recursive: true}).then(() => console.log("Success on initialising the persistency directories for questionniaires")).catch(() => console.log("SHIT, something went wrong dudeeeee!"));
 
 
 //saves the json data it receives as a file in the server side.
@@ -71,21 +168,18 @@ app.post('/questionnaires', function (req, res) {
     console.log(req.body);
 
     //We write the file to disk in the configured directory.
-    fs.writeFile(whereToSave, JSON.stringify(req.body.data,undefined,3), 
+    fs.writeFile(whereToSave, JSON.stringify(req.body.data, undefined, 3),
         function (err) {
-        if (err) {
-            return console.log(`Error saving the questionnaire file at ${whereToSave}:  ${err}.`);
-        }
-        console.log(`Successfully saved the questionnaire data at ${whereToSave}.`);
-    });
+            if (err) {
+                return console.log(`Error saving the questionnaire file at ${whereToSave}:  ${err}.`);
+            }
+            console.log(`Successfully saved the questionnaire data at ${whereToSave}.`);
+        });
 
 
     res.send('Saved successfully the file for the user' + req.body.userID)
 
 })
-
-
-
 
 
 // Aquí está obteniendo el servidor de web sockets, diciéndole que ha creado un server de http a manita.
