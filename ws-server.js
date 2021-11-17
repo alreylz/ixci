@@ -9,8 +9,6 @@ const server = require('http').Server(app);
 
 // Configuration
 var port = process.env.PORT || 9030;
-
-
 const WebSocket = require('ws');
 
 
@@ -21,23 +19,72 @@ const browser_sockets = [];
 let game_clients = [];
 
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+
+// 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS. 
+const Q_SAVEPATH = "logging/exp1/"; // Specifies where to save Questionnaires
+const EXP_DATA_SAVEPATH = "logging/exp1/"; //Specifies where to save Experiment Logs within the server.
+
+
+const multer = require('multer'); // Library to process multipart requests
+
+
+//Setup where received files will be stored.
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, `${__dirname}/${EXP_DATA_SAVEPATH}`);
+    },
+    filename: function (req, file, cb) {
+        // const uniqueSuffix = 
+        //     Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.originalname);
+    }
+})
+
+
+const upload = multer({
+        storage: storage,
+        //Filtro para que solo se acepten ciertas extensiones de archivo.
+        fileFilter: function (req, file, callback) {
+            let re = /(?:\.([^.]+))?$/;
+            let extension = re.exec(file.originalname);
+            console.log(extension[1]);
+            if (extension[1] !== 'experiment') {
+                return callback(new Error('Only .experiment files are allowed'))
+            }
+            callback(null, true)
+        }
+    })
+;
+
+
+// Dónde se guardarán los datos.
+let fs = require('fs');
+const {response} = require("express");
+
+//Creación de directorios para guardado de datos si estos noexisten ya.
+fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`, {recursive: true})
+    .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for questionnaires : " + `${__dirname}/${Q_SAVEPATH}`))
+    .catch(() => console.error("[ERROR] Something went wrong initialising directory : " + `${__dirname}/${Q_SAVEPATH}`));
+
+fs.promises.mkdir(`${__dirname}/${EXP_DATA_SAVEPATH}`, {recursive: true})
+    .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for Experiment Logs : " + `${__dirname}/${EXP_DATA_SAVEPATH}`))
+    .catch(() => console.error("[ERROR] Something went wrong initialising directory : " + `${__dirname}/${EXP_DATA_SAVEPATH}`));
+
+
 /* SUPPORTED URL PATTERNS */
-
-
+app.get('/', function (req, res) {
+    //console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
+    res.sendFile(__dirname + '/html/cPageRemake.html');
+});
 app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
 });
 app.get('/test', function (req, res) {
     res.sendFile(__dirname + '/html/grid-test.html');
 });
-
-
-app.get('/', function (req, res) {
-    //console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
-    res.sendFile(__dirname + '/html/cPageRemake.html');
-});
-
-
 app.get('/msii-monitor', function (req, res) {
     console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
     res.sendFile(__dirname + '/html/cpage.html');
@@ -52,46 +99,62 @@ app.get('/flow.sc', function (req, res) {
 });
 
 
-app.put('/data.save', function (req, resp) {
-    
-    console.log("Received request to /data.save")
-    
-    if (req.method !== 'PUT'){
-        resp.status(400).send({ message: 'Only POST requests allowed' })
+//Receives .experiments files from client and saves it in the server's filesystem.
+app.post('/ExpData.save', upload.single('fileFieldName'), function (req, resp) {
+
+    console.log(req.file);
+    console.log("Received request to /file.save2")
+    if (req.method !== 'POST') {
+        resp.status(400).send({message: 'Only POST requests allowed'})
         return;
     }
-    
+
+    //let whereToSave = `${__dirname}/${ED_SAVEPATH}${req.body.filename}.${req.body.type}`;
+
+    console.log("'/file.save2' POST REQUEST received:");
+    console.log(req.body);
+});
+
+
+app.put('/data.save', function (req, resp) {
+
+    console.log("Received request to /data.save")
+
+    if (req.method !== 'PUT') {
+        resp.status(400).send({message: 'Only POST requests allowed'})
+        return;
+    }
+
     console.log("Obtaining a PUT request dude");
 
-    
+
     //Procesamiento por chunks hasta completar el cacharro enviado
     let data = '';
     req.on('data', chunk => {
         data += chunk;
     })
     req.on('end', () => {
-        console.log(JSON.parse(data)); 
+        console.log(JSON.parse(data));
         resp.end();
     })
-    
-    
-    
-    
+
+
     // const actualData  = JSON.stringify(req.body);
     // // = JSON.parse(req.body);
     // console.log(actualData);
     resp.status(200).send({message: ' JSON Correctly received!!'})
-    
-    
+
+
 });
 
 
+//This saves in a differente way.
 app.post('/file.save', function (req, resp) {
 
     console.log("Received request to /file.save")
 
-    if (req.method !== 'POST'){
-        resp.status(400).send({ message: 'Only POST requests allowed' })
+    if (req.method !== 'POST') {
+        resp.status(400).send({message: 'Only POST requests allowed'})
         return;
     }
 
@@ -112,26 +175,17 @@ app.post('/file.save', function (req, resp) {
 
         //We write the file to disk in the configured directory.
         console.log("GUARDANDO ARCHIVO WTF");
-        fs.writeFile(`${__dirname}/${Q_SAVEPATH}/cosaQueVieneDeClient.jpeg`, data ,
+        fs.writeFile(`${__dirname}/${Q_SAVEPATH}/cosaQueVieneDeClient.jpeg`, data,
             function (err) {
                 if (err) {
                     return console.log("ERROR GUARDANDO ARCHIVO WTF");
                 }
                 console.log("GUARDANDO ARCHIVO WTF");
             });
-        
-        
+
+
         resp.end();
     })
-    
-    
-    
-    
-    
-    
-    
-
-    
 
 
     // const actualData  = JSON.stringify(req.body);
@@ -141,22 +195,6 @@ app.post('/file.save', function (req, resp) {
 
 
 });
-
-
-
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());
-//Extra attempts:
-// fileUpload = require('express-fileupload')
-// app.use(express.json()) // for parsing application/json
-
-
-// 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS. 
-const Q_SAVEPATH = "logging/exp1/"
-const ED_SAVEPATH = "logging/exp1/"
-let fs = require('fs');
-const {response} = require("express");
-fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`, {recursive: true}).then(() => console.log("Success on initialising the persistency directories for questionniaires")).catch(() => console.log("SHIT, something went wrong dudeeeee!"));
 
 
 //saves the json data it receives as a file in the server side.
@@ -182,6 +220,22 @@ app.post('/questionnaires', function (req, res) {
 })
 
 
+printAnsweringUrls();
+
+
+function printAnsweringUrls() {
+
+    console.log("[ANSWERING URLS] --------------------")
+    app._router.stack.forEach(function (layer) {
+        let ruta = layer.route;
+        if (ruta !== undefined) {
+            console.log(ruta.path);
+        }
+    });
+    console.log("------------------------------------")
+
+}
+
 // Aquí está obteniendo el servidor de web sockets, diciéndole que ha creado un server de http a manita.
 const wss = new WebSocket.Server({server}, {port: port});
 
@@ -197,37 +251,60 @@ wss.getUniqueID = function () {
 };
 
 
-//
-// console.log(wss.getUniqueID())
-// console.log(wss.getUniqueID())
+// Devuelve un json con los ids de los clientes de browser y/o game clients para ver estado.
+app.get('/ActiveConnections', (req, res) => {
+    console.log("Requested Active Connection Listing");
+    let objToSend = listActiveWSs();
+    res.json(objToSend);
+});
 
 
-//const IntervalListSocketsHandle = setInterval(() => listActiveWSs(), 15 * 1000);
+//Lists all the websockets connections handled by the ws-server  
+function listActiveWSs() {
 
 
-// function listActiveWSs(){
-// //Lists all the websockets connections handled by the ws-server    
-//     console.log("\n\n\n[STATUS] >> ACTIVE WEBSOCKETS ?");
-//     if(browser_sockets == 'undefined' || browser_sockets.length <= 0){
-//         console.log('\t NO BROWSER SOCKETS ACTIVE ')
-//     }
-//     else {
-//         console.log(`Browser sockets: #${browser_sockets.length}`);
-//         browser_sockets.forEach(el => console.log(`\t ${el.id}`))
-//     }   
-//    
-//     if( game_clients == 'undefined' || game_clients.length <= 0 ) {
-//         console.log('\t NO GAME SOCKETS ACTIVE ')
-//     }
-//     else{
-//         console.log(`Game clients: #${game_clients.length}`);
-//         game_clients.forEach(el => console.log(`\t ${el.id}`))
-//     }
-//    
-//     let t = Date.now();
-//     console.log('----'); //Last update on '+ t.toDateString() );
-//        
-// }
+    let wsStatusList = {};
+
+    wsStatusList["BrowserClients"] = [];
+    wsStatusList["GameClients"] = [];
+
+    console.log("\n\n\n[STATUS] >> ACTIVE WEBSOCKETS ?");
+    if (browser_sockets == 'undefined' || browser_sockets.length <= 0) {
+        console.log('\t NO BROWSER SOCKETS ACTIVE ')
+    } else {
+        console.log(`Browser sockets: #${browser_sockets.length}`);
+        browser_sockets.forEach(el => {
+                console.log(`\t ${el.id}`);
+                wsStatusList.BrowserClients.push(el.id);
+            }
+        )
+
+    }
+    if (game_clients == 'undefined' || game_clients.length <= 0) {
+        console.log('\t NO GAME SOCKETS ACTIVE ')
+    } else {
+        console.log(`Game clients: #${game_clients.length}`);
+        game_clients.forEach(el => {
+            console.log(`\t ${el.id}`);
+            wsStatusList.GameClients.push(el.id);
+
+        });
+
+    }
+    let date_ob = new Date();
+    // current hours
+    let hours = date_ob.getHours();
+    // current minutes
+    let minutes = date_ob.getMinutes();
+    // current seconds
+    let seconds = date_ob.getSeconds();
+
+    console.log(`timestamp: ${hours}:${minutes}:${seconds}`);
+
+    console.log('----\n'); //Last update on '+ t.toDateString() );
+
+    return wsStatusList;
+}
 
 
 //When a connection is established on a websocket.
@@ -325,81 +402,3 @@ process.on('SIGINT', function () {
 
     process.exit();
 });
-
-
-// const express = require('express')
-//
-// const app = express()
-// const port = 8080
-//
-// app.get('/', function get(req,res){
-//     //console.log(req);
-//     res.send('Response from the server')
-// })
-//
-//
-//
-// app.get('/sth', function get(req,res){
-//     //console.log(req);
-//     res.sendFile("cpage.html",{root: "C:\\Users\\Alejandro Rey\\Desktop\\GitHub\\ws-msii\\html"})
-//     //res.send('Page wsControl')
-// })
-//
-//
-//
-//
-//
-// app.listen(port, () => console.log("app listening "))
-//
-//
-//
-//
-//
-//
-//
-// // Serve static files in Express.
-// app.use('/pathOfChoosing', express.static('static'))
-
-
-// const ws = require('ws');
-//
-//
-// const listenPort = 8080;
-//
-// const wsServer = new ws.Server(
-//     { host: 'localhost', port: listenPort }
-// );
-//
-// console.log(Object.keys(wsServer))
-//
-//
-// wsServer.on('listening',(sth) => console.log(`Websocket server listening in port ${listenPort}`));
-//
-//
-// wsServer.on('connection', (_ws) => {
-//    
-//     //Connection receives a websocket instance, which we can then use to add callbacks when messages are received.
-//     // console.log(Object.keys(_ws))
-//    
-//     let numReceivedMsgs = 0;
-//     //Stating what to do when a message is received on the server.
-//     _ws.on('message', (msgIncoming) => {
-//         console.log(`Received message: ${msgIncoming}`);
-//         numReceivedMsgs += 1;
-//     });
-//    
-//    
-//     setInterval(() => { _ws.send(`message count ${numReceivedMsgs} so far.`)} , 1000);
-//    
-//    
-// });
-//
-//
-// wsServer.on('error',(_err) => console.log(`${_err}`) );
-//
-// wsServer.on('close', (sth) => console.log(`Closed server`));
-//    
-
-
-
-

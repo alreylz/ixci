@@ -47,7 +47,7 @@ function EndExperimentAndSave_SndMsg(_ws) {
 
 function SetupExperimentTakeInfo_SngMsg(_ws) {
 
-    let participantID = document.querySelector("#f-ParticipantID").value;
+        let participantID = document.querySelector("#f-ParticipantID").value;
     let experimentalCondition = document.querySelector('[name$=NumExpCondition]').value;
 
 
