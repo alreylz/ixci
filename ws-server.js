@@ -197,6 +197,29 @@ app.post('/file.save', function (req, resp) {
 });
 
 
+//Para guardar datos de log del experimento.
+app.post('/saveme.experiment', function (req,res){
+    
+    let whereToSave = `${__dirname}/${EXP_DATA_SAVEPATH}${req.body.userID}.experiment`;
+
+    console.log("'/saveme.experiment' POST REQUEST received. Will save incoming json as .experiment file");
+    console.log(req.body);
+
+    //We write the file to disk in the configured directory.
+    fs.writeFile(whereToSave, JSON.stringify(req.body, undefined, 3),
+        function (err) {
+            if (err) {
+                return console.log(`Error saving the .experiment file at ${whereToSave}:  ${err}.`);
+            }
+            console.log(`Successfully saved the .experiment data at ${whereToSave}.`);
+        });
+    
+    res.send(`Saved successfully the file for the user {req.body.userID}`);
+
+});
+
+
+
 //saves the json data it receives as a file in the server side.
 app.post('/questionnaires', function (req, res) {
 
