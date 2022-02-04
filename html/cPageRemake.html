@@ -52,7 +52,7 @@
         Aquí van todos los mensajes que van llegando
     </div>
     <!-- here raw incoming messages will be put -->
-    <button  onclick="ClearClientLog()"> Clear log</button>
+    <button onclick="ClearClientLog()"> Clear log</button>
 </section>
 
 
@@ -81,10 +81,10 @@
             <li>Interaction Detail: <span data-id="m-DetailInteraction"> N/A </span></li>
             <li>Timers Summary: <span data-id="m-TimersSummary"> N/A </span></li>
         </ul>
-        
+
         <!-- Minigame Solution: Which nodes go in which slots  -->
         <section id="MinigameSolutionPanel">
-            <h3 >Expected results</h3>
+            <h3>Expected results</h3>
             <p id="MinigameSolutionDisplay">
                 Here the expected results of the minigame are displayed.
             </p>
@@ -92,7 +92,7 @@
 
         <!-- User progress regarding the experiment -->
         <section id="CurrentMinigameStatusPanel">
-            <h3 >Current Status</h3>
+            <h3>Current Status</h3>
             <p id="MinigameStatusDisplay">
                 Here the current progress of the minigame is showed (how the user is performing).
             </p>
@@ -131,32 +131,47 @@
 <section id="RPCForms">
 
     <!-- Enclose each RPC call in a form -->
+    <form>
+        <label for="f-ParamValue"> Parameter tweaking (out of the list of modifiable parameters) and give it a value
+        <select name="s-list-paramNames">
+            <option value="GrabThreshold" data-type="float" >AntilatencyGrabThreshold</option>
+            <option value="AutoVibrate" data-type="bool">AutoVibrate</option>
+            <option value="VibrationIntensity" data-type="float">Vibration intensity</option>
+        </select>
+        <input id="f-ParamValue" type="text"
+               placeholder="Write name value for the parameter"/>
+        </label>
 
+        <button type="button" data-id="b-ParamTweak"> Confirm Tweaking </button>
+    </form>
+    
+    <hr/>
     <!-- LOAD A UNITY SCENE -->
     <form>
-        <label for="f-SceneName"> Load a Unity Scene: </label>
-        <select name="s-list-SceneName" >
-            <option value="Other" > Other </option>
-            <option value="Tutorial-BracerInteraction" >Tutorial-BracerInteraction</option>
-            <option value="Tutorial-Teleport" >Tutorial-Teleport</option>
-            
-            <option value="OrderingTask-BracerInteraction" >OrderingTask-BracerInteraction </option>
-            <option value="OrderingTask-Teleport" >OrderingTask-Teleport </option>
-            <option value="BipedalTaskWOculusTouch" >BipedalTaskWOculusTouch </option>
-            <option value="Tutorial-BipedalOculusTouch" >Tutorial-BipedalOculusTouch </option>
-            
-        </select>
-        <input id="f-SceneName" type="text"
-               placeholder="Write name of the scene to load in the remote side."/>
-        
-        
+        <label for="f-SceneName"> Load a Unity Scene:
+
+            <select name="s-list-SceneName">
+                <option value="Other"> Other</option>
+                <option value="Tutorial-BracerInteraction">Tutorial-BracerInteraction</option>
+                <option value="Tutorial-Teleport">Tutorial-Teleport</option>
+
+                <option value="OrderingTask-BracerInteraction">OrderingTask-BracerInteraction</option>
+                <option value="OrderingTask-Teleport">OrderingTask-Teleport</option>
+                <option value="BipedalTaskWOculusTouch">BipedalTaskWOculusTouch</option>
+                <option value="Tutorial-BipedalOculusTouch">Tutorial-BipedalOculusTouch</option>
+
+            </select>
+            <input id="f-SceneName" type="text"
+                   placeholder="Write name of the scene to load in the remote side."/>
+
+        </label>
         <button type="button" data-id="b-LoadScene"> Load Scene</button>
     </form>
 
     <!-- Experiment Type and Log configuration form: -->
     <form>
-        <label for="f-ParticipantID" > Identifier of the user:</label>
-        <input  id="f-ParticipantID" type="text" placeholder="Put here the id of the user, to identify it"/>
+        <label for="f-ParticipantID"> Identifier of the user:</label>
+        <input id="f-ParticipantID" type="text" placeholder="Put here the id of the user, to identify it"/>
         <label for="f-ExpCondition"> Experimental Condition </label>
         <select id="f-ExpCondition" name="f-NumExpCondition">
             <option value="0"> Teleport</option>

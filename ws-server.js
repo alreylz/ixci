@@ -328,8 +328,6 @@ function listActiveWSs() {
 
     return wsStatusList;
 }
-
-
 //When a connection is established on a websocket.
 wss.on('connection', function connection(_ws) {
 

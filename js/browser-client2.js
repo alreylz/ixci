@@ -318,7 +318,7 @@ function GeneralStatus_InputMsgProcesser(wsMessage) {
 
 function VisualizationInfo_InputMsgProcesser(wsMessage) {
 
-    let graphStats = JSON.parse(wsMessage.Data["GraphInfo"]);
+    //let graphStats = JSON.parse(wsMessage.Data["GraphInfo"]);
     // console.log("processsing current visualization data.")
     //console.log(graphStats)
 
