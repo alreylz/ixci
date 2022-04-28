@@ -1,0 +1,164 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
+@font-face {
+  font-family: "Rockwell";
+  src: url("fonts/ROCK.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+/* flex: grow shrink basis; */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #ffffff;
+  font-family: "Arial";
+}
+
+input {
+  background-color: white;
+  color: #3e80b0;
+  font-weight: bold;
+}
+
+li {
+  list-style: none;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: #44546a;
+}
+
+header, footer {
+  padding: 1em 0;
+  width: 100%;
+  background-color: inherit;
+}
+
+#console-sect {
+  flex: 1 0 50%;
+}
+
+#client-log {
+  /* Caja de la consola (donde se insertan los mensajes)*/
+  background-color: black;
+  text-align: left;
+  color: inherit;
+  display: block;
+  min-height: 15vh;
+  max-height: 25vh;
+  overflow-y: scroll;
+  overflow-x: scroll;
+}
+#client-log .debugMsg {
+  display: block;
+  text-align: inherit;
+  background-color: initial;
+}
+#client-log .debugMsg:before {
+  content: "@> ";
+  color: #feb500;
+}
+
+section section {
+  margin: 1em;
+  background-color: #7086a4;
+  border-radius: 8px;
+}
+
+section section section {
+  margin: 1em;
+  background-color: #90a0b7;
+}
+
+section {
+  margin: 0.5em;
+}
+
+h1 {
+  font-size: 50px;
+  padding: 0.1em;
+  background-color: #447faa;
+}
+
+h2 {
+  font-size: 32px;
+  padding: 0.1em;
+  background-color: #05a657;
+}
+
+h3 {
+  font-size: 24px;
+  padding: 0.1em;
+  border-radius: 8px;
+  margin-bottom: 0.5em;
+  background-color: #333333;
+}
+
+h4 {
+  font-size: 12px;
+  padding: 0.1em;
+  border-radius: 8px;
+  margin-bottom: 0.5em;
+  background-color: #333333;
+}
+
+h5 {
+  font-size: 8px;
+  padding: 0.1em;
+  border-radius: 8px;
+  margin-bottom: 0.5em;
+  background-color: #333333;
+}
+
+#RPCForms {
+  flex: 1 1 50%;
+}
+
+section > form {
+  background-color: #3e80b0;
+}
+
+form {
+  display: flex;
+  flex-flow: column wrap;
+  padding: 0.2em;
+}
+form label, form input, form textarea, form select, form button {
+  margin: 0.2em auto;
+  padding: 1em;
+}
+form label {
+  font-size: 1.5em;
+}
+
+button {
+  background-color: #feb500;
+}
+
+select {
+  background-color: #333333;
+}
+
+#visualMonitoring {
+  position: relative;
+}
+
+#remoteUserView {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 0.5;
+}
+
+#remoteUserView:hover {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 1;
+}
+
+/*# sourceMappingURL=browser-clientv2.css.map */

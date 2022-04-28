@@ -1,20 +1,23 @@
 ﻿//Monitoring / Wizard of OZ server code.
 
-const express = require('express'); /* We the express package to create a quick and dirty web-server */
+
+
+
+
+const express = require('express'); /* Express library to create Web-server */
 var app = express();
-
-
 //Object binding representing the web-server, which we generate via express.
 const server = require('http').Server(app);
 
-// Configuration
+// Configuration (ALLOW READ FROM ENVIRONMENT VARIABLES FILE)
+const dotenv = require('dotenv').config();
+
 var port = process.env.PORT || 9030;
 const WebSocket = require('ws');
 
 
 //  List of all non-game connections.
 const browser_sockets = [];
-
 // List of all game connections
 let game_clients = [];
 
@@ -64,11 +67,15 @@ const upload = multer({
 let fs = require('fs');
 const {response} = require("express");
 
-//Creación de directorios para guardado de datos si estos noexisten ya.
+// INIT
+// Creación de directorios para guardado de datos si estos no existen ya.
+
+//Folder para cuestionarios
 fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`, {recursive: true})
     .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for questionnaires : " + `${__dirname}/${Q_SAVEPATH}`))
     .catch(() => console.error("[ERROR] Something went wrong initialising directory : " + `${__dirname}/${Q_SAVEPATH}`));
 
+//Logs del propio experimento
 fs.promises.mkdir(`${__dirname}/${EXP_DATA_SAVEPATH}`, {recursive: true})
     .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for Experiment Logs : " + `${__dirname}/${EXP_DATA_SAVEPATH}`))
     .catch(() => console.error("[ERROR] Something went wrong initialising directory : " + `${__dirname}/${EXP_DATA_SAVEPATH}`));
@@ -82,9 +89,7 @@ app.get('/', function (req, res) {
 app.get('/home', function (req, res) {
     res.sendFile(__dirname + '/html/home.html');
 });
-app.get('/test', function (req, res) {
-    res.sendFile(__dirname + '/html/grid-test.html');
-});
+
 app.get('/msii-monitor', function (req, res) {
     console.log(`[GET] Accessed monitor page from IP ${req.ip}`);
     res.sendFile(__dirname + '/html/cpage.html');
@@ -344,7 +349,18 @@ wss.on('connection', function connection(_ws) {
                                             // so that we can distinguish between sockets later
                 browser_sockets.push(_ws);
                 console.log(`[NewWS][WOZ-CLIENT] ${_ws.id}`);
-                _ws.send("Connection established with Server. You are a browser_client");
+                _ws.send(`Connection established with Server. You are a browser_client with id ${_ws.id}`);
+                //PASS DATA TO CLIENT
+
+
+                //TODO: HEREEEE
+                const initData = new WebsocketMessage(-1,0,{
+                    wsId : _ws.id
+                })
+                _ws.send(JSON.stringify(initData) );
+
+
+
                 break;
             case 'mr': // if it is a game client, then we want to handle it in a different way.
                 _ws.id = wss.getUniqueID();
@@ -423,3 +439,16 @@ process.on('SIGINT', function () {
 
     process.exit();
 });
+
+
+
+
+
+
+class WebsocketMessage {
+    constructor(msgType = 0, opCode, DataDic, OptionsDic) {
+        this.MessageType = msgType;
+        this.OpCode = opCode;
+        this.Data = DataDic;
+    }
+}

@@ -1,0 +1,312 @@
+﻿@import 'theme';
+//@import 'utils';
+
+
+/* flex: grow shrink basis; */
+
+$debug: false;
+
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: $s2ms-white;
+  font-family: 'Arial';
+
+}
+
+// Debug purposes
+* {
+  @if $debug ==true {
+    border: white 0.1em dashed;
+  }
+}
+
+
+
+input {
+  background-color: white;
+  color: $dei-blue;
+  font-weight: bold;
+}
+
+li {
+  list-style: none;
+}
+
+
+
+@mixin roundCorners($radius: 8px){
+border-radius: $radius;
+}
+
+
+//BIG DISPLAYS (2 Columns
+//body {
+//  display: grid;
+//  row-gap: 0.2em;
+//  grid-template-columns: 0.5fr 1fr 1fr 0.5fr ;
+//  grid-auto-rows: minmax(20vh, auto);
+//  grid-auto-flow: row dense;
+//
+//}
+
+
+//BODY USING FLEXBOX AS WRAPPING ROW OF ELEMENTS
+body {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: $d-blue;
+}
+
+header, footer {
+  padding: 1em 0;
+  width: 100%;
+  background-color: inherit
+}
+
+
+
+
+
+//Console panel specifics:
+#console-sect{
+  flex: 1 0 50%; // Can grow , cant shrink and shall occupy at least 50%.
+}
+#client-log {
+  /* Caja de la consola (donde se insertan los mensajes)*/
+  background-color: black;
+  text-align: left;
+
+  color: inherit;
+  display: block;
+  //Make console height
+  min-height: 15vh;
+  max-height: 25vh;
+
+  overflow-y: scroll;
+  overflow-x: scroll;
+
+  .debugMsg {
+    &:before {
+      content: "@> ";
+      color: $dei-yellow
+    }
+
+    display: block;
+    text-align: inherit;
+    background-color: initial; //Discard any color by default (transparent)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+section section{
+  margin: 1em;
+  background-color: lighten($d-blue,20%);
+  @include roundCorners;
+
+}
+
+section section section{
+  margin: 1em;
+  background-color: lighten($d-blue,30%);
+}
+
+section{
+  //@todo: review
+  margin: 0.5em;
+}
+
+
+
+//Assigning sizes to headers and colours
+$font-sizes: (50px, 32px, 24px, 12px, 8px);
+
+@for $i from 1 through 5 {
+  h#{$i} {
+
+    font-size: nth($font-sizes,$i);
+    padding:0.1em;
+
+
+    $color-header: black;
+
+    @if $i == 1{
+      $color-header: $dei-blue;
+    }
+    @else if $i == 2{
+      $color-header: $dei-green;
+    }
+    @else{
+      $color-header: $s2ms-black;
+      @include roundCorners;
+      margin-bottom: 0.5em;
+    }
+
+
+    //background-color: nth($color-pallette,(random(5))), 0.4%);
+    background-color: desaturate($color-header, 5%);
+  }
+}
+
+
+
+
+
+#RPCForms{
+  flex: 1 1 50%;
+}
+//RPC
+section>form{
+
+  //background-color: lighten($d-blue,20%);
+  background-color:$dei-blue ;
+
+
+
+}
+
+form{
+  //input~label,input~textarea,  {
+  //  color:blue;
+  //}
+
+  display: flex;
+  flex-flow: column wrap;
+  padding:0.2em;
+  label, input,textarea,select,button{
+    margin:0.2em auto;
+    padding: 1em;
+  }
+  label{
+    font-size: 1.5em;
+
+
+  }
+}
+button{
+  background-color: $dei-yellow;
+}
+select{
+  background-color: $s2ms-black;
+}
+
+
+
+
+
+
+/// PANEL DE MONITORIZACIÓN DE POSICIÓN RESPECTO A MAT ANTILATENCY Y VISIÓN DE GAFAS.
+
+
+#visualMonitoring{
+
+  position: relative;
+}
+
+#remoteUserView{
+  position:absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 0.5;
+}
+#remoteUserView:hover{
+  position:absolute;
+  bottom: 0;
+  right: 0;
+  opacity: 1;
+}
+
+
+
+
+
+//
+//.card{
+//  display: flex;
+//}
+
+//header, footer, .card {
+//
+//  //display: inline-grid;
+//
+//
+//  //&.c-centered {
+//  align-content: center;
+//  justify-content: center;
+//  //}
+//
+//
+//
+//  //Types of CELLS
+//
+//  //grid-column: 1/5;;
+//
+//  &.f-wide {
+//    grid-column: 1/5;
+//  }
+//  &.wide-r {
+//    grid-column: 2/5;
+//  }
+//  &.wide-l {
+//    grid-column: 1/4;
+//  }
+//  &.big-c{
+//    grid-column: 2/4;
+//  }
+//  &.small-l{
+//    grid-column: 1/2;
+//  }
+//  &.small-r{
+//    grid-column: 4/5;
+//  }
+//
+//
+//
+//  border: $dei-blue 0.2em solid;
+//
+//  border-radius: 1%;
+//}
+
+
+
+
+
+//Monitoring section{
+//#MonitoringSection{
+//  display: grid;
+//  grid-template-columns: 0.5fr auto 0.5fr;
+//  grid-auto-flow:row dense;
+//
+//  &>*{
+//    display: inline-grid;
+//    grid-row: auto ;
+//  }
+//
+//
+//
+//  section{
+//
+//  }
+//
+//
+//  h2 {
+//
+//    grid-column: 1/4 ;
+//  }
+//
+//}
+

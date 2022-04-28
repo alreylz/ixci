@@ -1,14 +1,30 @@
+//---------------
+// CONFIG
+//---------------
+
+// FOR LOCAL TESTING:
+const AUTO_CONNECT_LOCAL = true;
+const DEFAULT_PORT = 3000;
+const DEFAULT_IP = "localhost";
+
+
+
+
+
+
+
 const WsMessageTypes = {
+    VAR_SHARING: -1,
     RPC_COMMAND: 0,
     MONITORING: 1,
     SCREENCASTING: 2
 }
 
-// FOR TESTING
-// Set to true if you want attempt auto connection of a browser client to the local ip.
-const AUTO_CONNECT_LOCAL = false;
-const DEFAULT_PORT = 9030;
-const DEFAULT_IP = "localhost";
+
+
+
+
+
 
 
 let websocketURL = "";
@@ -36,8 +52,7 @@ if (AUTO_CONNECT_LOCAL) {
 }
 
 
-
-/* 
+/*
     Extracts a url from a page input field and attempts a connection to a websocket server at such url.
  */
 function AttemptWSServerConnect() {
@@ -82,97 +97,9 @@ function AttemptWSServerConnect() {
         socket.send("woz");
     };
 
+
     // [WS MESSAGE RECEIVED]
-    socket.onmessage = function (event) {
-
-        let wsMessage = event.data;
-        let wsMessageAsJSObject = undefined;
-
-        //Try to convert the input message (a json),
-        // to a Javascript Object to ease manipulation.
-        try {
-            wsMessageAsJSObject = JSON.parse(wsMessage);
-            DisplayIncomingMessageInClientLog(wsMessage);
-        } catch (e) {
-            console.log("[WS MSG RECEIVED] Message arrived but couldn't be parsed \n" + event.data)
-        }
-
-
-        //[When Parseable message]
-        if (wsMessageAsJSObject !== undefined) {
-
-            // @todo here  process message in a way depending on the type of data.
-
-            //console.log("RECEIVED MESSAGE " + Object.keys(msgObject))
-
-
-            switch (wsMessageAsJSObject["MessageType"]) {
-
-                case WsMessageTypes.MONITORING :
-                    switch (wsMessageAsJSObject["OpCode"]) {
-
-                        case "GeneralStatus":
-                            console.log("[(IN)MSG][GeneralStatus] General Remote game status received.")
-                            GeneralStatus_InputMsgProcesser(wsMessageAsJSObject);
-                            break;
-
-                        case "UserPerformanceInfo":
-                            console.log("[(IN)MSG][UserPerformanceInfo] User Interaction and metrics received.")
-                            UserPerformance_InputMsgProcesser(wsMessageAsJSObject);
-                            break;
-                            
-                        case "VisualizationInfo":
-                            console.log("[(IN)MSG][VisualizationInfo] In-game gata visualization information received.")
-                            VisualizationInfo_InputMsgProcesser(wsMessageAsJSObject);
-                            break;
-
-
-                        //Información sobre la solución ideal del Minijuego.
-                        case "MinigameSolution":
-                            DisplayMinigameSolution(wsMessageAsJSObject);
-                            break;
-                        //Información sobre el progreso del usuario en el minijuego
-                        case "MiniGameStatus":
-                            DisplayCurrentMinigameStatus(wsMessageAsJSObject);
-                            break;
-
-                        case "UserTransform":
-                            console.log("[(IN)MSG][UserTransform] User coords and rotation received.")
-                            //ShowPositionAndRotationInSvgMap(wsMessageAsJSObject);
-                            break;
-                    }
-
-
-                case  WsMessageTypes.SCREENCASTING:
-
-                    //Display the received image data in Base 64
-                    let imgElemForRemote = document.querySelector("#remoteView");
-
-                    //Decode as JPEG:
-                    // imgElemForRemote.src = 'data:image/jpeg;base64,' + wsMessageAsJavasriptObject.Data;
-
-                    //Decode as PNG
-                    imgElemForRemote.src = 'data:image/png;base64,' + wsMessageAsJSObject.Data;
-
-                    //@future There must be a better way
-                    // var imageDataBuffer = new Uint8Array(msgObject.Data.imgData) ;
-                    // console.log("BUFFER DATA" + imageDataBuffer);
-                    // var blob = new Blob( [ imageDataBuffer ], { type: "image/png" } );
-                    // var urlCreator = window.URL || window.webkitURL;
-                    // var imageUrl = urlCreator.createObjectURL( blob );
-                    // imgElemForRemote.src = imageUrl;
-                    break;
-
-
-            }
-
-
-        } else {
-            //HERE FUNCTION
-        }
-
-
-    };
+    socket.onmessage = OnWsMessage;
 
 
 }
@@ -200,30 +127,46 @@ commandButtons.forEach(
 
 
 
+/// -------------------------------
+/// [UPDATING THE PAGE DYNAMICALLY]
+/// -------------------------------
 
-
+/***
+ * Displays a message in the console section of the page.
+ * @param msg
+ */
 function DisplayIncomingMessageInClientLog(msg) {
 
-    let debugMessageDiv = document.createElement("div");
+    const debugMessageToRender = document.createElement("output");
     //Formatting
-    debugMessageDiv.setAttribute("class", "debugMsg");
+    debugMessageToRender.setAttribute("class", "debugMsg");
+    debugMessageToRender.textContent = msg;
 
 
-    debugMessageDiv.textContent = msg; //event.data;
+    let consoleFilterValue = document.querySelector("select[name='filter-full-log']").value;
+    console.log(consoleFilterValue)
+
 
     try {
         let parsedMsg = JSON.parse(msg);
+
+        if (consoleFilterValue !== "dict" && consoleFilterValue !== "any" && parsedMsg !== null && parsedMsg !== undefined) {
+            debugMessageToRender.setAttribute("class", "hidden");
+        }
         if (parsedMsg["MessageType"] === 2) {
-            debugMessageDiv.textContent = `New Frame Received: ts=${parsedMsg["Timestamp"].toString()}s`;
+            debugMessageToRender.textContent = `New Frame Received: ts=${parsedMsg["Timestamp"].toString()}s`;
         }
     } catch (e) {
 
     }
-    clientLogDiv.appendChild(debugMessageDiv);
-
+    clientLogDiv.appendChild(debugMessageToRender);
 
 }
 
+/***
+ * Clears the html  console log content
+ *
+ */
 function ClearClientLog() {
     while (clientLogDiv.lastElementChild) {
         clientLogDiv.removeChild(clientLogDiv.lastElementChild);
@@ -325,37 +268,36 @@ function VisualizationInfo_InputMsgProcesser(wsMessage) {
 }
 
 function UserPerformance_InputMsgProcesser(wsMessage) {
-    
-    let interactionData =  wsMessage.Data;
-    
+
+    let interactionData = wsMessage.Data;
+
     document.querySelector("[data-id='m-TravelledDistance']").innerHTML = interactionData.Distance;
 
     let pSummary = JSON.parse(interactionData.InteractionSummary)
     document.querySelector("[data-id='m-InteractionSummary']").innerHTML = JSON.stringify(pSummary);
-    
+
     let dInteraction = JSON.parse(interactionData.DetailInteraction)
     document.querySelector("[data-id='m-DetailInteraction']").innerHTML = JSON.stringify(dInteraction);
-    
+
     let timersSummary = JSON.parse(interactionData.TimersSummary)
     document.querySelector("[data-id='m-TimersSummary']").innerHTML = JSON.stringify(timersSummary);
-    
-    console.log(interactionData)
-    
-}
 
+    console.log(interactionData)
+
+}
 
 
 function DisplayCurrentMinigameStatus(wsMessage) {
 
     let CurrentMGStatusPanel = document.querySelector("#MinigameStatusDisplay");
-    
+
     let htmlToPutInPanel = "";
 
     //User Ordering
     console.log(wsMessage.Data["UserOrdering"]);
     let dictionaryOrderedElems = JSON.parse(wsMessage.Data["UserOrdering"]);
     // console.log("EXAMPLE OF DATA EXTRACTED" + wsMessage["UserOrdering"])
-    
+
     htmlToPutInPanel = "<ul>"
 
 
@@ -381,7 +323,7 @@ function DisplayCurrentMinigameStatus(wsMessage) {
                 <li> Correctly ordered: ${corrSummary["correctlyOrdered"].toString()}. </li>
             </ul>
         `;
-    
+
     //Correction Summary
     console.log("MESSAGE DATA KEYS:" + Object.keys(wsMessage.Data));
     console.log("EXAMPLE OF DATA EXTRACTED" + wsMessage.Data["CorrectionSummary"])
@@ -397,7 +339,7 @@ function DisplayCurrentMinigameStatus(wsMessage) {
 function DisplayMinigameSolution(wsMessage) {
 
     let expectedOrderList = JSON.parse(wsMessage.Data["ExpectedOrder"]);
-    
+
     let minigameSolutionPanel = document.querySelector("#MinigameSolutionDisplay");
 
     let htmlToPutInPanel = "<ul>";
@@ -420,27 +362,152 @@ function DisplayMinigameSolution(wsMessage) {
 }
 
 
-
-
-
-/* 
+/*
  Muestra en la web si se ha conectado este cliente al servidor de websockets correctamente.
  - Las clases de css disconnected-box y connected-box permiten definir estilos para el texto que aparece mostrando Conexión o Desconexión.
 */
 function DisplayWebsocketServerConnectionStatus() {
     //Encontramos elementos del DOM a alterar.
+
+
+    const emojis = {connected: "✅", disconnected: "❌"}
+
+
     let statusBox = document.querySelector("#ws-server-connection-status").querySelector(".status-box");
     let hostname = document.querySelector("#conn-hostname");
     if (socket === undefined) {
-        statusBox.classList.add("disconnected-box");
-        statusBox.classList.remove("connected-box");
-        statusBox.innerHTML = "DISCONNECTED"
+        //statusBox.classList.add("disconnected-box");
+        statusBox.textContent = emojis.disconnected;
+        //statusBox.classList.remove("connected-box");
+        // statusBox.innerHTML = "DISCONNECTED"
     } else {
-        statusBox.classList.add("connected-box");
-        statusBox.classList.remove("disconnected-box");
-        statusBox.innerHTML = "CONNECTED TO WS SERVER"
+        //statusBox.classList.add("connected-box");
+        //statusBox.classList.remove("disconnected-box");
+        statusBox.textContent = emojis.connected;
+        // statusBox.innerHTML = "CONNECTED TO WS SERVER"
     }
     hostname.innerHTML = `${websocketURL}`;
 
 }
 
+
+// To be executed when a message is received via the Websocket connection
+function OnWsMessage(event) {
+
+    //Incoming message
+    const wsMessage = event.data;
+    let wsMessageAsJSObject = undefined;
+
+    //Try to convert the input message (a json),
+    // to a Javascript Object to ease manipulation.
+
+    //CHECK SELECT VALUE IN LOG CONSOLE PART OF HTML (FILTER BY STRUCTURED MESSAGE OR NOT STRUCTURED)
+
+    try {
+        wsMessageAsJSObject = JSON.parse(wsMessage);
+        //Do something with the message.
+        StructuredMessageProcessing(wsMessageAsJSObject);
+    } catch (e) {
+        console.log("[WS][MSG RECEIVED] Message arrived (not an Object) \n" + event.data)
+    }
+    DisplayIncomingMessageInClientLog(wsMessage);
+
+
+};
+
+
+/**
+ * Given a structured message (Json object), performs any associated operation associated to receiving such message (e.g. function call).
+ * @param jsonObject
+ *
+ */
+function StructuredMessageProcessing(jsonObject) {
+
+
+
+    //[When Parseable message]
+    if (jsonObject !== undefined && jsonObject !== null) {
+        console.log(`[FNAME=${callerName()}] - Processing Structured Message...`)
+        console.dir(jsonObject);
+
+
+
+        //Understand what is to be done from message.
+        // @todo here process message in a way depending on the type of data.
+        switch (jsonObject["MessageType"]) {
+            case WsMessageTypes.MONITORING :
+                switch (jsonObject["OpCode"]) {
+
+                    case "GeneralStatus":
+                        console.log("[(IN)MSG][GeneralStatus] General Remote game status received.")
+                        GeneralStatus_InputMsgProcesser(jsonObject);
+                        break;
+
+                    case "UserPerformanceInfo":
+                        console.log("[(IN)MSG][UserPerformanceInfo] User Interaction and metrics received.")
+                        UserPerformance_InputMsgProcesser(jsonObject);
+                        break;
+
+                    case "VisualizationInfo":
+                        console.log("[(IN)MSG][VisualizationInfo] In-game gata visualization information received.")
+                        VisualizationInfo_InputMsgProcesser(jsonObject);
+                        break;
+
+                    //Información sobre la solución ideal del Minijuego.
+                    case "MinigameSolution":
+                        DisplayMinigameSolution(jsonObject);
+                        break;
+                    //Información sobre el progreso del usuario en el minijuego
+                    case "MiniGameStatus":
+                        DisplayCurrentMinigameStatus(jsonObject);
+                        break;
+
+                    case "UserTransform":
+                        console.log("[(IN)MSG][UserTransform] User coords and rotation received.")
+                        ShowPositionAndRotationInSvgMap(jsonObject);
+                        break;
+                }
+
+
+            case  WsMessageTypes.SCREENCASTING:
+
+                //Display the received image data in Base 64
+                let imgElemForRemote = document.querySelector("#remoteView");
+
+                //Decode as JPEG:
+                // imgElemForRemote.src = 'data:image/jpeg;base64,' + wsMessageAsJavasriptObject.Data;
+
+                //Decode as PNG
+                imgElemForRemote.src = 'data:image/png;base64,' + jsonObject.Data;
+
+                //@future There must be a better way
+                // var imageDataBuffer = new Uint8Array(msgObject.Data.imgData) ;
+                // console.log("BUFFER DATA" + imageDataBuffer);
+                // var blob = new Blob( [ imageDataBuffer ], { type: "image/png" } );
+                // var urlCreator = window.URL || window.webkitURL;
+                // var imageUrl = urlCreator.createObjectURL( blob );
+                // imgElemForRemote.src = imageUrl;
+                break;
+
+
+        }
+    }else{
+        console.error(`[FNAME=${callerName()}] - This should NEVER happen. params are null or undefined`)
+    }
+
+
+}
+
+
+class WebsocketMessage {
+    constructor(msgType = 0, opCode, DataDic, OptionsDic) {
+        this.MessageType = msgType;
+        this.OpCode = opCode;
+        this.Data = DataDic;
+    }
+}
+
+
+function callerName() {
+    return callerName.caller.name;
+}

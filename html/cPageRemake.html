@@ -6,6 +6,7 @@
     <title> @alreylz WOZ client </title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <link href="browser-clientv2.css" rel="stylesheet">
     <style>
 
 
@@ -19,44 +20,51 @@
 <body>
 
 <!-- Header -->
-<header class="card-set-row neat-card">
-    <h1> WOZ Browser Client [Remade] </h1>
+<header class="card f-wide">
+    <h1> alreylz' XFP </h1>
+    <h2> eXperiment Framework Panel</h2>
 </header>
 
 <!-- Body -->
 
 
 <!-- Prompt to connect to a remote websocket server -->
-<section id="s-connection-prompt">
+<section id="s-connection-prompt" class="card wide-r">
     <h3> Remote Connection Prompt</h3>
     <label for="f-hostname"> Enter here the hostname of the server to connect to (starting by ws://) </label>
-    <input id="f-hostname" type="text" value="ws://"/>
+    <input id="f-hostname" type="text" placeholder="IP:port | ws://IP:PORT" value="ws://"/>
     <button id="connect" onclick="AttemptWSServerConnect();"> Connect</button>
 </section>
 
 <!-- Box showing the status of the connection with the websocket server -->
-<div id="ws-server-connection-status">
-    <h3> WebSocket Server Connection Status:</h3>
+<section id="ws-server-connection-status" class="small-l">
+    <h3> WebSocket Server Connection Status</h3>
     <ul>
         <li>AUTO_CONNECT_LOCAL:<span data-id="connect-configuration"> </span></li>
         <li>Connection:<span class="status-box"> </span></li>
         <li>Hostname: <span id="conn-hostname"> </span></li>
     </ul>
-</div>
+</section>
 
 <!-- Consola donde se muestran los mensajes que irán llegando -->
-<section>
-    <h3> Full Log:</h3>
+<section id="console-sect" class="card wide-r">
+    <h3> Full Log</h3>
     <hr/>
+
+    <label> Filter </label>
+    <select name="filter-full-log">
+        <option value="any"> Any</option>
+        <option value="dict"> Dictionary</option>
+    </select>
     <div id="client-log">
-        Aquí van todos los mensajes que van llegando
+        <!-- Aquí van todos los mensajes que van llegando -->
     </div>
     <!-- here raw incoming messages will be put -->
     <button onclick="ClearClientLog()"> Clear log</button>
 </section>
 
 
-<section id="MonitoringSection">
+<section id="MonitoringSection" class="card f-wide">
     <h2> Remote Monitoring </h2>
     <hr/>
 
@@ -98,9 +106,10 @@
             </p>
         </section>
 
+        <section id="visualMonitoring">
 
         <!-- (COMPLEX) Position  and rotation map -->
-        <section id="GraphicPosRotMonitor" class="card-big card-set-col neat-card">
+        <section id="GraphicPosRotMonitor">
             <div class="card-header card-header-gray">
                 <h3 class="card-header-h-gray"> User Position & Rotation Monitor</h3>
             </div>
@@ -116,12 +125,14 @@
             </svg>
         </section>
 
-
         <!-- (COMPLEX)remote user view -->
-        <section>
-            <h3 class="card-header-h"> Remote User View </h3>
+        <section id="remoteUserView">
+            <h3 > Remote User View </h3>
             <img id="remoteView" width="480px" height="320px" src=""/>
         </section>
+
+        </section>
+
     </section>
 
 
@@ -130,43 +141,47 @@
 
 <section id="RPCForms">
 
+    <h2> Remote Operations </h2>
     <!-- Enclose each RPC call in a form -->
     <form>
-        <label for="f-ParamValue"> Parameter tweaking (out of the list of modifiable parameters) and give it a value
+        <label for="f-ParamValue"> Parameter tweaking (out of the list of modifiable parameters) and give it a
+            value</label>
         <select name="s-list-paramNames">
-            <option value="GrabThreshold" data-type="float" >AntilatencyGrabThreshold</option>
+            <option value="GrabThreshold" data-type="float">AntilatencyGrabThreshold</option>
             <option value="AutoVibrate" data-type="bool">AutoVibrate</option>
             <option value="VibrationIntensity" data-type="float">Vibration intensity</option>
         </select>
         <input id="f-ParamValue" type="text"
                placeholder="Write name value for the parameter"/>
-        </label>
 
-        <button type="button" data-id="b-ParamTweak"> Confirm Tweaking </button>
+
+        <button type="button" data-id="b-ParamTweak"> Confirm Tweaking</button>
     </form>
-    
-    <hr/>
+
     <!-- LOAD A UNITY SCENE -->
     <form>
-        <label for="f-SceneName"> Load a Unity Scene:
+        <label for="f-SceneName"> Load a Unity Scene</label>
 
-            <select name="s-list-SceneName">
-                <option value="Other"> Other</option>
-                <option value="Tutorial-BracerInteraction">Tutorial-BracerInteraction</option>
-                <option value="Tutorial-Teleport">Tutorial-Teleport</option>
+        <select name="s-list-SceneName">
+            <option value="Other"> Other</option>
+            <option value="Tutorial-BracerInteraction">Tutorial-BracerInteraction</option>
+            <option value="Tutorial-Teleport">Tutorial-Teleport</option>
 
-                <option value="OrderingTask-BracerInteraction">OrderingTask-BracerInteraction</option>
-                <option value="OrderingTask-Teleport">OrderingTask-Teleport</option>
-                <option value="BipedalTaskWOculusTouch">BipedalTaskWOculusTouch</option>
-                <option value="Tutorial-BipedalOculusTouch">Tutorial-BipedalOculusTouch</option>
+            <option value="OrderingTask-BracerInteraction">OrderingTask-BracerInteraction</option>
+            <option value="OrderingTask-Teleport">OrderingTask-Teleport</option>
+            <option value="BipedalTaskWOculusTouch">BipedalTaskWOculusTouch</option>
+            <option value="Tutorial-BipedalOculusTouch">Tutorial-BipedalOculusTouch</option>
 
-            </select>
-            <input id="f-SceneName" type="text"
-                   placeholder="Write name of the scene to load in the remote side."/>
+        </select>
+        <input id="f-SceneName" type="text"
+               placeholder="Write name of the scene to load in the remote side."/>
 
-        </label>
+
         <button type="button" data-id="b-LoadScene"> Load Scene</button>
     </form>
+
+
+
 
     <!-- Experiment Type and Log configuration form: -->
     <form>
@@ -183,7 +198,7 @@
 
     <!-- LOAD A GRAPH BY NAME (Needs to exist in the Game Client filesystem) -->
     <form>
-        <label for="f-GraphName">Load a Graph: </label>
+        <label for="f-GraphName">Load a Graph</label>
         <input type="text"
                placeholder="Enter the name of the graph to load."
                id="f-GraphName"/>
@@ -211,36 +226,38 @@
 
     <!-- LATER: Div showing all timers that exist in the game if any -->
 
-    <h3> TIMERS</h3>
+    <section>
+        <h3> TIMERS</h3>
 
-    <!-- "Create a timer" form -->
-    <form>
-        <label> Create a new timer</label>
-        <input type="name"/>
-        <input type="button" value="New Timer (Not Started By default? )"/>
-    </form>
-
-
-    <form>
-
-        <ul>
-            <!-- Por cada timer existente, mostrar un nuevo li -->
-            <li>
-
-                <label> NOMBRE DEL TIMER <span> STATUS DEL TIMER </span></label>
-                <!-- Mostrar solo algunos de los botones dependiendo del estado -->
-                <button data-id="b-StartNamedTimer">Start Named Timer</button>
-                <button data-id="b-StartNamedTimer">Resume Named Timer</button>
-                <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
-                <button data-id="b-ResetNamedTimer">Stop Named Timer</button>
-            </li>
-        </ul>
-    </form>
+        <!-- "Create a timer" form -->
+        <form>
+            <label> Create a new timer</label>
+            <input type="name"/>
+            <input type="button" value="New Timer (Not Started By default? )"/>
+        </form>
 
 
+        <form>
+
+            <ul>
+                <!-- Por cada timer existente, mostrar un nuevo li -->
+                <li>
+
+                    <label> NOMBRE DEL TIMER <span> STATUS DEL TIMER </span></label>
+                    <!-- Mostrar solo algunos de los botones dependiendo del estado -->
+                    <button data-id="b-StartNamedTimer">Start Named Timer</button>
+                    <button data-id="b-StartNamedTimer">Resume Named Timer</button>
+                    <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
+                    <button data-id="b-ResetNamedTimer">Stop Named Timer</button>
+                </li>
+            </ul>
+        </form>
+
+
+    </section>
     <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
-    <h3 class="card-header card-es">
-        <span class="card-header-h">Periodic Websocket Monitoring configuration</span>
+    <h3 class="">
+        <span class="">Periodic Websocket Monitoring configuration</span>
     </h3>
     <form>
 
@@ -271,9 +288,9 @@
 <!-- b- for button id's -->
 <!-- m- for remote monitoring display -->
 
-<footer class="card-es card-set-row neat-card x-axis-align-fill">
-    <h4 class="card-es x-axis-align-c m-axis-self-stretch "> Alejandro Rey López @uc3m </h4>
-    <ul class="card-es m-axis-self-stretch text-center x-axis-align-c">
+<footer class="card f-wide">
+    <h4 class=" "> Alejandro Rey López @uc3m </h4>
+    <ul class="">
         <li>Github</li>
         <li>Linkedin</li>
         <li>Web</li>

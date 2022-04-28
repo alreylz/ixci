@@ -1,13 +1,40 @@
 ﻿// Color palette
 $d-blue: #44546a;
 $mid-blue: #5789a1;
-$l-blue-dull: #acd2d1;
-$l-blue-shiny: #82cff4;
-$greyish: #c8c8c8;
-$purplish: #8e98cc;
-$greenish:#59926d;
-$yellowish: #fdd866;
-$pinkish: #B386A3;
+$l-blue-dull: #5c8d8d;
+//$l-blue-shiny: #82cff4;
+//$greyish: #c8c8c8;
+//$purplish: #8e98cc;
+//$greenish:#59926d;
+//$yellowish: #fdd866;
+//$pinkish: #B386A3;
+
+
+$dei-magenta:#ed4b86;
+$dei-blue:#3e80b0;
+$dei-green:#01aa57;
+$dei-yellow:#feb500;
+$s2ms-black:#333333;
+$s2ms-white:#ffffff;
+
+
+$color-pallette: ($dei-yellow,$dei-blue,$dei-magenta,$dei-green,$s2ms-black,$s2ms-white,$mid-blue,$d-blue,$l-blue-dull);
+
+
+
+
+
+$fontsPath:"fonts/";
+
+//Page h1
+@font-face{
+  font-family:'Rockwell';
+  src: url($fontsPath + "ROCK.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
 

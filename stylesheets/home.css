@@ -1,125 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
-* {
-  padding: 0;
-  margin: 0;
-}
+/* Error: Undefined variable.
+ *    ,
+ * 23 |     color: $yellowish;
+ *    |            ^^^^^^^^^^
+ *    '
+ *   scss\home.scss 23:12  root stylesheet */
 
-body {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  color: white;
-  background: #acd2d1;
-}
-
-header {
-  flex-basis: 10vh;
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: stretch;
-  box-sizing: border-box;
-  margin: 1em;
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
   padding: 1em;
-  background: #5789a1;
-}
-header > *:not(h1) {
-  color: #fdd866;
-}
-header > * {
-  flex-basis: 20%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  align-self: center;
-}
-header h1 {
-  font-size: xx-large;
-}
-
-menu {
-  flex-basis: 80vh;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-height: 80vh;
-  margin: 0 5em;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-menu ul {
-  flex-basis: 33%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  list-style: none;
-  color: white;
-  text-decoration: none;
-}
-menu ul a, menu ul a:visited, menu ul a:hover {
-  font-size: x-large;
-  flex-basis: 10vh 1;
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  background: #44546a;
-  color: inherit;
-  text-decoration: inherit;
   margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Undefined variable.\a    \2577 \a 23 \2502      color: $yellowish;\d\a    \2502             ^^^^^^^^^^\a    \2575 \a   scss\\home.scss 23:12  root stylesheet";
 }
-menu ul a:hover, menu ul a:visited:hover, menu ul a:hover:hover {
-  color: #fdd866;
-  background: #586d89;
-}
-menu ul li {
-  display: flex;
-}
-
-footer {
-  flex-basis: 10vh;
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  background: #5789a1;
-  margin: 1em;
-  padding: 1em;
-  text-align: center;
-}
-footer h6 {
-  padding: 0.3em 0;
-  font-size: small;
-  border-bottom: 0.2em solid #fdd866;
-}
-footer ul {
-  font-size: x-small;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  flex-basis: 33%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-}
-footer ul li {
-  display: inline-flex;
-  margin: 0.2em 0;
-}
-footer ul li:first-of-type {
-  align-self: flex-start;
-}
-footer ul li:last-of-type {
-  align-self: flex-end;
-}
-
-/*# sourceMappingURL=home.css.map */

@@ -10,7 +10,6 @@ class RPCMessage {
         this.Data = DataDic;
         this.Options = OptionsDic;
     }
-
 }
 
 
@@ -211,11 +210,6 @@ function ParamTweakingOneByOne(_ws) {
     let toTweakParamValue = document.querySelector("#f-ParamValue").value;
     console.log(`${toTweakParam} : ${toTweakParamValue}`)
 
-    
-    
-    
-    
-    
     let message = new RPCMessage(0,
         "ParamTweak", {
             [toTweakParam]: toTweakParamValue
