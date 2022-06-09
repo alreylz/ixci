@@ -13,6 +13,7 @@ const DEFAULT_IP = "localhost";
 
 
 
+
 const WsMessageTypes = {
     VAR_SHARING: -1,
     RPC_COMMAND: 0,
@@ -202,9 +203,21 @@ function ShowPositionAndRotationInSvgMap(wsMessage, widthInAntilatencyMatSquares
 
     //Coordinate correction
 
+    let xposition = wsMessage.Data.position[0];
+    let zposition = wsMessage.Data.position[2];
+
+    if (typeof(wsMessage.Data.position) == typeof(String) ){
+
+        let arrayPos = JSON.parse(wsMessage.Data.position);
+        xposition = arrayPos[0];
+        zposition = arrayPos[2];
+
+    }
+
     //1) Sumar nuevo origen.
-    let correctedX = wsMessage.Data.position[0] + rwWidth / 2.0;
-    let correctedY = wsMessage.Data.position[2] + rwHeight / 2.0;
+    let correctedX = JSON.parse(xposition) + rwWidth / 2.0;
+    let correctedY = parseFloat(zposition) + rwHeight / 2.0;
+
 
     //2) Convert meters to window units
     correctedX = mapWidth - (correctedX * mapWidth / rwWidth);

@@ -1,12 +1,15 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+
     <meta http-equiv="content-type" content="text/html; utf-8">
     <meta charset="UTF-8">
-    <title> @alreylz WOZ client </title>
+
+    <title> IXCI </title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
     <link href="browser-clientv2.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png"/>
     <style>
 
 
@@ -21,8 +24,12 @@
 
 <!-- Header -->
 <header class="card f-wide">
-    <h1> alreylz' XFP </h1>
-    <h2> eXperiment Framework Panel</h2>
+    <h1> @alreylz' IXCI </h1>
+    <h2 style="background-color:#406071;"> The <span class="s2ms-yellow-text">I</span>mmersive e<span
+            class="s2ms-green-text">X</span>perimenter <span
+            class="s2ms-magenta-text">C</span>ontrol <span class="s2ms-yellow-text">I</span>nterface</h2>
+
+    <img alt="IXCI icon" src="IXCI-icon.png" style="width:25%;margin: 0 auto; margin-top:1em;"/>
 </header>
 
 <!-- Body -->
@@ -108,28 +115,28 @@
 
         <section id="visualMonitoring">
 
-        <!-- (COMPLEX) Position  and rotation map -->
-        <section id="GraphicPosRotMonitor">
-            <div class="card-header card-header-gray">
-                <h3 class="card-header-h-gray"> User Position & Rotation Monitor</h3>
-            </div>
-            <!-- SVG Panel where the remote coords and rotation are represented -->
-            <svg id="world2D" width="100%" height="500" class="card-es">
-                <!-- User representation : a circle + a line which states the gazing direction -->
-                <g id="user-rep">
-                    <circle class="user-head-svg" cx="448" cy="250" r="15"></circle>
-                    <path id="user-head-dir"></path>
-                    <!-- <image class="user-head-icon" href="img1.JPG" x="0" y="0" width="1" height="1"/>-->
-                </g>
+            <!-- (COMPLEX) Position  and rotation map -->
+            <section id="GraphicPosRotMonitor">
+                <div class="card-header card-header-gray">
+                    <h3 class="card-header-h-gray"> User Position & Rotation Monitor</h3>
+                </div>
+                <!-- SVG Panel where the remote coords and rotation are represented -->
+                <svg id="world2D" width="100%" height="500" class="card-es">
+                    <!-- User representation : a circle + a line which states the gazing direction -->
+                    <g id="user-rep">
+                        <circle class="user-head-svg" cx="448" cy="250" r="15"></circle>
+                        <path id="user-head-dir"></path>
+                        <!-- <image class="user-head-icon" href="img1.JPG" x="0" y="0" width="1" height="1"/>-->
+                    </g>
 
-            </svg>
-        </section>
+                </svg>
+            </section>
 
-        <!-- (COMPLEX)remote user view -->
-        <section id="remoteUserView">
-            <h3 > Remote User View </h3>
-            <img id="remoteView" width="480px" height="320px" src=""/>
-        </section>
+            <!-- (COMPLEX)remote user view -->
+            <section id="remoteUserView">
+                <h3> Remote User View </h3>
+                <img id="remoteView" width="480px" height="320px" src=""/>
+            </section>
 
         </section>
 
@@ -179,8 +186,6 @@
 
         <button type="button" data-id="b-LoadScene"> Load Scene</button>
     </form>
-
-
 
 
     <!-- Experiment Type and Log configuration form: -->

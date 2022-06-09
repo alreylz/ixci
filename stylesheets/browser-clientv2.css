@@ -161,4 +161,16 @@ select {
   opacity: 1;
 }
 
+.s2ms-magenta-text {
+  color: #ed4b86;
+}
+
+.s2ms-green-text {
+  color: #01aa57;
+}
+
+.s2ms-yellow-text {
+  color: #feb500;
+}
+
 /*# sourceMappingURL=browser-clientv2.css.map */
