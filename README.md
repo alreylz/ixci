@@ -33,12 +33,16 @@ Cite our work:
 ![Project Architecture](static/Arquitectura%20WOZ.png)
 
 # Showoff
-Remote call example
-![Remote call example](.repo/remoteCallExample.gif)
-Switching between scenes
-![Monitoring position ](.repo/changeScenesExample.gif)
-Monitoring position and user view (we're sending frames not too often by now)
 ![Monitoring position ](.repo/samplePositionMonitor.gif)
+<pre>Monitoring position and user view (we're sending frames not too often by now)</pre>
+
+
+![Remote call example](.repo/remoteCallExample.gif)
+<pre> Remote call example </pre>
+
+
+![Monitoring position ](.repo/changeScenesExample.gif)
+<pre>Switching between scenes</pre>
 
 # Ongoing work
 - Making the Unity components available as a Unity package, it'll be out very soon (almost done)
@@ -46,10 +50,10 @@ Monitoring position and user view (we're sending frames not too often by now)
 - GUI to enable the creation of new remote control/monitoring commands (We're testing it!)
 
 
-#Builds
+# Builds
 **Available very soon!**
 
-#Dependencies
+# Dependencies
 **Work in Progress**
 
 Json.NET 12.0.3 for Unity
@@ -63,7 +67,7 @@ Json.NET Converters of Unity types
 Version 1.4.0 - February 05, 2022
 
 
-#Installation : using IXCI
+# Installation : using IXCI
 
 Work in progress
 
