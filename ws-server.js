@@ -15,6 +15,8 @@ const dotenv = require('dotenv').config();
 var port = process.env.PORT || 9030;
 const WebSocket = require('ws');
 
+const path = require('path');
+
 
 //  List of all non-game connections.
 const browser_sockets = [];
@@ -24,12 +26,11 @@ let game_clients = [];
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-
+app.use(bodyParser.urlencoded({ limit:"50mb", parameterLimit: 50000, extended: true }));
 
 // 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS. 
 const Q_SAVEPATH = "logging/exp1/"; // Specifies where to save Questionnaires
 const EXP_DATA_SAVEPATH = "logging/exp1/"; //Specifies where to save Experiment Logs within the server.
-
 
 const multer = require('multer'); // Library to process multipart requests
 
@@ -200,6 +201,74 @@ app.post('/file.save', function (req, resp) {
 
 
 });
+
+
+//
+
+
+// Saving using UXF tools (see Unity)
+app.post('/uxf.save', async function (req, resp) {
+
+    console.log("Received request to /uxf.save")
+
+    if (req.method !== 'POST') {
+        resp.status(400).send({message: 'Only POST requests allowed'})
+        return;
+    }
+
+    //let whereToSave = `${__dirname}/${ED_SAVEPATH}${req.body.filename}.${req.body.type}`;
+
+    console.log(req.body);
+
+try {
+    let filename = path.basename(req.body.fileInfo);
+    let extname = path.extname(req.body.fileInfo);
+    let filenameNoExt = path.basename(filename, extname)
+
+    await fs.promises.writeFile(`${__dirname}/${Q_SAVEPATH}/${filenameNoExt}${extname}`, req.body.data,
+        function (err) {
+            if (err) {
+                return console.log("ERROR GUARDANDO ARCHIVO");
+            }
+        });
+
+}
+
+catch(e ){
+    if(e.HTTP_STATUS_PAYLOAD_TOO_LARGE){
+        let data = '';
+        req.on('data', chunk => {
+            data += chunk;
+            console.log("new chunk received!")
+        })
+        req.on('end', () => {
+            //save
+            console.log("DATA"+ data)
+
+            //We write the file to disk in the configured directory.
+            console.log(`GUARDANDO ARCHIVO ${req.body.fileInfo}`);
+            fs.writeFile(`${__dirname}/${Q_SAVEPATH}/ejemplo`, data,
+                function (err) {
+                    if (err) {
+                        return console.log("ERROR GUARDANDO ARCHIVO");
+                    }
+                });
+
+
+            resp.end();
+        })
+    }
+}
+
+
+    resp.status(200).send({message: ' File correctly received!!'})
+
+
+});
+
+
+
+
 
 
 //Para guardar datos de log del experimento.
