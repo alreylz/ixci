@@ -1,9 +1,6 @@
 ﻿//Monitoring / Wizard of OZ server code.
 
 
-
-
-
 const express = require('express'); /* Express library to create Web-server */
 var app = express();
 //Object binding representing the web-server, which we generate via express.
@@ -18,6 +15,24 @@ const WebSocket = require('ws');
 const path = require('path');
 
 
+// Root directory of the project
+const BASE_PROJ_DIR = process.env.BASE_PROJ_DIR || __dirname;
+// Base directory to save dynamic data
+const SAVE_BASE_PATH = process.env.SAVE_BASE_PATH || `${__dirname}/logging/`;
+// 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS.
+const Q_SAVEPATH = process.env.Q_SAVEPATH || "logging/questionnaires/"; // Specifies where to save Questionnaires
+// Experiment logs
+const EXP_DATA_SAVEPATH = process.env.EXP_DATA_SAVEPATH || "logging/experiments/"; //Specifies where to save Experiment Logs within the server.
+
+
+
+
+
+
+
+
+
+
 //  List of all non-game connections.
 const browser_sockets = [];
 // List of all game connections
@@ -26,11 +41,9 @@ let game_clients = [];
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ limit:"50mb", parameterLimit: 50000, extended: true }));
+app.use(bodyParser.urlencoded({limit: "50mb", parameterLimit: 50000, extended: true}));
 
-// 'POST' PATH TO SAVE QUESTIONNAIRE RESULTS. 
-const Q_SAVEPATH = "logging/exp1/"; // Specifies where to save Questionnaires
-const EXP_DATA_SAVEPATH = "logging/exp1/"; //Specifies where to save Experiment Logs within the server.
+
 
 const multer = require('multer'); // Library to process multipart requests
 
@@ -73,13 +86,20 @@ const {response} = require("express");
 
 //Folder para cuestionarios
 fs.promises.mkdir(`${__dirname}/${Q_SAVEPATH}`, {recursive: true})
-    .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for questionnaires : " + `${__dirname}/${Q_SAVEPATH}`))
+    .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for questionnaires :\n\t" + `${__dirname}/${Q_SAVEPATH}`))
     .catch(() => console.error("[ERROR] Something went wrong initialising directory : " + `${__dirname}/${Q_SAVEPATH}`));
+
+
+
+
 
 //Logs del propio experimento
 fs.promises.mkdir(`${__dirname}/${EXP_DATA_SAVEPATH}`, {recursive: true})
-    .then(() => console.log("[DIR INIT] Success on initialising the persistency directories for Experiment Logs : " + `${__dirname}/${EXP_DATA_SAVEPATH}`))
+    .then(() => console.log("[DIR INIT]Success on initialising the persistency directories for Experiment Logs : \n\t" + `${__dirname}/${EXP_DATA_SAVEPATH}`))
     .catch(() => console.error("[ERROR] Something went wrong initialising directory : " + `${__dirname}/${EXP_DATA_SAVEPATH}`));
+
+
+
 
 
 /* SUPPORTED URL PATTERNS */
@@ -206,6 +226,7 @@ app.post('/file.save', function (req, resp) {
 //
 
 
+// NEW
 // Saving using UXF tools (see Unity)
 app.post('/uxf.save', async function (req, resp) {
 
@@ -220,45 +241,62 @@ app.post('/uxf.save', async function (req, resp) {
 
     console.log(req.body);
 
-try {
-    let filename = path.basename(req.body.fileInfo);
-    let extname = path.extname(req.body.fileInfo);
-    let filenameNoExt = path.basename(filename, extname)
+    // try {
+        const pathElems = req.body.fileInfo.split("/")
 
-    await fs.promises.writeFile(`${__dirname}/${Q_SAVEPATH}/${filenameNoExt}${extname}`, req.body.data,
-        function (err) {
-            if (err) {
-                return console.log("ERROR GUARDANDO ARCHIVO");
-            }
-        });
-
-}
-
-catch(e ){
-    if(e.HTTP_STATUS_PAYLOAD_TOO_LARGE){
-        let data = '';
-        req.on('data', chunk => {
-            data += chunk;
-            console.log("new chunk received!")
-        })
-        req.on('end', () => {
-            //save
-            console.log("DATA"+ data)
-
-            //We write the file to disk in the configured directory.
-            console.log(`GUARDANDO ARCHIVO ${req.body.fileInfo}`);
-            fs.writeFile(`${__dirname}/${Q_SAVEPATH}/ejemplo`, data,
-                function (err) {
-                    if (err) {
-                        return console.log("ERROR GUARDANDO ARCHIVO");
-                    }
-                });
+        let experimentId = pathElems[0]
+        let ppId = pathElems[1]
+        let seshId = pathElems[2]
 
 
-            resp.end();
-        })
-    }
-}
+
+        const uxfLogWritePath = `${__dirname}/${EXP_DATA_SAVEPATH}/${experimentId}/${ppId}/`;
+        
+
+        console.log(` Escribiendo archivo `)
+
+        // Crear directorio asociado al experimento (que normalmente existe)
+        await fs.promises.mkdir(uxfLogWritePath, {recursive:true})
+
+
+        let filename = path.basename(req.body.fileInfo);
+        let extname = path.extname(req.body.fileInfo);
+        let filenameNoExt = path.basename(filename, extname)
+
+
+        // Escribir archivo de un participante.
+        await fs.promises.writeFile(`${uxfLogWritePath}${filenameNoExt}_${experimentId}_${ppId}${extname}`, req.body.data,
+            function (err) {
+                if (err) {
+                    return console.log("ERROR GUARDANDO ARCHIVO");
+                }
+            });
+
+    // } catch (e) {
+    //     if (e.HTTP_STATUS_PAYLOAD_TOO_LARGE) {
+    //         let data = '';
+    //         req.on('data', chunk => {
+    //             data += chunk;
+    //             console.log("new chunk received!")
+    //         })
+    //         req.on('end', () => {
+    //             //save
+    //             console.log("DATA" + data)
+    //
+    //             //We write the file to disk in the configured directory.
+    //             console.log(`GUARDANDO ARCHIVO ${req.body.fileInfo}`);
+    //             fs.writeFile(`${__dirname}/${Q_SAVEPATH}/ejemplo`, data,
+    //                 function (err) {
+    //                     if (err) {
+    //                         return console.log("ERROR GUARDANDO ARCHIVO");
+    //                     }
+    //                 });
+    //
+    //
+    //             resp.end();
+    //         })
+    //     }
+    // }
 
 
     resp.status(200).send({message: ' File correctly received!!'})
@@ -267,13 +305,9 @@ catch(e ){
 });
 
 
-
-
-
-
 //Para guardar datos de log del experimento.
-app.post('/saveme.experiment', function (req,res){
-    
+app.post('/saveme.experiment', function (req, res) {
+
     let whereToSave = `${__dirname}/${EXP_DATA_SAVEPATH}${req.body.userID}.experiment`;
 
     console.log("'/saveme.experiment' POST REQUEST received. Will save incoming json as .experiment file");
@@ -287,11 +321,10 @@ app.post('/saveme.experiment', function (req,res){
             }
             console.log(`Successfully saved the .experiment data at ${whereToSave}.`);
         });
-    
+
     res.send(`Saved successfully the file for the user {req.body.userID}`);
 
 });
-
 
 
 //saves the json data it receives as a file in the server side.
@@ -402,6 +435,7 @@ function listActiveWSs() {
 
     return wsStatusList;
 }
+
 //When a connection is established on a websocket.
 wss.on('connection', function connection(_ws) {
 
@@ -423,11 +457,10 @@ wss.on('connection', function connection(_ws) {
 
 
                 //TODO: HEREEEE
-                const initData = new WebsocketMessage(-1,0,{
-                    wsId : _ws.id
+                const initData = new WebsocketMessage(-1, 0, {
+                    wsId: _ws.id
                 })
-                _ws.send(JSON.stringify(initData) );
-
+                _ws.send(JSON.stringify(initData));
 
 
                 break;
@@ -508,10 +541,6 @@ process.on('SIGINT', function () {
 
     process.exit();
 });
-
-
-
-
 
 
 class WebsocketMessage {
