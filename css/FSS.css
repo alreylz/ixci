@@ -1,0 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
+@font-face {
+  font-family: "Rockwell";
+  src: url("fonts/ROCK.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  margin: 0;
+  padding: 0 2em 0 2em;
+  background-color: #6FAAB3;
+  font-family: "Merriweather", serif;
+  font-weight: lighter;
+}
+
+h1 {
+  color: white;
+  box-sizing: border-box;
+  padding-left: 1em;
+  margin-right: 25%;
+  border-left: white 0.5em solid;
+  border-bottom: white 0.1em solid;
+}
+
+p {
+  padding: 1.5em;
+  border: white solid 0.2em;
+  background: white;
+}
+
+p br {
+  display: block;
+  margin: 0.5em 0;
+}
+
+div {
+  margin-right: 25%;
+}
+
+#q-explanation {
+  margin-right: 25%;
+}
+
+q {
+  display: block;
+  border-bottom: 0.1em solid #769bb0;
+}
+q:before {
+  font-size: xxx-large;
+  content: q:before quot;
+  color: #769bb0;
+}
+
+#questionnaire-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5em 0;
+}
+#questionnaire-container label[for=f-UserID] {
+  color: white;
+  font-weight: bold;
+}
+#questionnaire-container #f-UserID {
+  padding: 1em;
+}
+#questionnaire-container form {
+  width: 100%;
+}
+#questionnaire-container form table {
+  width: inherit;
+}
+#questionnaire-container form table tr:first-child td:first-child {
+  background: #748FB3;
+}
+#questionnaire-container form table tr:first-child td:nth-child(3) {
+  background: #748FB3;
+}
+#questionnaire-container form table tr td:nth-child(3) {
+  text-align: center;
+}
+
+.button-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+.button-row button:hover {
+  animation: ease-in;
+  animation-duration: 2s;
+  background: #B386A3;
+}
+
+.saveRemoteButton {
+  background: #448c7b;
+}
+
+.clearFormButton {
+  background: #B386A3;
+}
+
+#results-div {
+  margin: 0;
+  width: 25%;
+  padding: 1em;
+  color: white;
+  font-size: xx-large;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0.3em 2em;
+  background: #44546a;
+}
+#results-div h3 {
+  margin: 0;
+}
+#results-div label, #results-div input {
+  font-size: large;
+}
+#results-div input {
+  padding: 1em;
+}
+
+button {
+  font-size: xx-large;
+  border: none;
+  color: white;
+  padding: 2em;
+}
+
+#original-results-table {
+  display: none;
+}
+
+/*# sourceMappingURL=FSS.css.map */
