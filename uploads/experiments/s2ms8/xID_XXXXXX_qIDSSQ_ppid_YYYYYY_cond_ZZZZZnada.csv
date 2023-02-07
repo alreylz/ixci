@@ -1,0 +1,17 @@
+Experiment;PPID;EXP_COND;Questionnaire;QuestionType;Question;QuestionID;Answer
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;General discomfort;q1;1
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Fatique;q2;3
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Headache;q3;2
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Eye strain;q4;3
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Difficulty focusing;q5;0
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Salivation increasing;q6;1
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Sweating;q7;3
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Nausea;q8;1
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Difficulty concentrating;q9;2
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Fullness of the Head;q10;2
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Blurred vision;q11;1
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Dizziness with eyes open;q12;3
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Dizziness with eyes closed;q13;2
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Vertigo (experienced as loss of orientation with respect to vertical upright);q14;3
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Stomach awareness (feeling of discomfort which is just short of nausea);q15;2
+XXXXXX;YYYYYY;ZZZZZ;SSQ;radio;Burping;q16;1

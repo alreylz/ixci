@@ -20,7 +20,7 @@ header {
   @include xa-align-children(stretch);
 
   & > *:not(h1) {
-    color: $yellowish;
+    color: $dei-yellow;
 
   }
 
@@ -76,7 +76,7 @@ menu {
       margin-bottom: 1em;
 
       &:hover {
-        color: $yellowish;
+        color: $dei-yellow;
         background: lighten($menu-item-color, 10);
       }
     }
@@ -104,7 +104,7 @@ footer {
   h6 {
     padding: 0.3em 0;
     font-size: small;
-    border-bottom: 0.2em solid $yellowish;
+    border-bottom: 0.2em solid $dei-yellow;
   }
 
   ul {

@@ -5,8 +5,7 @@
 /* flex: grow shrink basis; */
 
 $debug: false;
-
-
+$dark-mode: true;
 
 * {
   box-sizing: border-box;
@@ -14,7 +13,7 @@ $debug: false;
   padding: 0;
   text-align: center;
   color: $s2ms-white;
-  font-family: 'Arial';
+  font-family: 'Consolas';
 
 }
 
@@ -25,6 +24,59 @@ $debug: false;
   }
 }
 
+body {
+  display: flex;
+  flex-flow: row wrap;
+
+  @if $dark-mode == true {
+    background-color: $s2ms-black;
+  }
+
+}
+
+header, footer {
+  & > h1 {
+    margin: 0;
+  }
+
+  //padding: 1em 0;
+  flex-basis: 100%;
+  background-color: inherit
+}
+
+footer {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-items: stretch;
+  padding: 1em 0;
+
+
+  & > * {
+
+    flex: 1 1 33%;
+  }
+
+
+  * {
+    color: $golden;
+    font-size: 12px;
+  }
+}
+
+
+h * {
+  flex-basis: 100%;
+}
+
+body > section {
+  margin: 1em;
+  //border: $dei-yellow 0.1em solid;
+  padding: 0.3em;
+  border-radius: 0.4em;
+  background-color: $color2;
+  flex: 1 1 33%;
+}
 
 
 input {
@@ -38,9 +90,8 @@ li {
 }
 
 
-
-@mixin roundCorners($radius: 8px){
-border-radius: $radius;
+@mixin roundCorners($radius: 8px) {
+  border-radius: $radius;
 }
 
 
@@ -55,28 +106,11 @@ border-radius: $radius;
 //}
 
 
-//BODY USING FLEXBOX AS WRAPPING ROW OF ELEMENTS
-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  background-color: $d-blue;
-}
-
-header, footer {
-  padding: 1em 0;
-  width: 100%;
-  background-color: inherit
-}
-
-
-
-
-
 //Console panel specifics:
-#console-sect{
+#console-sect {
   flex: 1 0 50%; // Can grow , cant shrink and shall occupy at least 50%.
 }
+
 #client-log {
   /* Caja de la consola (donde se insertan los mensajes)*/
   background-color: black;
@@ -104,53 +138,23 @@ header, footer {
 }
 
 
-
-
-
-
-
-
-
-
-
-section section{
-  margin: 1em;
-  background-color: lighten($d-blue,20%);
-  @include roundCorners;
-
-}
-
-section section section{
-  margin: 1em;
-  background-color: lighten($d-blue,30%);
-}
-
-section{
-  //@todo: review
-  margin: 0.5em;
-}
-
-
-
 //Assigning sizes to headers and colours
 $font-sizes: (50px, 32px, 24px, 12px, 8px);
 
 @for $i from 1 through 5 {
   h#{$i} {
 
-    font-size: nth($font-sizes,$i);
-    padding:0.1em;
+    font-size: nth($font-sizes, $i);
+    padding: 0.1em;
 
 
     $color-header: black;
 
-    @if $i == 1{
+    @if $i == 1 {
       $color-header: $dei-blue;
-    }
-    @else if $i == 2{
+    } @else if $i == 2 {
       $color-header: $dei-green;
-    }
-    @else{
+    } @else {
       $color-header: $s2ms-black;
       @include roundCorners;
       margin-bottom: 0.5em;
@@ -163,160 +167,145 @@ $font-sizes: (50px, 32px, 24px, 12px, 8px);
 }
 
 
+/*
+--------------------------------------
+ Style for the remote operations:
+ --------------------------------------
+ */
 
 
-
-#RPCForms{
-  flex: 1 1 50%;
+#RPCForms {
+  display: flex;
+  flex-flow: row wrap;
 }
+
+#RPCForms > h2 {
+  flex: 1 /*grow YES*/
+  0 90%;
+}
+
+
 //RPC
-section>form{
+section > form {
 
-  //background-color: lighten($d-blue,20%);
-  background-color:$dei-blue ;
+  // Form is at least 33% of the screen & can grow when there is space to fill
+  flex-basis: 30%;
+  flex-grow: 1;
 
-
-
+  //To make things look cleaner
+  padding: 2em;
+  margin: 1em;
 }
 
-form{
-  //input~label,input~textarea,  {
-  //  color:blue;
-  //}
+
+form {
+
+  // Box-properties
+  background-color: $l-blue-dull;
+  border-radius: 1em;
+  box-shadow: 0px 10px 5px 0px rgba(0, 0, 0, 0.1);
+
 
   display: flex;
-  flex-flow: column wrap;
-  padding:0.2em;
-  label, input,textarea,select,button{
-    margin:0.2em auto;
+  flex-direction: column;
+  align-items: center;
+
+
+  label {
+    font-size: 0.8em;
+    //text-decoration: underline $s2ms-black;
+    margin: 0 0 auto;
     padding: 1em;
+    text-align: center;
   }
-  label{
-    font-size: 1.5em;
+
+  input, textarea, select {
+    padding: 0.2em;
+    border-radius: 0.2em;
+    //margin: 0;
+    //padding: 0;
+  }
+
+  button {
+    justify-self: stretch;
+    margin-top: 2em;
+    padding: 2em;
+    background-color: $color5;
+    border-radius: 1em;
+    border: white 0.2em solid;
+    font-size: 1em;
 
 
   }
+
+
 }
-button{
-  background-color: $dei-yellow;
+
+
+/*
+--------------------------------------
+ Style for the remote monitoring section:
+ --------------------------------------
+ */
+
+
+button {
+
+  margin-top:1em;
+  padding: 1em;
+  border-radius: 1em;
+  background-color: $color4;
+  border: white 0.1em solid;
 }
-select{
+
+select {
   background-color: $s2ms-black;
 }
-
-
-
-
 
 
 /// PANEL DE MONITORIZACIÓN DE POSICIÓN RESPECTO A MAT ANTILATENCY Y VISIÓN DE GAFAS.
 
 
-#visualMonitoring{
+#visualMonitoring {
 
   position: relative;
 }
 
-#remoteUserView{
-  position:absolute;
+#remoteUserView {
+  position: absolute;
   bottom: 0;
   right: 0;
   opacity: 0.5;
 }
-#remoteUserView:hover{
-  position:absolute;
+
+#remoteUserView:hover {
+  position: absolute;
   bottom: 0;
   right: 0;
   opacity: 1;
 }
 
 
-
-
-
-//
-//.card{
-//  display: flex;
-//}
-
-//header, footer, .card {
-//
-//  //display: inline-grid;
-//
-//
-//  //&.c-centered {
-//  align-content: center;
-//  justify-content: center;
-//  //}
-//
-//
-//
-//  //Types of CELLS
-//
-//  //grid-column: 1/5;;
-//
-//  &.f-wide {
-//    grid-column: 1/5;
-//  }
-//  &.wide-r {
-//    grid-column: 2/5;
-//  }
-//  &.wide-l {
-//    grid-column: 1/4;
-//  }
-//  &.big-c{
-//    grid-column: 2/4;
-//  }
-//  &.small-l{
-//    grid-column: 1/2;
-//  }
-//  &.small-r{
-//    grid-column: 4/5;
-//  }
-//
-//
-//
-//  border: $dei-blue 0.2em solid;
-//
-//  border-radius: 1%;
-//}
-
-
-
-
-
-//Monitoring section{
-//#MonitoringSection{
-//  display: grid;
-//  grid-template-columns: 0.5fr auto 0.5fr;
-//  grid-auto-flow:row dense;
-//
-//  &>*{
-//    display: inline-grid;
-//    grid-row: auto ;
-//  }
-//
-//
-//
-//  section{
-//
-//  }
-//
-//
-//  h2 {
-//
-//    grid-column: 1/4 ;
-//  }
-//
-//}
-
-.s2ms-magenta-text{
-  color:$dei-magenta;
+.s2ms-magenta-text {
+  color: $dei-magenta;
 }
-.s2ms-green-text{
-  color:$dei-green;
+
+.s2ms-green-text {
+  color: $dei-green;
 
 }
-.s2ms-yellow-text{
-  color:$dei-yellow;
+
+.s2ms-yellow-text {
+  color: $dei-yellow;
 }
+
+
+section.collapsible {
+  //h2:hover{
+  //  background-color: #853f3b;
+  //}
+}
+
+
+
+

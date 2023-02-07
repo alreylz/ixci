@@ -2,16 +2,12 @@
 // CONFIG
 //---------------
 
-// FOR LOCAL TESTING:
+
+// FOR LOCAL TESTING BY DEFAULT
+// @alreylz CHANGEME
 const AUTO_CONNECT_LOCAL = true;
-const DEFAULT_PORT = 3000;
-const DEFAULT_IP = "localhost";
-
-
-
-
-
-
+const DEFAULT_PORT = 9030;
+const HOSTNAME = "localhost";
 
 
 const WsMessageTypes = {
@@ -20,12 +16,6 @@ const WsMessageTypes = {
     MONITORING: 1,
     SCREENCASTING: 2
 }
-
-
-
-
-
-
 
 
 let websocketURL = "";
@@ -42,9 +32,9 @@ const clientLogDiv = document.querySelector("#client-log");
 if (AUTO_CONNECT_LOCAL) {
     // Show if auto-connect is enabled
     let infoShow_ConnectConfig = document.querySelector("[data-id='connect-configuration']")
-    infoShow_ConnectConfig.innerHTML = ` TRUE: ${DEFAULT_IP}:${DEFAULT_PORT}`;
+    infoShow_ConnectConfig.innerHTML = ` TRUE: ${HOSTNAME}:${DEFAULT_PORT}`;
     document.querySelector("#s-connection-prompt").className = "hidden";
-    socket = new WebSocket(websocketURL = `ws://${DEFAULT_IP}:${DEFAULT_PORT}`);
+    socket = new WebSocket(websocketURL = `ws://${HOSTNAME}:${DEFAULT_PORT}`);
     AttemptWSServerConnect(); //Attempt Connection
 } else {
     // Show if auto-connect is enabled
@@ -127,7 +117,6 @@ commandButtons.forEach(
 );
 
 
-
 /// -------------------------------
 /// [UPDATING THE PAGE DYNAMICALLY]
 /// -------------------------------
@@ -136,7 +125,7 @@ commandButtons.forEach(
  * Displays a message in the console section of the page.
  * @param msg
  */
-function DisplayIncomingMessageInClientLog(msg) {
+async function DisplayIncomingMessageInClientLog(msg) {
 
     const debugMessageToRender = document.createElement("output");
     //Formatting
@@ -149,20 +138,69 @@ function DisplayIncomingMessageInClientLog(msg) {
 
 
     try {
+
         let parsedMsg = JSON.parse(msg);
 
         if (consoleFilterValue !== "dict" && consoleFilterValue !== "any" && parsedMsg !== null && parsedMsg !== undefined) {
             debugMessageToRender.setAttribute("class", "hidden");
         }
+
         if (parsedMsg["MessageType"] === 2) {
             debugMessageToRender.textContent = `New Frame Received: ts=${parsedMsg["Timestamp"].toString()}s`;
         }
+
+
     } catch (e) {
 
     }
+
+
     clientLogDiv.appendChild(debugMessageToRender);
 
+
+
+
+    // ALLOWS READING A BINARY FILE WITH THE STRUCTURE ( LETTER 'I' + FILE CONTENT )
+    // NEW 17/01/2023
+    let debugMessageToRenderImg = null;
+
+    if (msg instanceof Blob) {
+
+        debugMessageToRenderImg = document.createElement("img");
+
+        let blob = msg;
+        let arraybuffer = await blob.arrayBuffer()
+
+
+        //Extract a byte and parse it to a Uint8Array
+        const firstByteView = new Uint8Array(arraybuffer.slice(0,1));
+        console.log("FIRST BYTE: " + toBinString(firstByteView));
+
+        const restOfBlobView = new Uint8Array(arraybuffer.slice(1));
+
+        var objectURL = URL.createObjectURL(new Blob([restOfBlobView]));
+        // var objectURL = URL.createObjectURL(arraybuffer);
+
+        debugMessageToRenderImg.src = objectURL;
+
+
+        //Display the received image data in Base 64
+        let imgElemForRemote = document.querySelector("#remoteView");
+        imgElemForRemote.src = objectURL;
+    }
+    if (debugMessageToRenderImg !== null) {
+        clientLogDiv.appendChild(debugMessageToRenderImg);
+    }
+
+
+    //END SUPPORT FOR BINARY IMAGES
+
 }
+
+const toBinString = (bytes) =>
+    bytes.reduce((str, byte) => str + byte.toString(2).padStart(8, '0'), '');
+
+
 
 /***
  * Clears the html  console log content
@@ -206,7 +244,7 @@ function ShowPositionAndRotationInSvgMap(wsMessage, widthInAntilatencyMatSquares
     let xposition = wsMessage.Data.position[0];
     let zposition = wsMessage.Data.position[2];
 
-    if (typeof(wsMessage.Data.position) == typeof(String) ){
+    if (typeof (wsMessage.Data.position) == typeof (String)) {
 
         let arrayPos = JSON.parse(wsMessage.Data.position);
         xposition = arrayPos[0];
@@ -405,6 +443,7 @@ function DisplayWebsocketServerConnectionStatus() {
 
 
 // To be executed when a message is received via the Websocket connection
+
 function OnWsMessage(event) {
 
     //Incoming message
@@ -437,12 +476,10 @@ function OnWsMessage(event) {
 function StructuredMessageProcessing(jsonObject) {
 
 
-
     //[When Parseable message]
     if (jsonObject !== undefined && jsonObject !== null) {
         console.log(`[FNAME=${callerName()}] - Processing Structured Message...`)
         console.dir(jsonObject);
-
 
 
         //Understand what is to be done from message.
@@ -504,7 +541,7 @@ function StructuredMessageProcessing(jsonObject) {
 
 
         }
-    }else{
+    } else {
         console.error(`[FNAME=${callerName()}] - This should NEVER happen. params are null or undefined`)
     }
 

@@ -18,6 +18,11 @@ let allButtons = document.querySelectorAll('[data-id^=b-]')
 allButtons.forEach((a) => console.log(a));
 
 
+/*
+* -------------------------------------------------------
+*   Main function to link user actions with messages being sent.
+* -------------------------------------------------------
+ */
 function RPCCallsHookup(_ws /*a websocket instance*/) {
 
     //para cada botón que envía mensajes, añadir un listener a "on-click" que envíe el mensaje correspondiente con los datos asociados.
@@ -34,74 +39,129 @@ function RPCCallsHookup(_ws /*a websocket instance*/) {
     document.querySelector('[data-id$=EndExperiment]').addEventListener("click", () => EndExperimentAndSave_SndMsg(_ws));
 
 
-    document.querySelector('[data-id$=ParamTweak]').addEventListener("click", () => ParamTweakingOneByOne(_ws));
+    // document.querySelector('[data-id$=ParamTweak]').addEventListener("click", () => ParamTweakingOneByOne(_ws));
 
-    //handle changes on param tweak form
-    let tweakDropdown = document.querySelector("select[name='s-list-paramNames']") // campo select en el DOM
-    let tweakInputField = document.querySelector("#f-ParamValue") //campo de input en el DOM
-
-
-    tweakDropdown.addEventListener("change", (ev) => {
-        console.log(` ON CHANGE DETECTED for dropdown. selected index ${ev.target.value}`)
+    //s2ms 2.1
+    document.querySelector('[data-id$=StartExperiment]').addEventListener('click', () => StartExperiment(_ws));
 
 
-        console.log(tweakInputField)
-        //ITERACIÓN PARA VER EL DATATYPE
-        let index = 0;
-        let selOptionHTMLNode;
-        let selOptions = tweakDropdown.options;
-        console.log("ITERATION OVER ELEMENTS")
-        for (let i = 0; i < selOptions.length; i++) {
-            //console.log( selOptions[i]);
-            //console.log( );
-            if (selOptions[i].getAttribute("value") === ev.target.value) {
-                console.log(`Found option with value ${ev.target.value} `)
-                selOptionHTMLNode = selOptions[i];
-                break;
-            }
-            index++;
-        }
+    // //handle changes on param tweak form
+    // let tweakDropdown = document.querySelector("select[name='s-list-paramNames']") // campo select en el DOM
+    // let tweakInputField = document.querySelector("#f-ParamValue") //campo de input en el DOM
 
 
-        console.log(` Currently selected option [${index}] `)
-        console.log("---------------------------------------\n OPTION HTML NODE:")
-        console.log(selOptionHTMLNode)
+    // tweakDropdown.addEventListener("change", (ev) => {
+    //     console.log(` ON CHANGE DETECTED for dropdown. selected index ${ev.target.value}`)
+    //
+    //
+    //     console.log(tweakInputField)
+    //     //ITERACIÓN PARA VER EL DATATYPE
+    //     let index = 0;
+    //     let selOptionHTMLNode;
+    //     let selOptions = tweakDropdown.options;
+    //     console.log("ITERATION OVER ELEMENTS")
+    //     for (let i = 0; i < selOptions.length; i++) {
+    //         //console.log( selOptions[i]);
+    //         //console.log( );
+    //         if (selOptions[i].getAttribute("value") === ev.target.value) {
+    //             console.log(`Found option with value ${ev.target.value} `)
+    //             selOptionHTMLNode = selOptions[i];
+    //             break;
+    //         }
+    //         index++;
+    //     }
+    //
+    //
+    //     console.log(` Currently selected option [${index}] `)
+    //     console.log("---------------------------------------\n OPTION HTML NODE:")
+    //     console.log(selOptionHTMLNode)
+    //
+    //     // if( selOptionHTMLNode === undefined)
+    //     //     return;
+    //     //
+    //
+    //     switch (selOptionHTMLNode.getAttribute("data-type")) {
+    //
+    //
+    //         case "int":
+    //             tweakInputField.value = '';
+    //             console.log("changed input field to INT: ")
+    //             tweakInputField.setAttribute("placeholder", "INT NUMBER")
+    //             tweakInputField.setAttribute("type", "number")
+    //             tweakInputField.setAttribute("step", "1")
+    //             tweakInputField.value = 0;
+    //             break;
+    //         case "float":
+    //             tweakInputField.value = '';
+    //             tweakInputField.setAttribute("placeholder", "FLOAT NUMBER")
+    //             tweakInputField.setAttribute("type", "number")
+    //             tweakInputField.setAttribute("step", "0.01")
+    //             tweakInputField.value = 0;
+    //             break;
+    //         case "bool":
+    //
+    //             tweakInputField.setAttribute("type", "text")
+    //             tweakInputField.value = 'on';
+    //             break;
+    //
+    //         default:
+    //             console.log("Shall change type of input field depending on data.");
+    //     }
+    //
+    // })
 
-        // if( selOptionHTMLNode === undefined)
-        //     return;
-        //
-        
-        switch (selOptionHTMLNode.getAttribute("data-type")) {
 
+    //Making the remote operations div collapsible
+    document.querySelector("section.collapsible>h2").addEventListener("click", (e) => {
+        console.log("clicked a collapsible>h2");
+        let parent = e.target.parentNode;
 
-            case "int":
-                tweakInputField.value = '';
-                console.log("changed input field to INT: ")
-                tweakInputField.setAttribute("placeholder", "INT NUMBER")
-                tweakInputField.setAttribute("type", "number")
-                tweakInputField.setAttribute("step", "1")
-                tweakInputField.value = 0;
-                break;
-            case "float":
-                tweakInputField.value = '';
-                tweakInputField.setAttribute("placeholder", "FLOAT NUMBER")
-                tweakInputField.setAttribute("type", "number")
-                tweakInputField.setAttribute("step", "0.01")
-                tweakInputField.value = 0;
-                break;
-            case "bool":
+        parent.querySelectorAll(":scope > form").forEach(node => {
+            node.classList.toggle("hidden");
+        })
+        // console.dir(e.target.parentNode);
 
-                tweakInputField.setAttribute("type", "text")
-                tweakInputField.value = 'on';
-                break;
-
-            default:
-                console.log("Shall change type of input field depending on data.");
-        }
 
     })
 
 
+}
+
+
+function StartExperiment(_ws) {
+    const form = document.querySelector('[data-op-code$=StartExperiment]');
+    const inputsList = form.querySelectorAll("input");
+
+
+    console.log("Creando mensaje para StartExperiment");
+
+
+    let msgData = {}
+    let msgOptions = {}
+
+
+    // Por cada campo del formulario extraemos clave y valor para enviarlos
+    // Los incluimos en msgOptions si son campos opcionales
+    for (let i = 0; i < inputsList.length; i++) {
+
+
+        const nombreCampo = inputsList[i].getAttribute("data-input");
+        const valorCampo = inputsList[i].value;
+        const campoEsOpcional = inputsList[i].getAttribute("data-optional");
+
+
+        if (campoEsOpcional === "true")
+            msgOptions[`${nombreCampo}`] = valorCampo;
+        else
+            msgData[`${nombreCampo}`] = valorCampo;
+
+        console.log();
+
+    }
+
+    const message = new RPCMessage(0, form.getAttribute("data-op-code"), msgData, msgOptions);
+    console.dir(message)
+    _ws.send(JSON.stringify(message));
 }
 
 
@@ -133,6 +193,10 @@ function SetupExperimentTakeInfo_SngMsg(_ws) {
 
 function LoadScene_SndMsg(_ws) {
     //get input
+
+
+    console.log("SENDING LOAD SCENE MESSAGE")
+
 
     let presetSceneName = document.querySelector('[name$=list-SceneName]').value;
     let customSceneName = document.querySelector("#f-SceneName");

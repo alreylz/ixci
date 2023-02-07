@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
 
     <meta http-equiv="content-type" content="text/html; utf-8">
@@ -146,27 +146,54 @@
 </section>
 
 
-<section id="RPCForms">
+<section id="RPCForms" class="collapsible">
 
     <h2> Remote Operations </h2>
     <!-- Enclose each RPC call in a form -->
-    <form>
-        <label for="f-ParamValue"> Parameter tweaking (out of the list of modifiable parameters) and give it a
-            value</label>
-        <select name="s-list-paramNames">
-            <option value="GrabThreshold" data-type="float">AntilatencyGrabThreshold</option>
-            <option value="AutoVibrate" data-type="bool">AutoVibrate</option>
-            <option value="VibrationIntensity" data-type="float">Vibration intensity</option>
-        </select>
-        <input id="f-ParamValue" type="text"
-               placeholder="Write name value for the parameter"/>
 
 
-        <button type="button" data-id="b-ParamTweak"> Confirm Tweaking</button>
+    <!-- Configure and start an experiment -->
+    <form data-op-code="StartExperiment">
+        <h3> Configure and start experiment </h3>
+        <!-- Mandatory -->
+        <label> Participant id</label>
+        <input type="text" data-input="participant-id" data-optional="false" placeholder="participant-id"/>
+        <label> Experiment id</label>
+        <input type="text" data-input="experiment-id" data-is-mandatory="false" placeholder="experiment-id"/>
+
+        <!--        Optional -->
+        <label> Trials per block</label>
+        <input type="number" data-input="trials-per-block" data-optional="true" placeholder="trials-per-block"/>
+        <label> Session Id</label>
+        <input type="number" data-input="session-id" data-optional="true" placeholder="session-id"/>
+
+        <label> Wait between trials</label>
+        <input type="number" data-input="wait-between-trials" data-optional="true"
+               placeholder="wait-between-trials (seconds)"/>
+
+        <button type="button" data-id="b-StartExperiment"> StartExperiment</button>
+
     </form>
+
+
+    <!--    <form>-->
+    <!--        <label for="f-ParamValue"> Parameter tweaking (out of the list of modifiable parameters) and give it a-->
+    <!--            value</label>-->
+    <!--        <select name="s-list-paramNames">-->
+    <!--            <option value="GrabThreshold" data-type="float">AntilatencyGrabThreshold</option>-->
+    <!--            <option value="AutoVibrate" data-type="bool">AutoVibrate</option>-->
+    <!--            <option value="VibrationIntensity" data-type="float">Vibration intensity</option>-->
+    <!--        </select>-->
+    <!--        <input id="f-ParamValue" type="text"-->
+    <!--               placeholder="Write name value for the parameter"/>-->
+
+
+    <!--        <button type="button" data-id="b-ParamTweak"> Confirm Tweaking</button>-->
+    <!--    </form>-->
 
     <!-- LOAD A UNITY SCENE -->
     <form>
+
         <label for="f-SceneName"> Load a Unity Scene</label>
 
         <select name="s-list-SceneName">
@@ -201,6 +228,13 @@
     </form>
 
 
+
+    <form>
+        <label > Tutorial </label>
+        <button> Start </button>
+        <button> Skip</button>
+    </form>
+
     <!-- LOAD A GRAPH BY NAME (Needs to exist in the Game Client filesystem) -->
     <form>
         <label for="f-GraphName">Load a Graph</label>
@@ -208,7 +242,7 @@
                placeholder="Enter the name of the graph to load."
                id="f-GraphName"/>
         <label for="checkbox-LoadRenderInfo"> Load Render Info? </label>
-        <input id="checkbox-LoadRenderInfo" type="checkbox" checked="true"/>
+        <input id="checkbox-LoadRenderInfo" type="checkbox" checked="checked"/>
         <button data-id="b-LoadGraph"> Load Graph</button>
     </form>
 
@@ -231,35 +265,40 @@
 
     <!-- LATER: Div showing all timers that exist in the game if any -->
 
-    <section>
-        <h3> TIMERS</h3>
-
-        <!-- "Create a timer" form -->
-        <form>
-            <label> Create a new timer</label>
-            <input type="name"/>
-            <input type="button" value="New Timer (Not Started By default? )"/>
-        </form>
+</section>
 
 
-        <form>
+<section>
+    <h3> TIMERS</h3>
 
-            <ul>
-                <!-- Por cada timer existente, mostrar un nuevo li -->
-                <li>
-
-                    <label> NOMBRE DEL TIMER <span> STATUS DEL TIMER </span></label>
-                    <!-- Mostrar solo algunos de los botones dependiendo del estado -->
-                    <button data-id="b-StartNamedTimer">Start Named Timer</button>
-                    <button data-id="b-StartNamedTimer">Resume Named Timer</button>
-                    <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
-                    <button data-id="b-ResetNamedTimer">Stop Named Timer</button>
-                </li>
-            </ul>
-        </form>
+    <!-- "Create a timer" form -->
+    <form>
+        <label> Create a new timer</label>
+        <input type="name"/>
+        <input type="button" value="New Timer (Not Started By default? )"/>
+    </form>
 
 
-    </section>
+    <form>
+
+        <ul>
+            <!-- Por cada timer existente, mostrar un nuevo li -->
+            <li>
+
+                <label> NOMBRE DEL TIMER <span> STATUS DEL TIMER </span></label>
+                <!-- Mostrar solo algunos de los botones dependiendo del estado -->
+                <button data-id="b-StartNamedTimer">Start Named Timer</button>
+                <button data-id="b-StartNamedTimer">Resume Named Timer</button>
+                <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
+                <button data-id="b-ResetNamedTimer">Stop Named Timer</button>
+            </li>
+        </ul>
+    </form>
+
+
+</section>
+
+<section>
     <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
     <h3 class="">
         <span class="">Periodic Websocket Monitoring configuration</span>
@@ -289,13 +328,15 @@
 
 </section>
 
+
 <!-- f- for field names -->
 <!-- b- for button id's -->
 <!-- m- for remote monitoring display -->
 
-<footer class="card f-wide">
-    <h4 class=" "> Alejandro Rey López @uc3m </h4>
-    <ul class="">
+
+<footer class="">
+    <h4 > Alejandro Rey López @uc3m </h4>
+    <ul >
         <li>Github</li>
         <li>Linkedin</li>
         <li>Web</li>

@@ -1,0 +1,357 @@
+<html>
+
+<head>
+    <title> Feedback ranking</title>
+
+
+    <style>
+
+        header {
+            background-color: #3D3D3D;
+            align-items: center;
+            color: white;
+
+        }
+
+        header h1 {
+            padding: 1em;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+            padding: 2em;
+            gap: 1em;
+            align-items: stretch;
+        }
+
+        label + input, select, textarea {
+            margin: 0.5em;
+
+        }
+
+        label {
+            font-size: 1.2rem;
+            background-color: #3e80b0;
+            display: block;
+            padding: 1em;
+        }
+
+
+        select {
+            border-radius: 1em;
+        }
+
+        textarea {
+            min-height: 10em;
+        }
+
+        input {
+            min-height: 2em;
+        }
+
+        input::placeholder {
+            padding: 1em;
+            text-align: center;
+        }
+
+
+        form + div {
+            align-self: center;
+        }
+
+        div > select:first-of-type {
+            background-color: gold;
+        }
+
+        div > select:nth-of-type(2) {
+            background-color: silver;
+        }
+
+        div > select:nth-of-type(3) {
+            background-color: #ffad79;
+        }
+
+        div > select:nth-of-type(4) {
+            background-color: rgba(128, 83, 64, 0.75);
+
+        }
+
+
+        .rank-div {
+            padding: 1em;
+            align-self: center;
+            background-color: #dce4bd;
+        }
+
+
+        button {
+            font-size: 1.2rem;
+            background-color: #beade4;
+            padding: 1em;
+            align-self: flex-end;
+        }
+
+
+    </style>
+
+</head>
+
+<%
+toRankElems = ["TAMAÑO", "TAMAÑO Y SONIDO", "TAMAÑO Y VIBRACIÓN", "TAMAÑO + VIBRACIÓN + SONIDO"]
+%>
+
+<body>
+
+<header>
+    <h1> Cuestionario S2MS2</h1>
+</header>
+
+<form>
+
+    <label> ID del participante</label>
+    <input type="text" name="participant-id" placeholder="participant-id" required>
+
+
+    <!-- TOP COMPRENSIBILIDAD -->
+
+    <div class="rank-div">
+        <label> Top en cuanto a <b>comprensibilidad</b>: ¿Qué tipo de retroalimentación (o conjunto de
+            retroalimentaciones)
+            crees que te ha ayudado más a elegir correctamente o con mayor seguridad el nodo más importante ?</label>
+        <br>
+        <% for(let i = 0 ; i < toRankElems.length; i++) { %>
+
+            <%= "Posición " + (i + 1) %>
+            <select class="top-understandability" data-pos="<%= i %>" name="rank-understand-pos<%= i %>"
+                    required="required">
+                <option value="" selected></option>
+                <option value="<%= toRankElems[0] %>"><%= toRankElems[0] %> </option>
+                <option value="<%= toRankElems[1] %>"><%= toRankElems[1] %></option>
+                <option value="<%= toRankElems[2] %>"><%= toRankElems[2] %></option>
+                <option value="<%= toRankElems[3] %>"><%= toRankElems[3] %></option>
+            </select>
+            <br/>
+        <% } %>
+
+    </div>
+
+    <!-- END TOP COMPRENSIBILIDAD -->
+
+
+    <label> Argumenta tu ordenación anterior (e.g., ¿cómo te sentiste usando el sistema al recibir retroalimentación de
+        X tipo?) </label>
+    <textarea minlength=20 name="understandability-why">  </textarea>
+
+    <div class="rank-div">
+        <label> Top en cuanto a <b>enjoyment</b> ¿Qué tipo de retroalimentación (o conjunto de retroalimentaciones)
+            prefieres
+        </label>
+        <br>
+        <% for(let i = 0 ; i < toRankElems.length; i++) { %>
+
+            <%= "Posición " + (i + 1) %>
+            <select class="top-enjoyment" data-pos="<%= i %>" name="rank-enjoyment-pos<%= i %>" required="required">
+                <option value="" selected></option>
+                <option value="<%= toRankElems[0] %>"><%= toRankElems[0] %> </option>
+                <option value="<%= toRankElems[1] %>"><%= toRankElems[1] %></option>
+                <option value="<%= toRankElems[2] %>"><%= toRankElems[2] %></option>
+                <option value="<%= toRankElems[3] %>"><%= toRankElems[3] %></option>
+            </select>
+            <br/>
+        <% } %>
+
+    </div>
+
+
+    <label> Argumenta tu ordenación anterior </label>
+    <textarea minlength=20 name="enjoyment-why">  </textarea>
+
+
+    <button type="button" onclick="checkFilledAndSubmit()"> Submit</button>
+
+
+</form>
+
+<script defer>
+
+
+    const topUnderstandabilitySelects = document.querySelectorAll(".top-understandability")
+    const topEnjoymentSelects = document.querySelectorAll(".top-enjoyment")
+
+    document.querySelectorAll(".top-understandability").forEach((posNSelect) => {
+        console.log("Suscribed to changes in select elemements for top-understandability");
+        posNSelect.addEventListener("change", (selectNode) => updatePossibilitiesToChooseFrom(selectNode, topUnderstandabilitySelects))
+    });
+
+
+    document.querySelectorAll(".top-enjoyment").forEach((posNSelect) => {
+        console.log("Suscribed to changes in select elemements for top-enjoyment");
+        posNSelect.addEventListener("change", (selectNode) => updatePossibilitiesToChooseFrom(selectNode, topEnjoymentSelects));
+    });
+
+
+    function updatePossibilitiesToChooseFrom(selectObj, topAllSelects) {
+
+
+        const changedSelect = selectObj.target;
+        const selectedOption = selectObj.target.value;
+        const selectedIndexOption = selectObj.target.selectedIndex;
+        console.log("User chose option :" + selectedOption + "| select-index= " + selectedIndexOption);
+
+
+        console.dir(selectObj)
+
+
+        // Busco en el resto de opciones en todos los selects de ranking y actualizo los valores
+        for (let ithPosSelect of topAllSelects) {
+
+            if (ithPosSelect !== changedSelect) {
+                if (ithPosSelect.value === selectedOption) {
+                    console.log("Reseting value to '' for  " + ithPosSelect)
+                    ithPosSelect.value = ithPosSelect.options[0];
+                }
+            }
+
+
+        }
+    }
+
+
+    //Comprueba que se han rellenado las preguntas
+    function checkFilledAndSubmit() {
+
+
+        const form = document.forms[0]
+
+        let participantId = "XXX";
+
+
+        for (const field of form) {
+            console.log(field)
+
+
+            if (field.value === "" && field.type !== "button") {
+
+                alert("Rellena todos los campos: campo: '" + field.getAttribute("name") + "' vacío")
+                return false;
+            }
+            if (field.getAttribute("name") === "participant-id") {
+                participantId = field.value;
+            }
+        }
+
+
+        //Download file
+        const csv = createCSVFromForm(form);
+        CSVDownload(csv, `${participantId}_s2ms_post`)
+
+        uploadCSV(`${participantId}_s2ms_post.csv`, new Blob(["\ufeff" + csv], {type: 'text/csv; charset=utf-8'}))
+
+
+        // form.submit()
+        alert("Formulario subido correctamente")
+    }
+
+
+    /*
+        HELPER FUNCTIONS
+     */
+
+
+    function createCSVFromForm(form, separator = ";") {
+
+
+        let csvAsDictionary = {};
+
+        for (let field of form) {
+            if (
+                field.type !== "button"
+            ) {
+                csvAsDictionary[`${field.getAttribute("name")}`] = `${field.value}`;
+            }
+        }
+
+        const csv = CSVMaker(csvAsDictionary);
+
+        console.log(csv)
+        return csv;
+
+    }
+
+
+    const CSVDownload = function (csvText, filename) {
+        const blob = new Blob(["\ufeff" + csvText], {type: 'text/csv; charset=utf-8'});
+
+
+        //Creating an object for downloading url
+        const url = window.URL.createObjectURL(blob)
+
+        // Creating an anchor(a) tag of HTML
+        const a = document.createElement('a')
+
+        // Passing the blob downloading url
+        a.setAttribute('href', url)
+
+        // Setting the anchor tag attribute for downloading
+        // and passing the download file name
+        a.setAttribute('download', `${filename}.csv`);
+
+        // Performing a download with click
+        a.click()
+    }
+
+
+    const CSVMaker = function (dataAsObject, separator = ";") {
+
+        // Empty array for storing the values
+        csvRows = [];
+
+        // Headers is basically a keys of an
+        // object which is id, name, and
+        // profession
+        const headers = Object.keys(dataAsObject);
+
+        // As for making csv format, headers
+        // must be separated by comma and
+        // pushing it into array
+        csvRows.push(headers.join(separator));
+
+        // Pushing Object values into array
+        // with comma separation
+        const values = Object.values(dataAsObject).join(separator);
+        csvRows.push(values)
+
+        // Returning the array joining with new line
+        return csvRows.join('\n')
+    }
+
+
+    function uploadCSV(filename, blob) {
+
+
+        const formData = new FormData();
+
+
+        formData.append(`${filename}`, blob, `${filename}`);
+
+        const request = new XMLHttpRequest();
+
+
+        request.open("POST", 'http://localhost:9030/experiments_nojwt/s2ms2');
+        console.log(request)
+        request.send(formData);
+
+
+
+
+
+    }
+
+
+
+
+</script>
+</body>
+</html>

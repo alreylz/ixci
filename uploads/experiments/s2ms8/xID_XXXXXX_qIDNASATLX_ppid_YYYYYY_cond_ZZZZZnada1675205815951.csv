@@ -1,0 +1,7 @@
+Experiment;PPID;EXP_COND;Questionnaire;QuestionType;Question;QuestionID;Answer
+XXXXXX;YYYYYY;ZZZZZ;NASATLX;linearGrid;Mental Demand:				How mentally demanding was the task?;g1;19
+XXXXXX;YYYYYY;ZZZZZ;NASATLX;linearGrid;Physical Demand:				How physically demanding was the task?;g2;9
+XXXXXX;YYYYYY;ZZZZZ;NASATLX;linearGrid;Temporal Demand:		How hurried or rushed was the pace of the task?;g3;16
+XXXXXX;YYYYYY;ZZZZZ;NASATLX;linearGrid;Performance:  How succesfull were you in accomplishing what you were asked to do?;g4;20
+XXXXXX;YYYYYY;ZZZZZ;NASATLX;linearGrid;Effort:  How hard did you have to work to accomplish your level of performance?;g5;15
+XXXXXX;YYYYYY;ZZZZZ;NASATLX;linearGrid;Frustration:  How insecure, discouraged, irritated, stressed, and annoyed were you?;g6;7

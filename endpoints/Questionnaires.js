@@ -34,11 +34,24 @@ router.get("/fss", (req, res) => {
 
 
 /*
-NASA TLX completo
+NASA TLX (complete version)
  */
 router.get("/nasa.tlx", (req, res) => {
     res.render("questionnaires/Nasa_TLX.ejs", );
 });
+
+
+
+/*
+NASA TLX (complete version)
+ */
+router.get("/ranking.opt", (req, res) => {
+
+    res.render("questionnaires/s2ms2-ranking-feedbacks.ejs", );
+});
+
+
+
 
 
 module.exports = router;

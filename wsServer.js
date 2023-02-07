@@ -90,7 +90,7 @@ const wsServer = function (wss) {
 
                     break;
                 case 'mr': // if it is a game client, then we want to handle it in a different way.
-                    wsock.id = webServer.getUniqueID();
+                    wsock.id = wss.getUniqueID();
                     game_clients.push(wsock);
                     console.log(` [+1]`.yellow() + ` game_client`.red() + ` Websocket Connection` + ` with id '${wsock.id}' from ${req.socket.remoteAddress}`);
                     // console.log(`[NewWS][GAME-CLIENT] ${_ws.id}`);

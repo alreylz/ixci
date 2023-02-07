@@ -17,6 +17,9 @@ const hostname = process.env.IP || "localhost";
 const webPort = process.env.PORT || 9030;
 const wsPort = process.env.WS || webPort;
 
+// This variable is accessible from any backend code
+global.__basedir = __dirname;
+global.basedir = __dirname;
 
 // HTTP SERVER WILL RUN EXPRESS CODE
 const server = http.Server(expressApp);

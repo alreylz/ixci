@@ -184,8 +184,7 @@ h3, h4, h5, h6 {
 }
 
 .widecol {
-  flex: 0 0 50%;
-  /* flex-grow, flex-shrink, flex-basis */
+  flex: 0 0 50%; /* flex-grow, flex-shrink, flex-basis */
   background-color: rosybrown;
   box-shadow: inset 0 0 1px #0f0;
 }

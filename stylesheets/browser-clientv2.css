@@ -12,7 +12,48 @@
   padding: 0;
   text-align: center;
   color: #ffffff;
-  font-family: "Arial";
+  font-family: "Consolas";
+}
+
+body {
+  display: flex;
+  flex-flow: row wrap;
+  background-color: #333333;
+}
+
+header, footer {
+  flex-basis: 100%;
+  background-color: inherit;
+}
+header > h1, footer > h1 {
+  margin: 0;
+}
+
+footer {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-items: stretch;
+  padding: 1em 0;
+}
+footer > * {
+  flex: 1 1 33%;
+}
+footer * {
+  color: #9E8328;
+  font-size: 12px;
+}
+
+h * {
+  flex-basis: 100%;
+}
+
+body > section {
+  margin: 1em;
+  padding: 0.3em;
+  border-radius: 0.4em;
+  background-color: #6FAAB3;
+  flex: 1 1 33%;
 }
 
 input {
@@ -23,19 +64,6 @@ input {
 
 li {
   list-style: none;
-}
-
-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  background-color: #44546a;
-}
-
-header, footer {
-  padding: 1em 0;
-  width: 100%;
-  background-color: inherit;
 }
 
 #console-sect {
@@ -61,21 +89,6 @@ header, footer {
 #client-log .debugMsg:before {
   content: "@> ";
   color: #feb500;
-}
-
-section section {
-  margin: 1em;
-  background-color: #7086a4;
-  border-radius: 8px;
-}
-
-section section section {
-  margin: 1em;
-  background-color: #90a0b7;
-}
-
-section {
-  margin: 0.5em;
 }
 
 h1 {
@@ -114,29 +127,66 @@ h5 {
   background-color: #333333;
 }
 
+/*
+--------------------------------------
+ Style for the remote operations:
+ --------------------------------------
+ */
 #RPCForms {
-  flex: 1 1 50%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#RPCForms > h2 {
+  flex: 1 0 90%;
 }
 
 section > form {
-  background-color: #3e80b0;
+  flex-basis: 30%;
+  flex-grow: 1;
+  padding: 2em;
+  margin: 1em;
 }
 
 form {
+  background-color: #5c8d8d;
+  border-radius: 1em;
+  box-shadow: 0px 10px 5px 0px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-flow: column wrap;
-  padding: 0.2em;
-}
-form label, form input, form textarea, form select, form button {
-  margin: 0.2em auto;
-  padding: 1em;
+  flex-direction: column;
+  align-items: center;
 }
 form label {
-  font-size: 1.5em;
+  font-size: 0.8em;
+  margin: 0 0 auto;
+  padding: 1em;
+  text-align: center;
+}
+form input, form textarea, form select {
+  padding: 0.2em;
+  border-radius: 0.2em;
+}
+form button {
+  justify-self: stretch;
+  margin-top: 2em;
+  padding: 2em;
+  background-color: #44546a;
+  border-radius: 1em;
+  border: white 0.2em solid;
+  font-size: 1em;
 }
 
+/*
+--------------------------------------
+ Style for the remote monitoring section:
+ --------------------------------------
+ */
 button {
-  background-color: #feb500;
+  margin-top: 1em;
+  padding: 1em;
+  border-radius: 1em;
+  background-color: #B39762;
+  border: white 0.1em solid;
 }
 
 select {

@@ -1,4 +1,4 @@
-//TODO LO RELATIVO A EXPRESS
+//TODO LO RELATIVO A EXPRESS DEBERÍA IR AQUÍ
 
 const express = require('express'); /* Express library to create Web-server */
 const app = express();
@@ -21,6 +21,10 @@ app.use("/questionnaires/", QuestionnaireEndpoints);
 app.use("/questionnaires/", express.static("views/questionnaires/js/"))
 app.use("/questionnaires/", express.static("views/questionnaires/css/"))
 
+
+// 2. DATA UPLOAD
+const DataSaveEndpoints = require("./endpoints/DataSave")
+app.use("/", DataSaveEndpoints);
 
 // //Object binding representing the web-server, which we generate via express.
 // const server = require('http').Server(app);
