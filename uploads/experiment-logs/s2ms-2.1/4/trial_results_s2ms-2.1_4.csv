@@ -1,3 +1,0 @@
-experiment;ppid;session_num;trial_num;block_num;trial_num_in_block;start_time;end_time;condition;SIZE_LEVEL;numTaps;numManipulations;totalInteractions;nodesTouched;success
-s2ms-2.1;4;1;1;1;1;93,28;103,18;SIZE;LOW_DIFFERENCE;0;3;3;3;0
-s2ms-2.1;4;1;2;1;2;104,2237;115,32;SIZE;LOW_DIFFERENCE;0;6;6;6;0
