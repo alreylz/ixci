@@ -227,7 +227,6 @@ toRankElems = ["TAMAÑO", "TAMAÑO Y SONIDO", "TAMAÑO Y VIBRACIÓN", "TAMAÑO +
 
         let participantId = "XXX";
 
-
         for (const field of form) {
             console.log(field)
 
@@ -241,7 +240,6 @@ toRankElems = ["TAMAÑO", "TAMAÑO Y SONIDO", "TAMAÑO Y VIBRACIÓN", "TAMAÑO +
                 participantId = field.value;
             }
         }
-
 
         //Download file
         const csv = createCSVFromForm(form);
@@ -337,19 +335,19 @@ toRankElems = ["TAMAÑO", "TAMAÑO Y SONIDO", "TAMAÑO Y VIBRACIÓN", "TAMAÑO +
         formData.append(`${filename}`, blob, `${filename}`);
 
         const request = new XMLHttpRequest();
+        let env = {
+            ip: "<%= ENV.ip %>",
+            port: "<%= ENV.port %>"
 
+        };
 
-        request.open("POST", 'http://localhost:9030/experiments_nojwt/s2ms2');
+        console.log(env)
+        request.open("POST", `http://${env.ip}:${env.port}/experiments_nojwt/s2ms2`);
         console.log(request)
         request.send(formData);
 
 
-
-
-
     }
-
-
 
 
 </script>

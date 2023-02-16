@@ -161,7 +161,7 @@ const upload = multer({
 // Saving using UXF tools (see Unity)
 router.post('/uxf.save', async function (req, resp) {
 
-    console.log("[UXF IXCI Companion] Received request to" + "/uxf.save".magenta())
+    console.log("\t\tReceived request to" + "/uxf.save".magenta())
 
     const pathElems = await req.body.fileInfo.split("/")
 
@@ -188,6 +188,9 @@ router.post('/uxf.save', async function (req, resp) {
             return console.log("ERROR GUARDANDO ARCHIVO");
         }
     });
+
+    console.log(`\t\tSaved (during) experiment data for participant='${ppId}' , session: ${seshId}`.magenta())
+
     resp.status(200).send({message: ' File correctly received!!'})
 
 

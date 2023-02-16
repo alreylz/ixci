@@ -1,0 +1,375 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+    <meta http-equiv="content-type" content="text/html; utf-8">
+    <meta charset="UTF-8">
+
+    <title> IXCI </title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <link href="browser-clientv2.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <style>
+
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Header -->
+<header class="card f-wide">
+    <h1> @alreylz' IXCI </h1>
+    <h2 style="background-color:#406071;"> The <span class="s2ms-yellow-text">I</span>mmersive e<span
+                class="s2ms-green-text">X</span>perimenter <span
+                class="s2ms-magenta-text">C</span>ontrol <span class="s2ms-yellow-text">I</span>nterface</h2>
+
+    <img alt="IXCI icon" src="IXCI-icon.png" style="width:25%;margin: 0 auto; margin-top:1em;"/>
+</header>
+
+<!-- Body -->
+
+
+<!-- Prompt to connect to a remote websocket server -->
+<section id="s-connection-prompt" class="card wide-r">
+    <h3> Remote Connection Prompt</h3>
+    <label for="f-hostname"> Enter here the hostname of the server to connect to (starting by ws://) </label>
+    <input id="f-hostname" type="text" placeholder="IP:port | ws://IP:PORT" value="ws://"/>
+    <button id="connect" onclick="AttemptWSServerConnect();"> Connect</button>
+</section>
+
+<!-- Box showing the status of the connection with the websocket server -->
+<section id="ws-server-connection-status" class="small-l">
+    <h3> WebSocket Server Connection Status</h3>
+    <ul>
+        <li>AUTO_CONNECT_LOCAL:<span data-id="connect-configuration"> </span></li>
+        <li>Connection:<span class="status-box"> </span></li>
+        <li>Hostname: <span id="conn-hostname"> </span></li>
+    </ul>
+</section>
+
+<!-- Consola donde se muestran los mensajes que irán llegando -->
+<section id="console-sect" class="card wide-r">
+    <h3> Full Log</h3>
+    <hr/>
+
+    <label> Filter </label>
+    <select name="filter-full-log">
+        <option value="any"> Any</option>
+        <option value="dict"> Dictionary</option>
+    </select>
+    <div id="client-log">
+        <!-- Aquí van todos los mensajes que van llegando -->
+    </div>
+    <!-- here raw incoming messages will be put -->
+    <button onclick="ClearClientLog()"> Clear log</button>
+</section>
+
+
+<section id="MonitoringSection" class="card f-wide">
+    <h2> Remote Monitoring </h2>
+    <hr/>
+
+    <!-- General status : e.g. active Scene (Last message received) -->
+    <section id="GeneralStatusSection">
+        <h3>Scene data</h3>
+        <ul>
+            <li>Current Unity Scene: <span data-id="m-SceneName"> N/A </span></li>
+            <li>ActiveGraph: <span data-id="m-ActiveGraphName"> N/A </span></li>
+        </ul>
+
+        <h3>Antilatency Devices</h3>
+        <span data-id="m-AntilatencyDeviceList"> N/A </span>
+
+    </section>
+    <!-- Basic Experiment metrics -->
+    <section id="UserPerformanceMonitoring">
+        <h3>Metrics</h3>
+        <ul>
+            <li>Travelled Distance: <span data-id="m-TravelledDistance"> N/A </span></li>
+            <li>Interaction Summary: <span data-id="m-InteractionSummary"> N/A </span></li>
+            <li>Interaction Detail: <span data-id="m-DetailInteraction"> N/A </span></li>
+            <li>Timers Summary: <span data-id="m-TimersSummary"> N/A </span></li>
+        </ul>
+
+        <!-- Minigame Solution: Which nodes go in which slots  -->
+        <section id="MinigameSolutionPanel">
+            <h3>Expected results</h3>
+            <p id="MinigameSolutionDisplay">
+                Here the expected results of the minigame are displayed.
+            </p>
+        </section>
+
+        <!-- User progress regarding the experiment -->
+        <section id="CurrentMinigameStatusPanel">
+            <h3>Current Status</h3>
+            <p id="MinigameStatusDisplay">
+                Here the current progress of the minigame is showed (how the user is performing).
+            </p>
+        </section>
+
+        <section id="visualMonitoring">
+
+            <!-- (COMPLEX) Position  and rotation map -->
+            <section id="GraphicPosRotMonitor">
+                <div class="card-header card-header-gray">
+                    <h3 class="card-header-h-gray"> User Position & Rotation Monitor</h3>
+                </div>
+                <!-- SVG Panel where the remote coords and rotation are represented -->
+                <svg id="world2D" width="100%" height="500" class="card-es">
+                    <!-- User representation : a circle + a line which states the gazing direction -->
+                    <g id="user-rep">
+                        <circle class="user-head-svg" cx="448" cy="250" r="15"></circle>
+                        <path id="user-head-dir"></path>
+                        <!-- <image class="user-head-icon" href="img1.JPG" x="0" y="0" width="1" height="1"/>-->
+                    </g>
+
+                </svg>
+            </section>
+
+            <!-- (COMPLEX)remote user view -->
+            <section id="remoteUserView">
+                <h3> Remote User View </h3>
+                <img id="remoteView" width="480px" height="320px" src=""/>
+            </section>
+
+        </section>
+
+    </section>
+
+
+</section>
+
+
+<section id="RPCForms" class="collapsible">
+
+    <h2> Remote Operations </h2>
+    <!-- Enclose each RPC call in a form -->
+
+    <form data-op-code="TutorialConfig">
+        <h3> Tutorial </h3>
+        <button type="button" data-id="b-StartTutorial"> Start</button>
+        <button type="button" data-id="b-SkipTutorial"> Skip</button>
+    </form>
+
+
+    <form data-op-code="PrepareExperiment">
+        <h3> Configure experiment </h3>
+        <label> Participant id </label>
+        <input type="text" data-input="participant-id" data-optional="false" placeholder="participant-id"/>
+        <label> Experiment id</label>
+        <input type="text" data-input="experiment-id" data-optional="false" placeholder="experiment-id"/>
+        <label> Session Id</label>
+        <input type="number" data-input="session-id" data-optional="false" placeholder="session-id"/>
+        <!--        Optional -->
+        <label> Alias/Observations </label>
+        <input type="text" data-input="other" data-optional="true" placeholder="Any text here"/>
+
+        <button type="button" data-id="b-PrepareExperiment"> StartExperiment</button>
+
+    </form>
+
+
+    <!-- Configure and start an experiment -->
+    <form data-op-code="StartExperiment">
+        <h3> Start experiment </h3>
+        <!-- Mandatory -->
+        <label> Participant id</label>
+        <input type="text" data-input="participant-id" data-optional="false" placeholder="participant-id"/>
+        <label> Experiment id</label>
+        <input type="text" data-input="experiment-id" data-is-mandatory="false" placeholder="experiment-id"/>
+
+        <!--        Optional -->
+        <label> Trials per block</label>
+        <input type="number" data-input="trials-per-block" data-optional="true" placeholder="trials-per-block"/>
+        <label> Session Id</label>
+        <input type="number" data-input="session-id" data-optional="true" placeholder="session-id"/>
+
+        <label> Wait between trials</label>
+        <input type="number" data-input="wait-between-trials" data-optional="true"
+               placeholder="wait-between-trials (seconds)"/>
+
+        <button type="button" data-id="b-StartExperiment"> StartExperiment</button>
+
+    </form>
+
+
+    <!--    <form>-->
+    <!--        <label for="f-ParamValue"> Parameter tweaking (out of the list of modifiable parameters) and give it a-->
+    <!--            value</label>-->
+    <!--        <select name="s-list-paramNames">-->
+    <!--            <option value="GrabThreshold" data-type="float">AntilatencyGrabThreshold</option>-->
+    <!--            <option value="AutoVibrate" data-type="bool">AutoVibrate</option>-->
+    <!--            <option value="VibrationIntensity" data-type="float">Vibration intensity</option>-->
+    <!--        </select>-->
+    <!--        <input id="f-ParamValue" type="text"-->
+    <!--               placeholder="Write name value for the parameter"/>-->
+
+
+    <!--        <button type="button" data-id="b-ParamTweak"> Confirm Tweaking</button>-->
+    <!--    </form>-->
+
+    <!-- LOAD A UNITY SCENE -->
+    <form>
+
+        <label for="f-SceneName"> Load a Unity Scene</label>
+
+        <select name="s-list-SceneName">
+            <option value="Other"> Other</option>
+            <option value="Tutorial-BracerInteraction">Tutorial-BracerInteraction</option>
+            <option value="Tutorial-Teleport">Tutorial-Teleport</option>
+
+            <option value="OrderingTask-BracerInteraction">OrderingTask-BracerInteraction</option>
+            <option value="OrderingTask-Teleport">OrderingTask-Teleport</option>
+            <option value="BipedalTaskWOculusTouch">BipedalTaskWOculusTouch</option>
+            <option value="Tutorial-BipedalOculusTouch">Tutorial-BipedalOculusTouch</option>
+
+        </select>
+        <input id="f-SceneName" type="text"
+               placeholder="Write name of the scene to load in the remote side."/>
+
+
+        <button type="button" data-id="b-LoadScene"> Load Scene</button>
+    </form>
+
+
+    <!-- Experiment Type and Log configuration form: -->
+    <form>
+        <label for="f-ParticipantID"> Identifier of the user:</label>
+        <input id="f-ParticipantID" type="text" placeholder="Put here the id of the user, to identify it"/>
+        <label for="f-ExpCondition"> Experimental Condition </label>
+        <select id="f-ExpCondition" name="f-NumExpCondition">
+            <option value="0"> Teleport</option>
+            <option value="1"> Physical Movement</option>
+        </select>
+        <button type="button" data-id="b-SetupExpTakeInfo"> Setup Experiment Info</button>
+    </form>
+
+
+    <!-- LOAD A GRAPH BY NAME (Needs to exist in the Game Client filesystem) -->
+    <form>
+        <label for="f-GraphName">Load a Graph</label>
+        <input type="text"
+               placeholder="Enter the name of the graph to load."
+               id="f-GraphName"/>
+        <label for="checkbox-LoadRenderInfo"> Load Render Info? </label>
+        <input id="checkbox-LoadRenderInfo" type="checkbox" checked="checked"/>
+        <button data-id="b-LoadGraph"> Load Graph</button>
+    </form>
+
+    <form>
+        <p> EDGE SHOWN STATUS : HIDDEN?</p>
+        <button type="button" data-id="b-HideEdges"> Hide edge/s</button>
+        <button type="button" data-id="b-ShowEdges"> Show edge/s</button>
+    </form>
+
+    <form>
+
+    </form>
+
+    <form>
+        <button type="button" data-id="b-EndExperiment"> End Experiment</button>
+    </form>
+
+
+    <!-- Working here -->
+
+    <!-- LATER: Div showing all timers that exist in the game if any -->
+
+</section>
+
+
+<section>
+    <h3> TIMERS</h3>
+
+    <!-- "Create a timer" form -->
+    <form>
+        <label> Create a new timer</label>
+        <input type="name"/>
+        <input type="button" value="New Timer (Not Started By default? )"/>
+    </form>
+
+
+    <form>
+
+        <ul>
+            <!-- Por cada timer existente, mostrar un nuevo li -->
+            <li>
+
+                <label> NOMBRE DEL TIMER <span> STATUS DEL TIMER </span></label>
+                <!-- Mostrar solo algunos de los botones dependiendo del estado -->
+                <button data-id="b-StartNamedTimer">Start Named Timer</button>
+                <button data-id="b-StartNamedTimer">Resume Named Timer</button>
+                <button data-id="b-PauseNamedTimer"> Pause Named Timer</button>
+                <button data-id="b-ResetNamedTimer">Stop Named Timer</button>
+            </li>
+        </ul>
+    </form>
+
+
+</section>
+
+<section>
+    <!-- Panel for viewing and configuring the periodic monitoring of data from the game -->
+    <h3 class="">
+        <span class="">Periodic Websocket Monitoring configuration</span>
+    </h3>
+    <form>
+
+        <h4>Current configuration</h4>
+        <p>
+            Here you can put whatever is currently being monitored.
+        </p>
+
+
+        <label for="checkbox-MonitorGameView"> Monitor Game View </label> <input
+                id="checkbox-MonitorGameView"
+                type="checkbox" checked="checked"/>
+        <label for="f-TMonitorGameview"> Period </label> <input type="number" id="f-TMonitorGameview">
+
+
+        <label for="checkbox-MonitorPosRot"> Monitor User position and rotation </label> <input
+                id="checkbox-MonitorPosRot" type="checkbox" checked="checked"/>
+        <label for="f-TMonitorPosRot"> Monitoring period </label> <input type="number"
+                                                                         id="f-TMonitorPosRot"/>
+
+        <button type="button" class="" data-id="b-GameMonitoringConfiguration"> Send Changes</button>
+    </form>
+
+
+</section>
+
+
+<!-- f- for field names -->
+<!-- b- for button id's -->
+<!-- m- for remote monitoring display -->
+
+
+<footer class="">
+    <h4> Alejandro Rey López @uc3m </h4>
+    <ul>
+        <li>Github</li>
+        <li>Linkedin</li>
+        <li>Web</li>
+    </ul>
+</footer>
+
+
+<script>
+
+    const env = {ip: "<%- ENV.ip %>", port: "<%- ENV.port %>"};
+
+</script>
+
+<script src="rpcs.js"></script>
+<script src="browser-client2.js"></script>
+
+</body>
+
+
+</html>

@@ -1,11 +1,11 @@
 const express = require('express'); /* Express library to create Web-server */
 const router = express.Router();
-
-
 const path = require("path")
-
-
 const ejs = require("ejs");
+
+require("dotenv");
+
+
 
 
 // Show all available questionnaires as simple buttons
@@ -47,7 +47,13 @@ NASA TLX (complete version)
  */
 router.get("/ranking.opt", (req, res) => {
 
-    res.render("questionnaires/s2ms2-ranking-feedbacks.ejs", );
+    const ENV = {ip : process.env.IP, port: process.env.port}
+
+
+
+
+
+    res.render("questionnaires/s2ms2-ranking-feedbacks.ejs", {ENV});
 });
 
 

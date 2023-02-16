@@ -4,10 +4,17 @@
 
 
 // FOR LOCAL TESTING BY DEFAULT
-// @alreylz CHANGEME
+// @alreylz (env is a variable written in another script)
+
 const AUTO_CONNECT_LOCAL = true;
-const DEFAULT_PORT = 9030;
-const HOSTNAME = "localhost";
+const DEFAULT_PORT = env.port || 9030;
+const HOSTNAME = env.ip || "localhost";
+
+
+console.log(`AUTO CONNECT LOCAL = ${AUTO_CONNECT_LOCAL} | DEFAULT PORT ${DEFAULT_PORT}  | HOSTNAME ${HOSTNAME}`)
+
+
+
 
 
 const WsMessageTypes = {
@@ -32,14 +39,17 @@ const clientLogDiv = document.querySelector("#client-log");
 if (AUTO_CONNECT_LOCAL) {
     // Show if auto-connect is enabled
     let infoShow_ConnectConfig = document.querySelector("[data-id='connect-configuration']")
-    infoShow_ConnectConfig.innerHTML = ` TRUE: ${HOSTNAME}:${DEFAULT_PORT}`;
+    infoShow_ConnectConfig.innerHTML = ` TRUE: ${HOSTNAME}:${DEFAULT_PORT}`
+;
     document.querySelector("#s-connection-prompt").className = "hidden";
-    socket = new WebSocket(websocketURL = `ws://${HOSTNAME}:${DEFAULT_PORT}`);
-    AttemptWSServerConnect(); //Attempt Connection
+    socket = new WebSocket(websocketURL =
+`ws://${HOSTNAME}:${DEFAULT_PORT}`);
+AttemptWSServerConnect(); //Attempt Connection
 } else {
     // Show if auto-connect is enabled
     let infoShow_ConnectConfig = document.querySelector("[data-id='connect-configuration']")
-    infoShow_ConnectConfig.innerHTML = ` FALSE`;
+    infoShow_ConnectConfig.innerHTML = `
+FALSE`;
 }
 
 
@@ -53,44 +63,45 @@ function AttemptWSServerConnect() {
         let connectToTxtBox = document.querySelector("#f-hostname").value;
         connectToTxtBox.startsWith("ws://") ?
             socket = new WebSocket(websocketURL = `${connectToTxtBox}`) :
-            socket = new WebSocket(websocketURL = `ws://${connectToTxtBox}/`);
+            socket = new WebSocket(websocketURL = `
+ws://${connectToTxtBox}/`);
     }
 
 
-    console.log(`[Websocket] Attempting Connection To : '${websocketURL}' [AUTO_CONNECT_LOCAL=${AUTO_CONNECT_LOCAL}]`);
+console.log(`[Websocket] Attempting Connection To : '${websocketURL}' [AUTO_CONNECT_LOCAL=${AUTO_CONNECT_LOCAL}]`);
 
-    //Periodicaly Update Visible status.
-    setInterval(DisplayWebsocketServerConnectionStatus, 3000);
+//Periodicaly Update Visible status.
+setInterval(DisplayWebsocketServerConnectionStatus, 3000);
 
-    //Hook HTML buttons with websocket message sending.
-    RPCCallsHookup(socket);
+//Hook HTML buttons with websocket message sending.
+RPCCallsHookup(socket);
 
-    //[WS CLOSED]
-    socket.onclose = function (event) {
-        if (event.wasClean) {
-            alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-        } else {
-            // e.g. server process killed or network down
-            // event.code is usually 1006 in this case
-            alert('[close] Connection died.');
-        }
-    };
+//[WS CLOSED]
+socket.onclose = function (event) {
+    if (event.wasClean) {
+        alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+    } else {
+        // e.g. server process killed or network down
+        // event.code is usually 1006 in this case
+        alert('[close] Connection died.');
+    }
+};
 
-    //[WS ERROR]
-    socket.onerror = function (error) {
-        alert("[error]"); // ${error.message}`);
-        socket = undefined;
-    };
+//[WS ERROR]
+socket.onerror = function (error) {
+    alert("[error]"); // ${error.message}`);
+    socket = undefined;
+};
 
-    //[WS OPEN]
-    socket.onopen = function (e) {
-        alert("[open] Connection established");
-        socket.send("woz");
-    };
+//[WS OPEN]
+socket.onopen = function (e) {
+    alert("[open] Connection established");
+    socket.send("woz");
+};
 
 
-    // [WS MESSAGE RECEIVED]
-    socket.onmessage = OnWsMessage;
+// [WS MESSAGE RECEIVED]
+socket.onmessage = OnWsMessage;
 
 
 }
@@ -158,8 +169,6 @@ async function DisplayIncomingMessageInClientLog(msg) {
     clientLogDiv.appendChild(debugMessageToRender);
 
 
-
-
     // ALLOWS READING A BINARY FILE WITH THE STRUCTURE ( LETTER 'I' + FILE CONTENT )
     // NEW 17/01/2023
     let debugMessageToRenderImg = null;
@@ -173,7 +182,7 @@ async function DisplayIncomingMessageInClientLog(msg) {
 
 
         //Extract a byte and parse it to a Uint8Array
-        const firstByteView = new Uint8Array(arraybuffer.slice(0,1));
+        const firstByteView = new Uint8Array(arraybuffer.slice(0, 1));
         console.log("FIRST BYTE: " + toBinString(firstByteView));
 
         const restOfBlobView = new Uint8Array(arraybuffer.slice(1));
@@ -199,7 +208,6 @@ async function DisplayIncomingMessageInClientLog(msg) {
 
 const toBinString = (bytes) =>
     bytes.reduce((str, byte) => str + byte.toString(2).padStart(8, '0'), '');
-
 
 
 /***
