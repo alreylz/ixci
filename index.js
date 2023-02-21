@@ -8,7 +8,7 @@
 const dotenv = require('dotenv').config();
 const expressApp = require("./express-app")
 const logColors = require("./js/LogColouring")
-const http = require('http')
+const http = require('http');
 const WebSocket = require("ws");
 
 /* Constants */

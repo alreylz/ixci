@@ -2,9 +2,33 @@
 
 const express = require('express'); /* Express library to create Web-server */
 const app = express();
+const cors = require("cors");
+
+const dotenv = require("dotenv").config();
 
 
 //Configure global static file serving (dónde están los recursos estáticos que se usan en toda la app)
+
+const allowedOrigins = [
+    'http://localhost', 'https://localhost',
+    `http://${process.env.IP}`, `https://${process.env.IP}`,
+    `http://alreylz.me`,
+    `http://${process.env.IP}:${process.env.PORT}`, `https://${process.env.IP}:${process.env.PORT}`];
+
+
+//Enable CORS for my routes
+app.use(cors({
+    origin: function (origin, callback) {    // allow requests with no origin
+        // (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    }
+}));
 
 
 //Mount all routers
@@ -26,17 +50,6 @@ app.use("/questionnaires/", express.static("views/questionnaires/css/"))
 const DataSaveEndpoints = require("./endpoints/DataSave")
 app.use("/", DataSaveEndpoints);
 
-// //Object binding representing the web-server, which we generate via express.
-// const server = require('http').Server(app);
-//
-// const dotenv = require('dotenv').config();
-//
-// const path = require('path');
-//
-// // Dónde se guardarán los datos.
-// let fs = require('fs');
-//
-//
 
 module.exports = app;
 

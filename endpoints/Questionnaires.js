@@ -47,10 +47,7 @@ NASA TLX (complete version)
  */
 router.get("/ranking.opt", (req, res) => {
 
-    const ENV = {ip : process.env.IP, port: process.env.port}
-
-
-
+    const ENV = {ip : process.env.IP, port: process.env.PORT}
 
 
     res.render("questionnaires/s2ms2-ranking-feedbacks.ejs", {ENV});
